@@ -1,11 +1,11 @@
 # Group12
 
-- [ ] **Part 1 : Domain Model - 4% - Jan 30**  
+- [x] **Part 1 : Domain Model - 4% - Jan 30**  
   - [x] GitHub account names submission (5)  
-  - [ ] Correctness of domain model (80)  
-  - [ ] Correctness of generated code (5)  
-  - [ ] Correct package for generated code (5)  
-  - [ ] Use of GitHub repo (5)  
+  - [x] Correctness of domain model (80)  
+  - [x] Correctness of generated code (5)  
+  - [x] Correct package for generated code (5)  
+  - [x] Use of GitHub repo (5)  
 
 - [ ] **Part 2 : UI Mockup, Sequence Diagrams, Controller Interfaces - 4% - Feb 10**  
 
