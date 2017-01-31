@@ -1,0 +1,80 @@
+namespace ca.mcgill.ecse223.tileo.model;
+
+class Game {
+  State { DESIGNING{} PLAYING{}}
+  
+    1 <@>- 2..4 Player;
+	1 <@>- 1 Deck;
+  
+    integer spareConnectionPieces = '32';
+}
+
+class Player {
+	1 -> 1 Tile currentTile;
+    1 -> 1 Tile startingTile;
+  
+    pieceColor;
+    boolean canMove=true;
+}
+
+class Tile {
+    integer x;
+    integer y;
+    2 -- 0..4 Connection;
+    * -<@> 1 Game;
+    
+    boolean hasBeenVisited=false;
+}
+
+class ActionTile {
+	isA Tile;
+  
+    immutable integer turnsDisabled;
+    integer turnsUntilActive='0';
+}
+
+class NormalTile {
+	isA Tile;
+}
+
+class WinTile {
+    1 -<@> 1 Game;
+	isA Tile;
+}
+
+class ActionCard {
+    0..32 -<@> 1 Deck;
+}
+
+class RollDiceActionCard {
+    isA ActionCard;
+}
+
+class ConnectActionCard {
+    isA ActionCard;
+}
+
+class RemoveActionCard {
+    isA ActionCard;
+}
+
+class TeleportActionCard {
+    isA ActionCard;
+}
+
+class SkipTurnActionCard {
+    isA ActionCard;
+}
+
+class Die {
+	1 -<@> 1 Game;
+}
+
+class Connection {
+    * -<@> 1 Game;
+	
+}
+
+class Deck {
+
+}
