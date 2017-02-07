@@ -4,7 +4,7 @@
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
 
-// line 29 "../../../../../main.ump"
+// line 37 "../../../../../main.ump"
 public class ActionTile extends Tile
 {
 
@@ -13,25 +13,25 @@ public class ActionTile extends Tile
   //------------------------
 
   //ActionTile Attributes
-  private integer turnsDisabled;
-  private integer turnsUntilActive;
+  private int inactivityPeriod;
+  private int turnsUntilActive;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public ActionTile(integer aX, integer aY, Game aGame, integer aTurnsDisabled)
+  public ActionTile(int aX, int aY, Game aGame, int aInactivityPeriod)
   {
     super(aX, aY, aGame);
-    turnsDisabled = aTurnsDisabled;
-    turnsUntilActive = '0';
+    inactivityPeriod = aInactivityPeriod;
+    turnsUntilActive = 0;
   }
 
   //------------------------
   // INTERFACE
   //------------------------
 
-  public boolean setTurnsUntilActive(integer aTurnsUntilActive)
+  public boolean setTurnsUntilActive(int aTurnsUntilActive)
   {
     boolean wasSet = false;
     turnsUntilActive = aTurnsUntilActive;
@@ -39,12 +39,12 @@ public class ActionTile extends Tile
     return wasSet;
   }
 
-  public integer getTurnsDisabled()
+  public int getInactivityPeriod()
   {
-    return turnsDisabled;
+    return inactivityPeriod;
   }
 
-  public integer getTurnsUntilActive()
+  public int getTurnsUntilActive()
   {
     return turnsUntilActive;
   }
@@ -58,9 +58,9 @@ public class ActionTile extends Tile
   public String toString()
   {
     String outputString = "";
-    return super.toString() + "["+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "turnsDisabled" + "=" + (getTurnsDisabled() != null ? !getTurnsDisabled().equals(this)  ? getTurnsDisabled().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
-            "  " + "turnsUntilActive" + "=" + (getTurnsUntilActive() != null ? !getTurnsUntilActive().equals(this)  ? getTurnsUntilActive().toString().replaceAll("  ","    ") : "this" : "null")
+    return super.toString() + "["+
+            "inactivityPeriod" + ":" + getInactivityPeriod()+ "," +
+            "turnsUntilActive" + ":" + getTurnsUntilActive()+ "]"
      + outputString;
   }
 }

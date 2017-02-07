@@ -2,80 +2,117 @@
 /*This code was generated using the UMPLE 1.25.0-9e8af9e modeling language!*/
 
 package ca.mcgill.ecse223.tileo.model;
+import java.util.*;
 
-// line 12 "../../../../../main.ump"
+// line 20 "../../../../../main.ump"
 public class Player
 {
+
+  //------------------------
+  // STATIC VARIABLES
+  //------------------------
+
+  private static Map<Integer, Player> playersByNumber = new HashMap<Integer, Player>();
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
   //Player Attributes
-  private String pieceColor;
-  private boolean canMove;
+  private int number;
+  private int turnsUntilActive;
+
+  //Player State Machines
+  public enum Color { RED, BLUE, GREEN, YELLOW }
+  private Color color;
 
   //Player Associations
-  private Tile currentTile;
   private Tile startingTile;
+  private Tile currentTile;
   private Game game;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Player(String aPieceColor, Tile aCurrentTile, Tile aStartingTile, Game aGame)
+  public Player(int aNumber, Game aGame)
   {
-    pieceColor = aPieceColor;
-    canMove = true;
-    if (!setCurrentTile(aCurrentTile))
+    turnsUntilActive = 0;
+    if (!setNumber(aNumber))
     {
-      throw new RuntimeException("Unable to create Player due to aCurrentTile");
-    }
-    if (!setStartingTile(aStartingTile))
-    {
-      throw new RuntimeException("Unable to create Player due to aStartingTile");
+      throw new RuntimeException("Cannot create due to duplicate number");
     }
     boolean didAddGame = setGame(aGame);
     if (!didAddGame)
     {
       throw new RuntimeException("Unable to create player due to game");
     }
+    setColor(Color.RED);
   }
 
   //------------------------
   // INTERFACE
   //------------------------
 
-  public boolean setPieceColor(String aPieceColor)
+  public boolean setNumber(int aNumber)
   {
     boolean wasSet = false;
-    pieceColor = aPieceColor;
+    Integer anOldNumber = getNumber();
+    if (hasWithNumber(aNumber)) {
+      return wasSet;
+    }
+    number = aNumber;
+    wasSet = true;
+    if (anOldNumber != null) {
+      playersByNumber.remove(anOldNumber);
+    }
+    playersByNumber.put(aNumber, this);
+    return wasSet;
+  }
+
+  public boolean setTurnsUntilActive(int aTurnsUntilActive)
+  {
+    boolean wasSet = false;
+    turnsUntilActive = aTurnsUntilActive;
     wasSet = true;
     return wasSet;
   }
 
-  public boolean setCanMove(boolean aCanMove)
+  public int getNumber()
   {
-    boolean wasSet = false;
-    canMove = aCanMove;
-    wasSet = true;
-    return wasSet;
+    return number;
   }
 
-  public String getPieceColor()
+  public static Player getWithNumber(int aNumber)
   {
-    return pieceColor;
+    return playersByNumber.get(aNumber);
   }
 
-  public boolean getCanMove()
+  public static boolean hasWithNumber(int aNumber)
   {
-    return canMove;
+    return getWithNumber(aNumber) != null;
   }
 
-  public Tile getCurrentTile()
+  public int getTurnsUntilActive()
   {
-    return currentTile;
+    return turnsUntilActive;
+  }
+
+  public String getColorFullName()
+  {
+    String answer = color.toString();
+    return answer;
+  }
+
+  public Color getColor()
+  {
+    return color;
+  }
+
+  public boolean setColor(Color aColor)
+  {
+    color = aColor;
+    return true;
   }
 
   public Tile getStartingTile()
@@ -83,30 +120,41 @@ public class Player
     return startingTile;
   }
 
+  public boolean hasStartingTile()
+  {
+    boolean has = startingTile != null;
+    return has;
+  }
+
+  public Tile getCurrentTile()
+  {
+    return currentTile;
+  }
+
+  public boolean hasCurrentTile()
+  {
+    boolean has = currentTile != null;
+    return has;
+  }
+
   public Game getGame()
   {
     return game;
   }
 
-  public boolean setCurrentTile(Tile aNewCurrentTile)
-  {
-    boolean wasSet = false;
-    if (aNewCurrentTile != null)
-    {
-      currentTile = aNewCurrentTile;
-      wasSet = true;
-    }
-    return wasSet;
-  }
-
   public boolean setStartingTile(Tile aNewStartingTile)
   {
     boolean wasSet = false;
-    if (aNewStartingTile != null)
-    {
-      startingTile = aNewStartingTile;
-      wasSet = true;
-    }
+    startingTile = aNewStartingTile;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setCurrentTile(Tile aNewCurrentTile)
+  {
+    boolean wasSet = false;
+    currentTile = aNewCurrentTile;
+    wasSet = true;
     return wasSet;
   }
 
@@ -143,8 +191,9 @@ public class Player
 
   public void delete()
   {
-    currentTile = null;
+    playersByNumber.remove(getNumber());
     startingTile = null;
+    currentTile = null;
     Game placeholderGame = game;
     this.game = null;
     placeholderGame.removePlayer(this);
@@ -155,10 +204,10 @@ public class Player
   {
     String outputString = "";
     return super.toString() + "["+
-            "pieceColor" + ":" + getPieceColor()+ "," +
-            "canMove" + ":" + getCanMove()+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "currentTile = "+(getCurrentTile()!=null?Integer.toHexString(System.identityHashCode(getCurrentTile())):"null") + System.getProperties().getProperty("line.separator") +
+            "number" + ":" + getNumber()+ "," +
+            "turnsUntilActive" + ":" + getTurnsUntilActive()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "startingTile = "+(getStartingTile()!=null?Integer.toHexString(System.identityHashCode(getStartingTile())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "currentTile = "+(getCurrentTile()!=null?Integer.toHexString(System.identityHashCode(getCurrentTile())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "game = "+(getGame()!=null?Integer.toHexString(System.identityHashCode(getGame())):"null")
      + outputString;
   }

@@ -3,13 +3,16 @@
 
 package ca.mcgill.ecse223.tileo.model;
 
-// line 45 "../../../../../main.ump"
-public class ActionCard
+// line 60 "../../../../../main.ump"
+public abstract class ActionCard
 {
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
+
+  //ActionCard Attributes
+  private String instructions;
 
   //ActionCard Associations
   private Deck deck;
@@ -18,18 +21,32 @@ public class ActionCard
   // CONSTRUCTOR
   //------------------------
 
-  public ActionCard(Deck aDeck)
+  public ActionCard(String aInstructions, Deck aDeck)
   {
+    instructions = aInstructions;
     boolean didAddDeck = setDeck(aDeck);
     if (!didAddDeck)
     {
-      throw new RuntimeException("Unable to create actionCard due to deck");
+      throw new RuntimeException("Unable to create card due to deck");
     }
   }
 
   //------------------------
   // INTERFACE
   //------------------------
+
+  public boolean setInstructions(String aInstructions)
+  {
+    boolean wasSet = false;
+    instructions = aInstructions;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public String getInstructions()
+  {
+    return instructions;
+  }
 
   public Deck getDeck()
   {
@@ -39,14 +56,14 @@ public class ActionCard
   public boolean setDeck(Deck aDeck)
   {
     boolean wasSet = false;
-    //Must provide deck to actionCard
+    //Must provide deck to card
     if (aDeck == null)
     {
       return wasSet;
     }
 
     //deck already at maximum (32)
-    if (aDeck.numberOfActionCards() >= Deck.maximumNumberOfActionCards())
+    if (aDeck.numberOfCards() >= Deck.maximumNumberOfCards())
     {
       return wasSet;
     }
@@ -55,14 +72,14 @@ public class ActionCard
     deck = aDeck;
     if (existingDeck != null && !existingDeck.equals(aDeck))
     {
-      boolean didRemove = existingDeck.removeActionCard(this);
+      boolean didRemove = existingDeck.removeCard(this);
       if (!didRemove)
       {
         deck = existingDeck;
         return wasSet;
       }
     }
-    deck.addActionCard(this);
+    deck.addCard(this);
     wasSet = true;
     return wasSet;
   }
@@ -71,7 +88,16 @@ public class ActionCard
   {
     Deck placeholderDeck = deck;
     this.deck = null;
-    placeholderDeck.removeActionCard(this);
+    placeholderDeck.removeCard(this);
   }
 
+
+  public String toString()
+  {
+    String outputString = "";
+    return super.toString() + "["+
+            "instructions" + ":" + getInstructions()+ "]" + System.getProperties().getProperty("line.separator") +
+            "  " + "deck = "+(getDeck()!=null?Integer.toHexString(System.identityHashCode(getDeck())):"null")
+     + outputString;
+  }
 }

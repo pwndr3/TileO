@@ -3,7 +3,7 @@
 
 package ca.mcgill.ecse223.tileo.model;
 
-// line 61 "../../../../../main.ump"
+// line 78 "../../../../../main.ump"
 public class TeleportActionCard extends ActionCard
 {
 
@@ -15,9 +15,9 @@ public class TeleportActionCard extends ActionCard
   // CONSTRUCTOR
   //------------------------
 
-  public TeleportActionCard(Deck aDeck)
+  public TeleportActionCard(String aInstructions, Deck aDeck)
   {
-    super(aDeck);
+    super(aInstructions, aDeck);
   }
 
   //------------------------

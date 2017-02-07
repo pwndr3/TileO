@@ -1,80 +1,87 @@
 namespace ca.mcgill.ecse223.tileo.model;
 
+class TileO {
+  1 <@>- * Game games;
+}
+
 class Game {
-  State { DESIGNING{} PLAYING{}}
-  
-    1 <@>- 2..4 Player;
-	1 <@>- 1 Deck;
-  
-    integer spareConnectionPieces = '32';
+  mode { DESIGN{} GAME{} }
+  1 <@>- 2..4 Player players;
+  1 <@>- * Tile tiles;
+  1 <@>- * Connection connections;
+  1 <@>- 1 Deck deck;
+  1 <@>- 1 Die die;
+  1 -> 0..1 Player currentPlayer;
+  1 -> 0..1 WinTile winTile;
+  const Integer SpareConnectionPieces = 32;
+  Integer currentConnectionPieces;
 }
 
 class Player {
-	1 -> 1 Tile currentTile;
-    1 -> 1 Tile startingTile;
-  
-    pieceColor;
-    boolean canMove=true;
+  color { RED{} BLUE{} GREEN{} YELLOW{} }
+  1 -> 0..1 Tile startingTile;
+  0..4 -> 0..1 Tile currentTile;
+  unique Integer number;
+  Integer turnsUntilActive = 0;
 }
 
 class Tile {
-    integer x;
-    integer y;
-    2 -- 0..4 Connection;
-    * -<@> 1 Game;
-    
-    boolean hasBeenVisited=false;
+  abstract;
+
+  2 tiles -- 0..4 Connection connections;
+  Integer x;
+  Integer y;
+  Boolean hasBeenVisited = false;
 }
 
 class ActionTile {
-	isA Tile;
-  
-    immutable integer turnsDisabled;
-    integer turnsUntilActive='0';
+  isA Tile;
+
+  immutable Integer inactivityPeriod;
+  Integer turnsUntilActive= 0;
 }
 
 class NormalTile {
-	isA Tile;
+  isA Tile;
 }
 
 class WinTile {
-    1 -<@> 1 Game;
-	isA Tile;
-}
-
-class ActionCard {
-    0..32 -<@> 1 Deck;
-}
-
-class RollDiceActionCard {
-    isA ActionCard;
-}
-
-class ConnectActionCard {
-    isA ActionCard;
-}
-
-class RemoveActionCard {
-    isA ActionCard;
-}
-
-class TeleportActionCard {
-    isA ActionCard;
-}
-
-class SkipTurnActionCard {
-    isA ActionCard;
-}
-
-class Die {
-	1 -<@> 1 Game;
+  isA Tile;
 }
 
 class Connection {
-    * -<@> 1 Game;
-	
 }
 
 class Deck {
+  1 <@>- 0..32 ActionCard cards;
+  1 -> 0..1 ActionCard currentCard;
+}
 
+class ActionCard {
+  abstract;
+
+  String instructions;
+}
+
+class RollDieActionCard {
+  isA ActionCard;
+}
+
+class ConnectTilesActionCard {
+  isA ActionCard;
+}
+
+class RemoveConnectionActionCard {
+  isA ActionCard;
+}
+
+class TeleportActionCard {
+  isA ActionCard;
+}
+
+class LoseTurnActionCard {
+  isA ActionCard;
+}
+
+class Die {
 }

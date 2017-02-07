@@ -4,8 +4,8 @@
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
 
-// line 20 "../../../../../main.ump"
-public class Tile
+// line 28 "../../../../../main.ump"
+public abstract class Tile
 {
 
   //------------------------
@@ -13,8 +13,8 @@ public class Tile
   //------------------------
 
   //Tile Attributes
-  private integer x;
-  private integer y;
+  private int x;
+  private int y;
   private boolean hasBeenVisited;
 
   //Tile Associations
@@ -25,7 +25,7 @@ public class Tile
   // CONSTRUCTOR
   //------------------------
 
-  public Tile(integer aX, integer aY, Game aGame)
+  public Tile(int aX, int aY, Game aGame)
   {
     x = aX;
     y = aY;
@@ -42,7 +42,7 @@ public class Tile
   // INTERFACE
   //------------------------
 
-  public boolean setX(integer aX)
+  public boolean setX(int aX)
   {
     boolean wasSet = false;
     x = aX;
@@ -50,7 +50,7 @@ public class Tile
     return wasSet;
   }
 
-  public boolean setY(integer aY)
+  public boolean setY(int aY)
   {
     boolean wasSet = false;
     y = aY;
@@ -66,17 +66,22 @@ public class Tile
     return wasSet;
   }
 
-  public integer getX()
+  public int getX()
   {
     return x;
   }
 
-  public integer getY()
+  public int getY()
   {
     return y;
   }
 
   public boolean getHasBeenVisited()
+  {
+    return hasBeenVisited;
+  }
+
+  public boolean isHasBeenVisited()
   {
     return hasBeenVisited;
   }
@@ -252,9 +257,9 @@ public class Tile
   {
     String outputString = "";
     return super.toString() + "["+
+            "x" + ":" + getX()+ "," +
+            "y" + ":" + getY()+ "," +
             "hasBeenVisited" + ":" + getHasBeenVisited()+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "x" + "=" + (getX() != null ? !getX().equals(this)  ? getX().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
-            "  " + "y" + "=" + (getY() != null ? !getY().equals(this)  ? getY().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
             "  " + "game = "+(getGame()!=null?Integer.toHexString(System.identityHashCode(getGame())):"null")
      + outputString;
   }

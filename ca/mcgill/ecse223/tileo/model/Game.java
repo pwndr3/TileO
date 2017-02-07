@@ -4,99 +4,111 @@
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
 
-// line 3 "../../../../../main.ump"
+// line 7 "../../../../../main.ump"
 public class Game
 {
+
+  //------------------------
+  // STATIC VARIABLES
+  //------------------------
+
+  public static final int SpareConnectionPieces = 32;
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
   //Game Attributes
-  private integer spareConnectionPieces;
+  private int currentConnectionPieces;
 
   //Game State Machines
-  public enum State { DESIGNING, PLAYING }
-  private State state;
+  public enum Mode { DESIGN, GAME }
+  private Mode mode;
 
   //Game Associations
   private List<Player> players;
-  private Deck deck;
   private List<Tile> tiles;
-  private WinTile winTile;
-  private Die die;
   private List<Connection> connections;
+  private Deck deck;
+  private Die die;
+  private Player currentPlayer;
+  private WinTile winTile;
+  private TileO tileO;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Game(Deck aDeck, WinTile aWinTile, Die aDie)
+  public Game(int aCurrentConnectionPieces, Deck aDeck, Die aDie, TileO aTileO)
   {
-    spareConnectionPieces = '32';
+    currentConnectionPieces = aCurrentConnectionPieces;
     players = new ArrayList<Player>();
+    tiles = new ArrayList<Tile>();
+    connections = new ArrayList<Connection>();
     if (aDeck == null || aDeck.getGame() != null)
     {
       throw new RuntimeException("Unable to create Game due to aDeck");
     }
     deck = aDeck;
-    tiles = new ArrayList<Tile>();
-    if (aWinTile == null || aWinTile.getGame() != null)
-    {
-      throw new RuntimeException("Unable to create Game due to aWinTile");
-    }
-    winTile = aWinTile;
     if (aDie == null || aDie.getGame() != null)
     {
       throw new RuntimeException("Unable to create Game due to aDie");
     }
     die = aDie;
-    connections = new ArrayList<Connection>();
-    setState(State.DESIGNING);
+    boolean didAddTileO = setTileO(aTileO);
+    if (!didAddTileO)
+    {
+      throw new RuntimeException("Unable to create game due to tileO");
+    }
+    setMode(Mode.DESIGN);
   }
 
-  public Game(integer aXForWinTile, integer aYForWinTile)
+  public Game(int aCurrentConnectionPieces, TileO aTileO)
   {
-    spareConnectionPieces = '32';
+    currentConnectionPieces = aCurrentConnectionPieces;
     players = new ArrayList<Player>();
-    deck = new Deck(this);
     tiles = new ArrayList<Tile>();
-    winTile = new WinTile(aXForWinTile, aYForWinTile, this, this);
-    die = new Die(this);
     connections = new ArrayList<Connection>();
+    deck = new Deck(this);
+    die = new Die(this);
+    boolean didAddTileO = setTileO(aTileO);
+    if (!didAddTileO)
+    {
+      throw new RuntimeException("Unable to create game due to tileO");
+    }
   }
 
   //------------------------
   // INTERFACE
   //------------------------
 
-  public boolean setSpareConnectionPieces(integer aSpareConnectionPieces)
+  public boolean setCurrentConnectionPieces(int aCurrentConnectionPieces)
   {
     boolean wasSet = false;
-    spareConnectionPieces = aSpareConnectionPieces;
+    currentConnectionPieces = aCurrentConnectionPieces;
     wasSet = true;
     return wasSet;
   }
 
-  public integer getSpareConnectionPieces()
+  public int getCurrentConnectionPieces()
   {
-    return spareConnectionPieces;
+    return currentConnectionPieces;
   }
 
-  public String getStateFullName()
+  public String getModeFullName()
   {
-    String answer = state.toString();
+    String answer = mode.toString();
     return answer;
   }
 
-  public State getState()
+  public Mode getMode()
   {
-    return state;
+    return mode;
   }
 
-  public boolean setState(State aState)
+  public boolean setMode(Mode aMode)
   {
-    state = aState;
+    mode = aMode;
     return true;
   }
 
@@ -130,11 +142,6 @@ public class Game
     return index;
   }
 
-  public Deck getDeck()
-  {
-    return deck;
-  }
-
   public Tile getTile(int index)
   {
     Tile aTile = tiles.get(index);
@@ -163,16 +170,6 @@ public class Game
   {
     int index = tiles.indexOf(aTile);
     return index;
-  }
-
-  public WinTile getWinTile()
-  {
-    return winTile;
-  }
-
-  public Die getDie()
-  {
-    return die;
   }
 
   public Connection getConnection(int index)
@@ -205,6 +202,43 @@ public class Game
     return index;
   }
 
+  public Deck getDeck()
+  {
+    return deck;
+  }
+
+  public Die getDie()
+  {
+    return die;
+  }
+
+  public Player getCurrentPlayer()
+  {
+    return currentPlayer;
+  }
+
+  public boolean hasCurrentPlayer()
+  {
+    boolean has = currentPlayer != null;
+    return has;
+  }
+
+  public WinTile getWinTile()
+  {
+    return winTile;
+  }
+
+  public boolean hasWinTile()
+  {
+    boolean has = winTile != null;
+    return has;
+  }
+
+  public TileO getTileO()
+  {
+    return tileO;
+  }
+
   public boolean isNumberOfPlayersValid()
   {
     boolean isValid = numberOfPlayers() >= minimumNumberOfPlayers() && numberOfPlayers() <= maximumNumberOfPlayers();
@@ -221,7 +255,7 @@ public class Game
     return 4;
   }
 
-  public Player addPlayer(String aPieceColor, Tile aCurrentTile, Tile aStartingTile)
+  public Player addPlayer(int aNumber)
   {
     if (numberOfPlayers() >= maximumNumberOfPlayers())
     {
@@ -229,7 +263,7 @@ public class Game
     }
     else
     {
-      return new Player(aPieceColor, aCurrentTile, aStartingTile, this);
+      return new Player(aNumber, this);
     }
   }
 
@@ -318,7 +352,7 @@ public class Game
     return 0;
   }
 
-  public Tile addTile(integer aX, integer aY)
+  public Tile addTile(int aX, int aY)
   {
     return new Tile(aX, aY, this);
   }
@@ -457,6 +491,41 @@ public class Game
     return wasAdded;
   }
 
+  public boolean setCurrentPlayer(Player aNewCurrentPlayer)
+  {
+    boolean wasSet = false;
+    currentPlayer = aNewCurrentPlayer;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setWinTile(WinTile aNewWinTile)
+  {
+    boolean wasSet = false;
+    winTile = aNewWinTile;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setTileO(TileO aTileO)
+  {
+    boolean wasSet = false;
+    if (aTileO == null)
+    {
+      return wasSet;
+    }
+
+    TileO existingTileO = tileO;
+    tileO = aTileO;
+    if (existingTileO != null && !existingTileO.equals(aTileO))
+    {
+      existingTileO.removeGame(this);
+    }
+    tileO.addGame(this);
+    wasSet = true;
+    return wasSet;
+  }
+
   public void delete()
   {
     while (players.size() > 0)
@@ -466,12 +535,6 @@ public class Game
       players.remove(aPlayer);
     }
     
-    Deck existingDeck = deck;
-    deck = null;
-    if (existingDeck != null)
-    {
-      existingDeck.delete();
-    }
     while (tiles.size() > 0)
     {
       Tile aTile = tiles.get(tiles.size() - 1);
@@ -479,18 +542,6 @@ public class Game
       tiles.remove(aTile);
     }
     
-    WinTile existingWinTile = winTile;
-    winTile = null;
-    if (existingWinTile != null)
-    {
-      existingWinTile.delete();
-    }
-    Die existingDie = die;
-    die = null;
-    if (existingDie != null)
-    {
-      existingDie.delete();
-    }
     while (connections.size() > 0)
     {
       Connection aConnection = connections.get(connections.size() - 1);
@@ -498,17 +549,36 @@ public class Game
       connections.remove(aConnection);
     }
     
+    Deck existingDeck = deck;
+    deck = null;
+    if (existingDeck != null)
+    {
+      existingDeck.delete();
+    }
+    Die existingDie = die;
+    die = null;
+    if (existingDie != null)
+    {
+      existingDie.delete();
+    }
+    currentPlayer = null;
+    winTile = null;
+    TileO placeholderTileO = tileO;
+    this.tileO = null;
+    placeholderTileO.removeGame(this);
   }
 
 
   public String toString()
   {
     String outputString = "";
-    return super.toString() + "["+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "spareConnectionPieces" + "=" + (getSpareConnectionPieces() != null ? !getSpareConnectionPieces().equals(this)  ? getSpareConnectionPieces().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
+    return super.toString() + "["+
+            "currentConnectionPieces" + ":" + getCurrentConnectionPieces()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "deck = "+(getDeck()!=null?Integer.toHexString(System.identityHashCode(getDeck())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "die = "+(getDie()!=null?Integer.toHexString(System.identityHashCode(getDie())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "currentPlayer = "+(getCurrentPlayer()!=null?Integer.toHexString(System.identityHashCode(getCurrentPlayer())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "winTile = "+(getWinTile()!=null?Integer.toHexString(System.identityHashCode(getWinTile())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "die = "+(getDie()!=null?Integer.toHexString(System.identityHashCode(getDie())):"null")
+            "  " + "tileO = "+(getTileO()!=null?Integer.toHexString(System.identityHashCode(getTileO())):"null")
      + outputString;
   }
 }

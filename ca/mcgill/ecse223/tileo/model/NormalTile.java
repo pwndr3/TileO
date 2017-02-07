@@ -4,7 +4,7 @@
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
 
-// line 36 "../../../../../main.ump"
+// line 44 "../../../../../main.ump"
 public class NormalTile extends Tile
 {
 
@@ -16,7 +16,7 @@ public class NormalTile extends Tile
   // CONSTRUCTOR
   //------------------------
 
-  public NormalTile(integer aX, integer aY, Game aGame)
+  public NormalTile(int aX, int aY, Game aGame)
   {
     super(aX, aY, aGame);
   }

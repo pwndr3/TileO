@@ -3,7 +3,7 @@
 
 package ca.mcgill.ecse223.tileo.model;
 
-// line 69 "../../../../../main.ump"
+// line 86 "../../../../../main.ump"
 public class Die
 {
 
@@ -27,9 +27,9 @@ public class Die
     game = aGame;
   }
 
-  public Die(Deck aDeckForGame, WinTile aWinTileForGame)
+  public Die(int aCurrentConnectionPiecesForGame, Deck aDeckForGame, TileO aTileOForGame)
   {
-    game = new Game(aDeckForGame, aWinTileForGame, this);
+    game = new Game(aCurrentConnectionPiecesForGame, aDeckForGame, this, aTileOForGame);
   }
 
   //------------------------
