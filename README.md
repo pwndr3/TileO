@@ -9,7 +9,7 @@
 
 - [ ] **Part 2 : UI Mockup, Sequence Diagrams, Controller Interfaces - 4% - Feb 10**  
   - [ ] UI Mock-ups of features (30)
-  - [ ] Uniform look and feel of the application (5)
+  - [ ] Uniform look and feel of the application (5)
   - [ ] Specification of Controller interface for features (10)
   - [ ] Sequence diagrams for Controller methods of features (50)
   - [ ] Uniform look and formatting of the project report (5)
