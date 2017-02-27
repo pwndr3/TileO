@@ -4,7 +4,7 @@
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
 
-// line 44 "../../../../../main.ump"
+// line 46 "../../../../../TileO (updated Feb10).ump"
 public class NormalTile extends Tile
 {
 

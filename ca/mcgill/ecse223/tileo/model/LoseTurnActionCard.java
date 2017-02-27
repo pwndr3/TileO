@@ -3,8 +3,8 @@
 
 package ca.mcgill.ecse223.tileo.model;
 
-// line 80 "../../../../../TileO (updated Feb10).ump"
-public class TeleportActionCard extends ActionCard
+// line 84 "../../../../../TileO (updated Feb10).ump"
+public class LoseTurnActionCard extends ActionCard
 {
 
   //------------------------
@@ -15,7 +15,7 @@ public class TeleportActionCard extends ActionCard
   // CONSTRUCTOR
   //------------------------
 
-  public TeleportActionCard(String aInstructions, Deck aDeck)
+  public LoseTurnActionCard(String aInstructions, Deck aDeck)
   {
     super(aInstructions, aDeck);
   }

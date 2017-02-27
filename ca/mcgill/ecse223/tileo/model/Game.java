@@ -4,7 +4,7 @@
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
 
-// line 7 "../../../../../main.ump"
+// line 8 "../../../../../TileO (updated Feb10).ump"
 public class Game
 {
 
@@ -13,6 +13,7 @@ public class Game
   //------------------------
 
   public static final int SpareConnectionPieces = 32;
+  public static final int NumberOfActionCards = 32;
 
   //------------------------
   // MEMBER VARIABLES
@@ -22,7 +23,7 @@ public class Game
   private int currentConnectionPieces;
 
   //Game State Machines
-  public enum Mode { DESIGN, GAME }
+  public enum Mode { DESIGN, GAME, GAME_WON, GAME_ROLLDIEACTIONCARD, GAME_CONNECTTILESACTIONCARD, GAME_REMOVECONNECTIONACTIONCARD, GAME_TELEPORTACTIONCARD, GAME_LOSETURNACTIONCARD }
   private Mode mode;
 
   //Game Associations
