@@ -5,6 +5,7 @@
  */
 
 import javax.swing.*;
+import java.util.*;
 
 /**
  *
@@ -15,8 +16,8 @@ public class TileODesignUI extends javax.swing.JFrame {
     private String vLength = "";
     private String numOfPlayersInGame = "";
     
-    private int WINDOW_WIDTH = getWidth();
-    private int WINDOW_HEIGHT = getHeight();
+    private double WINDOW_WIDTH = getContentPane().getSize().getWidth();
+    private int WINDOW_HEIGHT = (int)getContentPane().getSize().getHeight();
 
     /**
      * Creates new form TileOUGUI
@@ -25,6 +26,8 @@ public class TileODesignUI extends javax.swing.JFrame {
         initComponents();
 
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -281,16 +284,29 @@ public class TileODesignUI extends javax.swing.JFrame {
         
         //Board
         
-        //List<JToggleButton> tilesUI = 
-        JToggleButton tile1 = new javax.swing.JToggleButton();
+        ArrayList<JToggleButton> tilesUI = new ArrayList<JToggleButton>();
         
-        getWidth();
+        for(int i = 0; i < 15; i++) {
+          for(int j = 0; j < 15; j++) {
+            JToggleButton tile = new javax.swing.JToggleButton();
+            tile.setPreferredSize(new java.awt.Dimension(40,40));
+            
+            tilesUI.add(tile);
+          }
+        }
+        
+        JToggleButton tile1 = new javax.swing.JToggleButton();
+        tile1.setPreferredSize(new java.awt.Dimension(40,40));
         
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         javax.swing.JPanel tilesPanel = new javax.swing.JPanel();
         
-        //tilesPanel.setPreferredSize(new Dimension(WINDOW_WIDTH, 150));
-        tilesPanel.add(tile1);
+        tilesPanel.setPreferredSize(new java.awt.Dimension(1080, 600));
+        
+        for(int i = 0;i < 50; i++) {
+          tilesPanel.add(tilesUI.get(i));
+          
+        }
         
         /*
          * 
