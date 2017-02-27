@@ -56,7 +56,7 @@ public class DesignerController extends Controller {
     public boolean createDeck(int connectTiles, int loseTurn, int removeConnection, int rollDie, int teleport) throws InvalidInputException{
         //andre
     }
-    public boolean createGame(int numberOfPlayers) throws InvalidInputException{
-        //karine
+    public boolean createGame(int numOfPlayersInGame) throws InvalidInputException{
+
     }
 }
