@@ -3,7 +3,7 @@
 
 package ca.mcgill.ecse223.tileo.model;
 
-// line 60 "../../../../../main.ump"
+// line 62 "../../../../../main.ump"
 public abstract class ActionCard
 {
 
@@ -34,14 +34,6 @@ public abstract class ActionCard
   //------------------------
   // INTERFACE
   //------------------------
-
-  public boolean setInstructions(String aInstructions)
-  {
-    boolean wasSet = false;
-    instructions = aInstructions;
-    wasSet = true;
-    return wasSet;
-  }
 
   public String getInstructions()
   {

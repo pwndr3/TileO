@@ -3,7 +3,7 @@
 
 package ca.mcgill.ecse223.tileo.model;
 
-// line 86 "../../../../../main.ump"
+// line 88 "../../../../../main.ump"
 public class Die
 {
 

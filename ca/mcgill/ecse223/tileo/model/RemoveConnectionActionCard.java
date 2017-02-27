@@ -2,10 +2,9 @@
 /*This code was generated using the UMPLE 1.25.0-9e8af9e modeling language!*/
 
 package ca.mcgill.ecse223.tileo.model;
-import java.util.*;
 
-// line 46 "../../../../../main.ump"
-public class NormalTile extends Tile
+// line 76 "../../../../../main.ump"
+public class RemoveConnectionActionCard extends ActionCard
 {
 
   //------------------------
@@ -16,9 +15,9 @@ public class NormalTile extends Tile
   // CONSTRUCTOR
   //------------------------
 
-  public NormalTile(int aX, int aY, Game aGame)
+  public RemoveConnectionActionCard(String aInstructions, Deck aDeck)
   {
-    super(aX, aY, aGame);
+    super(aInstructions, aDeck);
   }
 
   //------------------------
