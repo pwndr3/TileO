@@ -11,6 +11,7 @@
 public class TileODesignUI extends javax.swing.JFrame {
     private String hLength = "";
     private String vLength = "";
+    public String numOfPlayersInGame = "";
 
     /**
      * Creates new form TileOUGUI
@@ -521,7 +522,25 @@ public class TileODesignUI extends javax.swing.JFrame {
     }//GEN-LAST:event_loadButtonActionPerformed
 
     private void nbOfPlayersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nbOfPlayersActionPerformed
-        // TODO add your handling code here:
+        String nbOfPlayersChosen = (String) nbOfPlayers.getSelectedItem();
+        switch (nbOfPlayersChosen) { //Setting number of pkayers in game, to send to controller
+            case "2":
+                numOfPlayersInGame = "2";
+                break;
+            case "3":
+                numOfPlayersInGame = "3";
+                break;
+            case "4":
+                numOfPlayersInGame = "4";
+                break;
+        }
+        if (nbOfPlayers.getSelectedItem()== "2") { //Setting value of combo box for choosing a player to defined number of players
+            chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"1", "2"}));}
+        else if(nbOfPlayers.getSelectedItem()== "3"){
+            chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"1", "2", "3"}));}
+        else{
+            chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
+        }
     }//GEN-LAST:event_nbOfPlayersActionPerformed
 
     /**
