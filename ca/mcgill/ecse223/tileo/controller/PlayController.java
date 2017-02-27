@@ -13,7 +13,7 @@ public class PlayController extends Controller {
         //alex
     }
     public public List<Tile> roll() {
-        //karine
+        aGame=getCurrentGame();
     }
     public boolean land(Tile tile) throws InvalidInputException{
         //karine

@@ -9,7 +9,7 @@ public class DesignerController extends Controller {
     public boolean startingPosition(Tile tile, int playerNumber) throws InvalidInputException{
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
-    //EXCEPTIONS 
+        //EXCEPTIONS
         Player player= getWithNumber(playerNumber);
         return player.setStartingTile(tile);
     }
@@ -17,7 +17,7 @@ public class DesignerController extends Controller {
         //Get the current application and game
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
-    //IF THERE IS A WINTILE ON THE BOARD FIND IT AND DELETE IT BEFORE DOING REST
+        //IF THERE IS A WINTILE ON THE BOARD FIND IT AND DELETE IT BEFORE DOING REST
 
         //Save the tile's connections, x and y coordinates. The tile is then deleted.
         List<Connection> tileConnections = tile.getConnections();
@@ -38,15 +38,51 @@ public class DesignerController extends Controller {
 
         return (wintile==game.getWinTile());
     }
-    public boolean placeTile(int x, int y) throws InvalidInputException{
-        //abe
+
+    public boolean createNormalTile(int x, int y) throws InvalidInputException{
+        TileO tileO = TileOApplication.getTileO();
+        Game game = tileO.getCurrentGame();
+        List<Tile> tiles= game.getTiles();
+//iterate through list of tiles and see if a tile is already located at the location in the parameters
+        for(int i=0;i<tiles.size() ;i++) {
+            spectile = tiles.get(i);
+            if(spectile.getX() == x && spectile.getY() == y) throw new InvalidInputException("there is already a tile located there");
+            break;
+            else game.addTile(new NormalTile(x, y, game));
+        }
+        return true;
+
     }
+
     public boolean deleteTile(Tile tile) throws InvalidInputException{
-        //abe
+
+        if(tile==null){
+            throws new InvalidInputExceptions("there is no tile to delete");
+        }
+        /*delete the tile*/
+        tile.delete();
     }
+
     public boolean identifyActionTile(Tile tile) throws InvalidInputException{
-        //abe
+        /*get current game and application*/
+        TileO tileOApp = TileOApplication.getTileO();
+        Game game = tileOApp.getCurrentGame();
+        /* the initial coordinates of x and y, and connections are saved*/
+        int firstx = tile.getX();
+        int firsty = tile.getY();
+        List<Connection> connections = tile.getConnections();
+        /*delete the tile*/
+        tile.delete();
+        /* an action tile created at the previous location*/
+        ActionTile actionTile = new ActionTile(firstx,firsty,game, 1); //inactivity period 1 but will be implemented otherwise for deliverable 4
+        for(int i = connections.size()-1; i>=0; i--){
+            actionTile.addConnection(connections.get(i));
+        }
+        game.addTile(actionTile);
+        return true;
+
     }
+
     public boolean removeConnection(Connection aConnection) throws InvalidInputException{
         //alex
     }
@@ -56,7 +92,18 @@ public class DesignerController extends Controller {
     public boolean createDeck(int connectTiles, int loseTurn, int removeConnection, int rollDie, int teleport) throws InvalidInputException{
         //andre
     }
-    public boolean createGame(int numOfPlayersInGame) throws InvalidInputException{
+    public boolean createGame(int numOfPlayersInGame){
+        TileO tileo = new TileO();
+        Game aGame = new Game(0,tileo);
+        tileo.setCurrentGame(aGame);
+        aGame.setMode(Mode.DESIGN);
+        Die die = new Die(aGame);
+        Deck deck = new Deck(aGame);
+        for(n=1;n<=numOfPlayersInGame;n++){
+            Player player = new Player(n,aGame);
+            player.setColor(Color.RED);
+            aGame.addPlayer(player);
+        }
 
     }
 }
