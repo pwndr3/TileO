@@ -6,6 +6,7 @@
 
 import javax.swing.*;
 import java.util.*;
+import java.awt.*;
 
 /**
  *
@@ -15,6 +16,9 @@ public class TileODesignUI extends javax.swing.JFrame {
     private String hLength = "";
     private String vLength = "";
     private String numOfPlayersInGame = "";
+    
+    private LinkedList<JToggleButton> tilesButtons;
+    private JPanel tilesPanel;
     
     private double WINDOW_WIDTH = getContentPane().getSize().getWidth();
     private int WINDOW_HEIGHT = (int)getContentPane().getSize().getHeight();
@@ -27,7 +31,37 @@ public class TileODesignUI extends javax.swing.JFrame {
 
     }
     
-    
+    private void changeBoardSize(int m, int n) {
+      //Clear
+      tilesButtons.clear();
+      
+      //Create buttons and put in linked list
+      for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
+          JToggleButton tile = new JToggleButton();
+          tile.setPreferredSize(new java.awt.Dimension(40,40));
+          
+          tilesButtons.add(tile);
+        }
+        }
+        
+       //Create grids
+      GridLayout mainGrid = new GridLayout(m, 1);
+      tilesPanel.setLayout(mainGrid);
+      
+      ListIterator<JToggleButton> it = tilesButtons.listIterator();
+      
+      for(int row = 0; row < m; row++) {
+        JPanel rowPanel = new JPanel();
+        GridLayout rowGrid = new GridLayout(1, n);
+        rowPanel.setLayout(rowGrid);
+        
+        for(int col = 0; col < n; col++) {
+          rowPanel.add(it.next());
+        }
+        tilesPanel.add(rowPanel);
+      }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -284,29 +318,13 @@ public class TileODesignUI extends javax.swing.JFrame {
         
         //Board
         
-        ArrayList<JToggleButton> tilesUI = new ArrayList<JToggleButton>();
-        
-        for(int i = 0; i < 15; i++) {
-          for(int j = 0; j < 15; j++) {
-            JToggleButton tile = new javax.swing.JToggleButton();
-            tile.setPreferredSize(new java.awt.Dimension(40,40));
-            
-            tilesUI.add(tile);
-          }
-        }
-        
-        JToggleButton tile1 = new javax.swing.JToggleButton();
-        tile1.setPreferredSize(new java.awt.Dimension(40,40));
-        
+        tilesButtons = new LinkedList<JToggleButton>();
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        javax.swing.JPanel tilesPanel = new javax.swing.JPanel();
         
+        tilesPanel = new javax.swing.JPanel();
         tilesPanel.setPreferredSize(new java.awt.Dimension(1080, 600));
-        
-        for(int i = 0;i < 50; i++) {
-          tilesPanel.add(tilesUI.get(i));
           
-        }
+        changeBoardSize(15,15);
         
         /*
          * 
@@ -316,6 +334,7 @@ public class TileODesignUI extends javax.swing.JFrame {
          */
         
         getContentPane().setLayout(layout);
+        
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
