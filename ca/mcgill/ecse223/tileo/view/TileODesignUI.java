@@ -11,7 +11,7 @@
 public class TileODesignUI extends javax.swing.JFrame {
     private String hLength = "";
     private String vLength = "";
-    private String numOfPlayersInGame = "";
+    private int numOfPlayersInGame = "";
 
     /**
      * Creates new form TileOUGUI
@@ -500,13 +500,13 @@ public class TileODesignUI extends javax.swing.JFrame {
         String nbOfPlayersChosen = (String) nbOfPlayers.getSelectedItem();
         switch (nbOfPlayersChosen) { //Setting number of pkayers in game, to send to controller
             case "2":
-                numOfPlayersInGame = "2";
+                numOfPlayersInGame = Integer.parseInt(nbOfPlayersChosen);
                 break;
             case "3":
-                numOfPlayersInGame = "3";
+                numOfPlayersInGame = Integer.parseInt(nbOfPlayersChosen);
                 break;
             case "4":
-                numOfPlayersInGame = "4";
+                numOfPlayersInGame = Integer.parseInt(nbOfPlayersChosen);
                 break;
         }
         if (nbOfPlayers.getSelectedItem()== "4") { //Setting value of combo box for choosing a player to defined number of players
