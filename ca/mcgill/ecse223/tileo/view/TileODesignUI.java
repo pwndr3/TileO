@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+import javax.swing.*;
+
 /**
  *
  * @author karinemellata
@@ -12,6 +14,9 @@ public class TileODesignUI extends javax.swing.JFrame {
     private String hLength = "";
     private String vLength = "";
     private String numOfPlayersInGame = "";
+    
+    private int WINDOW_WIDTH = getWidth();
+    private int WINDOW_HEIGHT = getHeight();
 
     /**
      * Creates new form TileOUGUI
@@ -108,7 +113,7 @@ public class TileODesignUI extends javax.swing.JFrame {
         });
 
         chosenPlayer.setBackground(new java.awt.Color(204, 204, 255));
-        chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
+        chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2" }));
         chosenPlayer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chosenPlayerActionPerformed(evt);
@@ -261,8 +266,39 @@ public class TileODesignUI extends javax.swing.JFrame {
         });
 
         verticalLength.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }));
-
+        
+        /*
+         * 
+         * 
+         * BEGIN OWN CODE
+         * 
+         * 
+         */
+        
+        //Window
+        
+        setResizable(false);
+        
+        //Board
+        
+        //List<JToggleButton> tilesUI = 
+        JToggleButton tile1 = new javax.swing.JToggleButton();
+        
+        getWidth();
+        
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        javax.swing.JPanel tilesPanel = new javax.swing.JPanel();
+        
+        //tilesPanel.setPreferredSize(new Dimension(WINDOW_WIDTH, 150));
+        tilesPanel.add(tile1);
+        
+        /*
+         * 
+         * END OWN CODE
+         * 
+         * 
+         */
+        
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -366,9 +402,10 @@ public class TileODesignUI extends javax.swing.JFrame {
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(16, 16, 16)
                                 .addComponent(backButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel17)
-                                .addGap(376, 376, 376))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                                .addComponent(jLabel17).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                ).addGroup(javax.swing.GroupLayout.Alignment.CENTER, layout.createSequentialGroup().addComponent(tilesPanel))
+                        
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -434,7 +471,8 @@ public class TileODesignUI extends javax.swing.JFrame {
                                                         .addComponent(nbTeleportCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addComponent(nbLoseTurnCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addComponent(nbConnectTilesCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addContainerGap(478, Short.MAX_VALUE))
+                                .addComponent(tilesPanel))
+                                
         );
 
         pack();
