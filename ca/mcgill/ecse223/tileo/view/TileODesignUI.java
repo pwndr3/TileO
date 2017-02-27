@@ -150,7 +150,7 @@ public class TileODesignUI extends javax.swing.JFrame {
         });
 
         chosenPlayer.setBackground(new java.awt.Color(204, 204, 255));
-        chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
+        chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2" }));
         chosenPlayer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chosenPlayerActionPerformed(evt);
@@ -534,12 +534,12 @@ public class TileODesignUI extends javax.swing.JFrame {
                 numOfPlayersInGame = "4";
                 break;
         }
-        if (nbOfPlayers.getSelectedItem()== "2") { //Setting value of combo box for choosing a player to defined number of players
-            chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"1", "2"}));}
+        if (nbOfPlayers.getSelectedItem()== "4") { //Setting value of combo box for choosing a player to defined number of players
+            chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"1", "2", "3", "4"}));}
         else if(nbOfPlayers.getSelectedItem()== "3"){
             chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"1", "2", "3"}));}
         else{
-            chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
+            chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2" }));
         }
     }//GEN-LAST:event_nbOfPlayersActionPerformed
 
