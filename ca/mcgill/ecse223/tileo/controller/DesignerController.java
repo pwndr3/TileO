@@ -10,7 +10,18 @@ public class DesignerController extends Controller {
         //Get info about current game
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
-        Player player= getWithNumber(playerNumber); //not sure if u implemented correctly
+        List <Player> allPlayers = game.getPlayers();
+
+        //Validation check
+        if(!(game.hasPlayers())){
+            throw new InvalidInputException("There are no players in the current game.")
+        }
+        else if(playerNumber >= game.numberOfPlayers()){
+            throw new InvalidInputException("Player selected is not in the current game.")
+        }
+
+        //Get the specific player
+        Player player= allPlayers.get(playerNumber); //not sure if u implemented correctly
 
         //Exceptions
         if(tile==game.getWinTile()) {
@@ -20,8 +31,8 @@ public class DesignerController extends Controller {
             throw new InvalidInputException("Cannot place a player on an action tile.");
         }
         else {
-            for(int i=0; i<=game.numberOfPlayers(); i++) {
-                Player otherPlayer = getWithNumber(i);  //not sure if i can implement it like this
+            for(int i=0; i<game.numberOfPlayers(); i++) {
+                Player otherPlayer = allPlayers.get(i);
                 if(otherPlayer.hasSartingTile()) {
                     if(otherPlayer.getStartingTile==tile) {  //this one too
                         throw new InvalidInputException("This tile is already a start tile for another player");
@@ -29,6 +40,7 @@ public class DesignerController extends Controller {
                 }
             }
         }
+
         //Set players start tile
         return player.setStartingTile(tile);
     }
