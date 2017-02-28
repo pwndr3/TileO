@@ -590,4 +590,16 @@ public class Game
       List <Tile> possibleMoves = currentPlayer.getPossibleMoves(rolledNumber);
       return possibleMoves;
   }
+
+  public void placeConnection(Tile tile1, Tile tile2) throws InvalidInputException{
+	 
+	//Checks if tiles are adjacent.  
+	if((tile1.getY() - tile2.getY()) > 1 || (tile1.getY() - tile2.getY()) < -1 || (tile1.getX() - tile2.getX()) > 1 || (tile1.getX() - tile2.getX()) < -1){
+		throw new InvalidInputException("The tiles are not adjacent");
+	}
+	
+    Connection connectionPiece = this.addConnection();
+    connectionPiece.addTile(tile1);
+    connectionPiece.addTile(tile2);
+  }
 }
