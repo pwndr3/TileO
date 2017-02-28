@@ -28,7 +28,29 @@ public class TileODesignUI extends javax.swing.JFrame {
      */
     public TileODesignUI() {
         initComponents();
-
+    }
+    
+    private int getNumberOfCardsLeft() {
+      return 32 - (Integer.valueOf(nbRollDieCard.getText()) + 
+                                  Integer.valueOf(nbRemoveConnectionCard.getText()) + 
+                                  Integer.valueOf(nbTeleportCard.getText()) + 
+                                  Integer.valueOf(nbLoseTurnCard.getText()) + 
+                                  Integer.valueOf(nbConnectTilesCard.getText()));
+    }
+    
+    private void changeNumberOfCardsLeft() {
+      int nbOfCardsLeft = getNumberOfCardsLeft();
+      
+      if(nbOfCardsLeft < 0) {
+        cardsLeft.setForeground(new java.awt.Color(255, 0, 0));
+        applyChangesButton.setEnabled(false);
+      }
+      else {
+        cardsLeft.setForeground(new java.awt.Color(0, 0, 0));
+        applyChangesButton.setEnabled(true);
+      }
+      
+      cardsLeft.setText(String.valueOf(nbOfCardsLeft));
     }
     
     private void changeBoardSize(int m, int n) {
@@ -83,7 +105,7 @@ public class TileODesignUI extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        applyChangesConnectionButton = new javax.swing.JButton();
+        applyChangesButton = new javax.swing.JButton();
         chosenPlayer = new javax.swing.JComboBox<>();
         removeTileButton = new javax.swing.JButton();
         tileType = new javax.swing.JComboBox<>();
@@ -140,13 +162,13 @@ public class TileODesignUI extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         jLabel10.setText("x");
 
-        applyChangesConnectionButton.setBackground(new java.awt.Color(0, 204, 0));
-        applyChangesConnectionButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        applyChangesConnectionButton.setForeground(new java.awt.Color(255, 255, 255));
-        applyChangesConnectionButton.setText("Apply changes");
-        applyChangesConnectionButton.addActionListener(new java.awt.event.ActionListener() {
+        applyChangesButton.setBackground(new java.awt.Color(0, 204, 0));
+        applyChangesButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        applyChangesButton.setForeground(new java.awt.Color(255, 255, 255));
+        applyChangesButton.setText("Apply changes");
+        applyChangesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                applyChangesConnectionButtonActionPerformed(evt);
+                applyChangesButtonActionPerformed(evt);
             }
         });
 
@@ -341,9 +363,7 @@ public class TileODesignUI extends javax.swing.JFrame {
          * END OWN CODE
          * 
          * 
-         */
-        
-        
+         */    
 
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -439,7 +459,7 @@ public class TileODesignUI extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(applyChangesConnectionButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                    .addComponent(applyChangesButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
                     .addComponent(saveButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(loadButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(26, 26, 26))
@@ -500,7 +520,7 @@ public class TileODesignUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel11)
-                            .addComponent(applyChangesConnectionButton)
+                            .addComponent(applyChangesButton)
                             .addComponent(cardsLeft)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -523,10 +543,18 @@ public class TileODesignUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
-    private void applyChangesConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void applyChangesButtonActionPerformed(java.awt.event.ActionEvent evt) {
         //Change board size
        changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()), Integer.valueOf(verticalLength.getSelectedItem().toString()));
-      
+       
+       //Enable all buttons
+       selectPositionButton.setEnabled(true);
+       addTileButton.setEnabled(true);
+       removeTileButton.setEnabled(true);
+       removeConnectionButton.setEnabled(true);
+       addConnectionButton.setEnabled(true);
+       
+       //Repaint GUI
        repaint();
        revalidate();
     }
@@ -536,7 +564,16 @@ public class TileODesignUI extends javax.swing.JFrame {
     }
 
     private void removeTileButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        //Change buttons
+       selectPositionButton.setEnabled(false);
+       addTileButton.setEnabled(false);
+       removeTileButton.setEnabled(true);
+       removeConnectionButton.setEnabled(false);
+       addConnectionButton.setEnabled(false);
+       
+       //Repaint GUI
+       repaint();
+       revalidate();
     }
 
     private void tileTypeActionPerformed(java.awt.event.ActionEvent evt) {
@@ -544,39 +581,80 @@ public class TileODesignUI extends javax.swing.JFrame {
     }
 
     private void addTileButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        //Change buttons
+       selectPositionButton.setEnabled(false);
+       addTileButton.setEnabled(true);
+       removeTileButton.setEnabled(false);
+       removeConnectionButton.setEnabled(false);
+       addConnectionButton.setEnabled(false);
+       
+       //Repaint GUI
+       repaint();
+       revalidate();
     }
 
     private void selectPositionButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        //Change buttons
+       selectPositionButton.setEnabled(true);
+       addTileButton.setEnabled(false);
+       removeTileButton.setEnabled(false);
+       removeConnectionButton.setEnabled(false);
+       addConnectionButton.setEnabled(false);
+       
+       //Repaint GUI
+       repaint();
+       revalidate();
     }
 
     private void removeConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        //Change buttons
+       selectPositionButton.setEnabled(false);
+       addTileButton.setEnabled(false);
+       removeTileButton.setEnabled(false);
+       removeConnectionButton.setEnabled(true);
+       addConnectionButton.setEnabled(false);
+       
+       //Repaint GUI
+       repaint();
+       revalidate();
     }
 
     private void addConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        //Change buttons
+       selectPositionButton.setEnabled(false);
+       addTileButton.setEnabled(false);
+       removeTileButton.setEnabled(false);
+       removeConnectionButton.setEnabled(false);
+       addConnectionButton.setEnabled(true);
+       
+       //Repaint GUI
+       repaint();
+       revalidate();
     }
 
     private void nbRollDieCardActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+      // Change cards left
+      changeNumberOfCardsLeft();
     }
 
     private void nbRemoveConnectionCardActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+      // Change cards left
+      changeNumberOfCardsLeft();
     }
 
     private void nbTeleportCardActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+      // Change cards left
+      changeNumberOfCardsLeft();
     }
 
     private void nbLoseTurnCardActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        // Change cards left
+      changeNumberOfCardsLeft();
     }
 
     private void nbConnectTilesCardActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        // Change cards left
+      changeNumberOfCardsLeft();
     }
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -660,7 +738,7 @@ public class TileODesignUI extends javax.swing.JFrame {
     // Variables declaration - do not modify
     private javax.swing.JButton addConnectionButton;
     private javax.swing.JButton addTileButton;
-    private javax.swing.JButton applyChangesConnectionButton;
+    private javax.swing.JButton applyChangesButton;
     private javax.swing.JButton backButton;
     private javax.swing.JLabel cardsLeft;
     private javax.swing.JComboBox<String> chosenPlayer;
