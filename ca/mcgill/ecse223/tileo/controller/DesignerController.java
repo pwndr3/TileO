@@ -115,7 +115,7 @@ public class DesignerController extends Controller {
         return true;
     }
 
-    public boolean removeConnection(Connection aConnection) throws InvalidInputException{
+    public void removeConnection(Connection aConnection) throws InvalidInputException{
         TileO tileO = TileOApplication.getTileO();
         Game game = tileOApp.getCurrentGame();
 
@@ -126,7 +126,7 @@ public class DesignerController extends Controller {
     }
 
     //TODO Check if tiles are already connected.
-    public boolean connectTiles(Tile tile1, Tile tile2) throws InvalidInputException{
+    public void connectTiles(Tile tile1, Tile tile2) throws InvalidInputException{
     	Game currentGame = TileOApplication.getCurrentGame();
     	//Created "placeConnection" method in game class that is used by ConnectTiles Action Card as well.
     	currentGame.placeConnection(tile1, tile2);
@@ -167,7 +167,7 @@ public class DesignerController extends Controller {
         return deck.hasCards();
     }
 
-    public boolean createGame(int numOfPlayersInGame){
+    public void createGame(int numOfPlayersInGame){
         TileO tileo = new TileO();
         Game aGame = new Game(0,tileo);
         tileo.setCurrentGame(aGame);
@@ -179,9 +179,7 @@ public class DesignerController extends Controller {
             player.setColor(Color.RED);
             aGame.addPlayer(player);
         }
-
         TileOApplication.getTileO().addGame(aGame);
-
     }
 }
 
