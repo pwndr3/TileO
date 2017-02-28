@@ -606,4 +606,11 @@ public class Game
     connectionPiece.addTile(tile1);
     connectionPiece.addTile(tile2);
   }
+  public void eliminateConnection(Connection aConnection) throws InvalidInputException{
+
+      if(!connections.contains(aConnection))
+      	throw new InvalidInputException("There is no connection to remove");
+      else
+          aConnection.delete();
+  }
 }
