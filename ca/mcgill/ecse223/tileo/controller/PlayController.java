@@ -12,7 +12,21 @@ public class PlayController extends Controller {
         //alex
     }
     public boolean getTopCard(){
-        //alex
+        //Get info about the current game
+        TileO tileo = TileOApplication.getTileO();
+        Game game = tileo.getCurrentGame();
+        Deck deck = game.getDeck();
+        ActionCard actionCard = getCurrentCard();
+
+        int index = indexOfCard(actionCard);
+        //Return to the beginning of the deck when the counter reaches the end of the deck
+        if(index+1<=32){
+            ActionCard nextTopCard = getCard(index+1);}
+        else {
+            ActionCard nextTopCard = getCard(0);
+        }
+
+        return setCurrentCard(nextTopCard);
     }
 
     //TODO Add roll() method; Add getPossibleMoves method.
@@ -123,7 +137,7 @@ public class PlayController extends Controller {
         if(!(deck.getCurrentCard() instanceof TeleportActionCard)){
             throw new InvalidInputException("Card is not a telport action card.")
         }
-        
+
         TeleportActionCard playedCard = deck.getCurrentCard();
 
         // Play the card
