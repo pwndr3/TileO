@@ -101,7 +101,6 @@ public class PlayController extends Controller {
     }
 
     //TODO Finish exception for whether tiles already have a connection.
-    //TODO Ask if players index starts at 1 or 0?
     public boolean playAddConnectionActionCard(Tile tile1, Tile tile2) throws InvalidInputException{
         Game currentGame = TileOApplication.getCurrentGame();
 
@@ -131,8 +130,8 @@ public class PlayController extends Controller {
         int indexOfCurrentPlayer = currentGame.indexOfPlayer(currentPlayer);
 
         //If current player is last player, make next player the first player.
-        if (indexOfCurrentPlayer == currentGame.numberOfPlayers())
-            currentGame.setCurrentPlayer(currentGame.getPlayer(1));
+        if (indexOfCurrentPlayer == (currentGame.numberOfPlayers()-1))
+            currentGame.setCurrentPlayer(currentGame.getPlayer(0));
 
             //Make it next player's turn.
         else
@@ -141,9 +140,9 @@ public class PlayController extends Controller {
         int indexOfConnectTilesActionCard = deck.indexOfCard(currentCard);
 
         //If the Connect Tiles Action Card was the last card in deck, shuffle deck and set the first card to the current card.
-        if(indexOfConnectTilesActionCard == 32){
+        if(indexOfConnectTilesActionCard == 31){
             deck.shuffle();
-            currentCard = deck.getCard(1);
+            currentCard = deck.getCard(0);
             deck.setCurrentCard(currentCard);
         }
         else{
