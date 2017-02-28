@@ -24,6 +24,11 @@ public class RollDieActionCard extends ActionCard
   // INTERFACE
   //------------------------
 
+  public Mode getActionCardGameMode() {
+    return Mode.GAME_ROLLDIEACTIONCARD;
+  }
+
+
   public void delete()
   {
     super.delete();

@@ -67,8 +67,14 @@ public class PlayController extends Controller {
         Game currentGame = TileOApplication.getCurrentGame();
         return currentGame.rollTheDie();
     }
-    public void land(Tile tile) throws InvalidInputException{
-        //karine
+
+    public boolean land(Tile tile) throws InvalidInputException{
+        Game currentGame = TileOApplication.getCurrentGame();
+
+        if(currentGame.indexOfTile(tile)== -1) throw new InvalidInputException("This tile does not exist in the current game.");
+        tile.land();
+        return true;
+
     }
     
     public List<Tile> playRollDieActionCard() throws InvalidInputException{

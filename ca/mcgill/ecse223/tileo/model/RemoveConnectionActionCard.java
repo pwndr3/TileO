@@ -24,6 +24,10 @@ public class RemoveConnectionActionCard extends ActionCard
   // INTERFACE
   //------------------------
 
+  public Mode getActionCardGameMode() {
+    return Mode.GAME_REMOVECONNECTIONACTIONCARD;
+  }
+
   public void delete()
   {
     super.delete();

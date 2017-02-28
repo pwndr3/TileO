@@ -25,7 +25,30 @@ public class NormalTile extends Tile
   // INTERFACE
   //------------------------
 
-  public void delete()
+    public void land(){
+        Game currentGame= TileOApplication.getGame();
+        Player currentPlayer = currentGame.getCurrentPlayer();
+        currentPlayer.setCurrentTile(tile);
+        if(currentGame.indexOfPlayer(currentPlayer) == (currentGame.numberOfPlayer() - 1)) {
+            currentGame.setCurrentPlayer(currentGame.getPlayer(0));}
+        else {
+            currentGame.setCurrentPlayer(currentGame.getPlayer(currentGame.indexOfPlayer(currentPlayer) + 1));
+
+        }
+        tile.setHasBeenVisited(true);
+
+        try{
+            currentGame.setMode(Mode.GAME);
+        }catch(RuntimeException e)
+
+        {
+            throw new InvalidInputException(e.getMessage());
+        }
+    }
+
+
+
+    public void delete()
   {
     super.delete();
   }

@@ -24,6 +24,10 @@ public class ConnectTilesActionCard extends ActionCard
   // INTERFACE
   //------------------------
 
+  public Mode getActionCardGameMode() {
+    return Mode.GAME_CONNECTTILESACTIONCARD;
+  }
+
   public void delete()
   {
     super.delete();

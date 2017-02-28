@@ -25,6 +25,15 @@ public class WinTile extends Tile
   // INTERFACE
   //------------------------
 
+  public void land(){
+    Game currentGame= TileOApplication.getGame();
+    Player currentPlayer = currentGame.getCurrentPlayer();
+    tile.setHasBeenVisited(true);
+
+    setMode(Mode.GAME_WON);
+  }
+
+
   public void delete()
   {
     super.delete();

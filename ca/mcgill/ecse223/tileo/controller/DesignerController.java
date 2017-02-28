@@ -179,7 +179,9 @@ public class DesignerController extends Controller {
             player.setColor(Color.RED);
             aGame.addPlayer(player);
         }
+
         TileOApplication.getTileO().addGame(aGame);
+
     }
 }
 

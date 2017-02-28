@@ -31,6 +31,21 @@ public class ActionTile extends Tile
   // INTERFACE
   //------------------------
 
+  public void land(){
+    Game currentGame= TileOApplication.getGame();
+    Player currentPlayer = currentGame.getCurrentPlayer();
+    currentPlayer.setCurrentTile(tile);
+
+    currentGame.setCurrentPlayer(currentGame.getPlayer(currentGame.indexOfPlayer(currentPlayer)+1));
+    tile.setHasBeenVisited(true);
+    Deck deck = currentGame.getDeck();
+    ActionCard currentCard = deck.getCurrentCard();
+    Mode mode = currentCard.getActionCardGameMode();
+    currentGame.setMode(mode);
+  }
+
+
+
   public boolean setTurnsUntilActive(int aTurnsUntilActive)
   {
     boolean wasSet = false;
