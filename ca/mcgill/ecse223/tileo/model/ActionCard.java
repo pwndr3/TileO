@@ -93,3 +93,6 @@ public abstract class ActionCard
      + outputString;
   }
 }
+
+  public Mode getActionCardGameMode(){
+  }
