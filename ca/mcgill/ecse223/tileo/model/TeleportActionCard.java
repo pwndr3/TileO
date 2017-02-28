@@ -34,6 +34,6 @@ public class TeleportActionCard extends ActionCard
   }
 
   public void play(Tile tile) throws InvalidInputException{
-      this.land(tile);
+      tile.land();
   }
 }
