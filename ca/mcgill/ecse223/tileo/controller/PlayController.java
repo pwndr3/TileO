@@ -114,11 +114,16 @@ public class PlayController extends Controller {
     public boolean removeConnectionAction(Connection connection) throws InvalidInputException{
         //andre
     }
-    public boolean teleport(Tile tile) throws InvalidPositionException {
+    public boolean teleport(Tile tile) throws InvalidInputException {
         //Get info about the current game
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
         Deck deck = game.getDeck();
+        //Exception
+        if(!(deck.getCurrentCard() instanceof TeleportActionCard)){
+            throw new InvalidInputException("Card is not a telport action card.")
+        }
+        
         TeleportActionCard playedCard = deck.getCurrentCard();
 
         // Play the card
