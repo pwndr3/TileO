@@ -582,4 +582,12 @@ public class Game
             "  " + "tileO = "+(getTileO()!=null?Integer.toHexString(System.identityHashCode(getTileO())):"null")
      + outputString;
   }
+  
+  public List<Tile> rollTheDie(){
+	  Die die = this.getDie();
+      int rolledNumber = die.roll();
+      Player currentPlayer = this.getCurrentPlayer();
+      List <Tile> possibleMoves = currentPlayer.getPossibleMoves(rolledNumber);
+      return possibleMoves;
+  }
 }
