@@ -598,6 +598,10 @@ public class Game
 		throw new InvalidInputException("The tiles are not adjacent");
 	}
 	
+	//Checks if tiles exist.
+	else if((this.tiles.contains(tile1))|| (this.tiles.contains(tile2)))
+		throw new InvalidInputException("One or both of the tiles do not exist");
+	
     Connection connectionPiece = this.addConnection();
     connectionPiece.addTile(tile1);
     connectionPiece.addTile(tile2);
