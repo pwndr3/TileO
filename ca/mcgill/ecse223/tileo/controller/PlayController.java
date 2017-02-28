@@ -103,6 +103,7 @@ public class PlayController extends Controller {
 
     //TODO Finish exception for whether tiles already have a connection.
     //TODO See if number of connections in spare pile need to be altered.
+    //PlaceConnection is a new method in game class whose code is shared by add connection in design mode.
     public void playAddConnectionActionCard(Tile tile1, Tile tile2) throws InvalidInputException{
     	
     	Game currentGame = TileOApplication.getCurrentGame();
