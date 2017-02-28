@@ -3,6 +3,8 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
+import ca.mcgill.ecse223.tileo.application.TileOApplication;
+
 
 // line 39 "../../../../../main.ump"
 public class ActionTile extends Tile
@@ -32,7 +34,7 @@ public class ActionTile extends Tile
   //------------------------
 
   public void land(){
-    Game currentGame= TileOApplication.getGame();
+    Game currentGame= TileOApplication.getCurrentGame();
     Player currentPlayer = currentGame.getCurrentPlayer();
     currentPlayer.setCurrentTile(tile);
 
