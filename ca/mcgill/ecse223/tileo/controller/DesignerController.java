@@ -14,32 +14,30 @@ public class DesignerController extends Controller {
         return player.setStartingTile(tile);
     }
     public boolean createWinTile(Tile tile) throws InvalidInputException{
-        //Get the current application and game
+        //Get info about the current game
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
-        //if there is a win tile on the board, delete it before continuing
-        if(game.hasWinTile()) {
-            WinTile oldWinTile = game.getWinTile();
-            oldWinTile.delete();
-        }
-        //Save the tile's connections, x and y coordinates. The tile is then deleted.
+
+        //Check if the game already has a win tile
+            if(game.hasWinTile()) {
+                throw new InvalidInputException("Win tile already exists");
+            }
+
+        //Get all info about the tile that will be replaced
         List<Connection> tileConnections = tile.getConnections();
         int x = tile.getX();
         int y = tile.getY();
         tile.delete();
 
-        //A winTile is created, passing it the x-y coordinates and current game.
+        //Replace the tile with a win tile
         WinTile winTile = new WinTile(x,y,game);
 
-        //The connections are added back onto the tile.
         for(int i = tileConnections.size()-1; i>0; i--){
             winTile.addConnection(tileConnections.get(i));
         }
 
-        //The newly created hiddenTile is added to the game.
-        currentGame.addTile(winTile);
-
-        return (wintile==game.getWinTile());
+        //Set win tile to the game
+        return (game.setWinTile(wintile));
     }
 
     public boolean createNormalTile(int x, int y) throws InvalidInputException{
