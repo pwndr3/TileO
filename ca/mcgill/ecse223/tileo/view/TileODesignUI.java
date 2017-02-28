@@ -20,8 +20,14 @@ public class TileODesignUI extends javax.swing.JFrame {
     private LinkedList<JToggleButton> tilesButtons;
     private JPanel tilesPanel;
     
+    private enum ButtonSelection { SELECT, ADDTILE, REMOVETILE, ADDCONN, REMOVECONN, NONE }
+    private ButtonSelection buttonSelected = ButtonSelection.NONE;
+    
     private double WINDOW_WIDTH = getContentPane().getSize().getWidth();
     private int WINDOW_HEIGHT = (int)getContentPane().getSize().getHeight();
+    
+    private int numberOfRows = 0;
+    private int numberOfCols = 0;
 
     /**
      * Creates new form TileOUGUI
@@ -54,6 +60,12 @@ public class TileODesignUI extends javax.swing.JFrame {
     }
     
     private void changeBoardSize(int m, int n) {
+      if(numberOfRows == m && numberOfCols == n)
+        return;
+      
+      numberOfRows = m;
+      numberOfCols = n;
+
       //Clear
       tilesButtons.clear();
       tilesPanel.removeAll();
@@ -105,7 +117,7 @@ public class TileODesignUI extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        applyChangesButton = new javax.swing.JButton();
+        applyChangesButton = new javax.swing.JToggleButton();
         chosenPlayer = new javax.swing.JComboBox<>();
         removeTileButton = new javax.swing.JButton();
         tileType = new javax.swing.JComboBox<>();
@@ -544,15 +556,28 @@ public class TileODesignUI extends javax.swing.JFrame {
     }// </editor-fold>
 
     private void applyChangesButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        //Change board size
+       //Change board size
        changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()), Integer.valueOf(verticalLength.getSelectedItem().toString()));
-       
+
        //Enable all buttons
        selectPositionButton.setEnabled(true);
        addTileButton.setEnabled(true);
        removeTileButton.setEnabled(true);
        removeConnectionButton.setEnabled(true);
        addConnectionButton.setEnabled(true);
+       
+       //Remove Tiles
+       if(buttonSelected == ButtonSelection.REMOVETILE) {
+           for(JToggleButton button : tilesButtons) {
+             if(button.isSelected()) {
+               button.setVisible(false);
+             }
+            }
+       }
+       
+       //Reset button
+       buttonSelected = ButtonSelection.NONE;
+       applyChangesButton.setSelected(false);
        
        //Repaint GUI
        repaint();
@@ -564,6 +589,8 @@ public class TileODesignUI extends javax.swing.JFrame {
     }
 
     private void removeTileButtonActionPerformed(java.awt.event.ActionEvent evt) {
+      buttonSelected = ButtonSelection.REMOVETILE;
+      
         //Change buttons
        selectPositionButton.setEnabled(false);
        addTileButton.setEnabled(false);
@@ -581,6 +608,8 @@ public class TileODesignUI extends javax.swing.JFrame {
     }
 
     private void addTileButtonActionPerformed(java.awt.event.ActionEvent evt) {
+      buttonSelected = ButtonSelection.ADDTILE;
+      
         //Change buttons
        selectPositionButton.setEnabled(false);
        addTileButton.setEnabled(true);
@@ -594,6 +623,8 @@ public class TileODesignUI extends javax.swing.JFrame {
     }
 
     private void selectPositionButtonActionPerformed(java.awt.event.ActionEvent evt) {
+      buttonSelected = ButtonSelection.SELECT;
+      
         //Change buttons
        selectPositionButton.setEnabled(true);
        addTileButton.setEnabled(false);
@@ -607,6 +638,8 @@ public class TileODesignUI extends javax.swing.JFrame {
     }
 
     private void removeConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {
+      buttonSelected = ButtonSelection.REMOVECONN;
+      
         //Change buttons
        selectPositionButton.setEnabled(false);
        addTileButton.setEnabled(false);
@@ -620,6 +653,8 @@ public class TileODesignUI extends javax.swing.JFrame {
     }
 
     private void addConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {
+      buttonSelected = ButtonSelection.ADDCONN;
+      
         //Change buttons
        selectPositionButton.setEnabled(false);
        addTileButton.setEnabled(false);
@@ -738,7 +773,7 @@ public class TileODesignUI extends javax.swing.JFrame {
     // Variables declaration - do not modify
     private javax.swing.JButton addConnectionButton;
     private javax.swing.JButton addTileButton;
-    private javax.swing.JButton applyChangesButton;
+    private javax.swing.JToggleButton applyChangesButton;
     private javax.swing.JButton backButton;
     private javax.swing.JLabel cardsLeft;
     private javax.swing.JComboBox<String> chosenPlayer;
