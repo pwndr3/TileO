@@ -127,16 +127,9 @@ public class DesignerController extends Controller {
 
     //TODO Check if tiles are already connected.
     public boolean connectTiles(Tile tile1, Tile tile2) throws InvalidInputException{
-    	
     	Game currentGame = TileOApplication.getCurrentGame();
-    	
-    	//Checks if tiles are adjacent.
-    	if((tile1.getY() - tile2.getY()) > 1 || (tile1.getY() - tile2.getY()) < -1 || (tile1.getX() - tile2.getX()) > 1 || (tile1.getX() - tile2.getX()) < -1){
-			throw new InvalidInputException("The tiles are not adjacent");
-		}
-        Connection connectionPiece = currentGame.addConnection();
-		connectionPiece.addTile(tile1);
-		connectionPiece.addTile(tile2);
+    	//Created "placeConnection" method in game class that is used by ConnectTiles Action Card as well.
+    	currentGame.placeConnection(tile1, tile2);
     }
   
     public boolean createDeck(int connectTiles, int loseTurn, int removeConnection, int rollDie, int teleport) throws InvalidInputException{
