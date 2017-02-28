@@ -7,7 +7,6 @@
 import javax.swing.*;
 import java.util.*;
 import java.awt.*;
-import javax.imageio.*;
 
 public class TileODesignUI extends javax.swing.JFrame {
     private String hLength = "";
@@ -16,8 +15,8 @@ public class TileODesignUI extends javax.swing.JFrame {
     
     private LinkedList<JToggleButton> tilesButtons;
     private LinkedList<JToggleButton> connectionButtons;
-    private LinkedList<JToggleButton> tilesButtonsBackup;
-    private LinkedList<JToggleButton> connectionButtonsBackup;
+    private LinkedList<Integer> tilesButtonsBackup;
+    private LinkedList<Integer> connectionButtonsBackup;
     private JPanel tilesPanel;
     
     private enum ButtonSelection { SELECT, ADDTILE, REMOVETILE, ADDCONN, REMOVECONN, NONE }
@@ -191,26 +190,37 @@ public class TileODesignUI extends javax.swing.JFrame {
       tilesButtonsBackup.clear();
       connectionButtonsBackup.clear();
       
-      //Reset tiles
-      for(JToggleButton button : tilesButtons)
-           tilesButtonsBackup.add(button);
+      ListIterator<Integer> tiles_it = tilesButtonsBackup.listIterator();
+      ListIterator<Integer> conn_it = connectionButtonsBackup.listIterator();
       
-      //Reset connections
-      for(JToggleButton button : connectionButtons)
-           connectionButtonsBackup.add(button);
+      for(JToggleButton button : tilesButtons) {
+        tiles_it.add(button.isSelected() ? 1 : 0);
+      }
+      
+      for(JToggleButton button : connectionButtons) {
+        conn_it.add(((button.getBackground()==(new java.awt.Color(0,0,0)) ? 1 : 0) << 1) | (button.isSelected() ? 1 : 0));
+      }
     }
     
-    private void restoreLists() {
-      tilesButtons.clear();
-      connectionButtons.clear();
+    private void restoreLists() {   
+      ListIterator<JToggleButton> tiles_it = tilesButtons.listIterator();
+      ListIterator<JToggleButton> conn_it = connectionButtons.listIterator();
       
-      //Reset tiles
-      for(JToggleButton button : tilesButtonsBackup)
-           tilesButtons.add(button);
+      for(int button : tilesButtonsBackup) {
+           JToggleButton tile = tiles_it.next();
+           tile.setSelected((button & 1) == 1);          
+      }
       
-      //Reset connections
-      for(JToggleButton button : connectionButtonsBackup)
-           connectionButtons.add(button);
+      for(int button : connectionButtonsBackup) {
+           JToggleButton tile = conn_it.next();
+           tile.setSelected((button & 1) == 1);
+           
+           if((button & 2) == 1) {
+               tile.setBackground(new java.awt.Color(0,0,0));
+           } else {
+               tile.setBackground(null); 
+           }
+      }
     }
     
     private void resetUI() {
@@ -483,8 +493,8 @@ public class TileODesignUI extends javax.swing.JFrame {
         
         tilesButtons = new LinkedList<JToggleButton>();
         connectionButtons = new LinkedList<JToggleButton>();
-        tilesButtonsBackup = new LinkedList<JToggleButton>();
-        connectionButtonsBackup = new LinkedList<JToggleButton>();
+        tilesButtonsBackup = new LinkedList<Integer>();
+        connectionButtonsBackup = new LinkedList<Integer>();
         
         tilesPanel = new javax.swing.JPanel();
         tilesPanel.setPreferredSize(new java.awt.Dimension(1080, 600));
@@ -731,6 +741,11 @@ public class TileODesignUI extends javax.swing.JFrame {
        removeTileButton.setEnabled(true);
        removeConnectionButton.setEnabled(true);
        addConnectionButton.setEnabled(true);
+       selectPositionButton.setSelected(false);
+       addTileButton.setSelected(false);
+       removeTileButton.setSelected(false);
+       removeConnectionButton.setSelected(false);
+       addConnectionButton.setSelected(false);
        
       //Remove Tiles
        if(buttonSelected == ButtonSelection.REMOVETILE) {
