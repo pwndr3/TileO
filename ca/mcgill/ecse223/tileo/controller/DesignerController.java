@@ -17,8 +17,11 @@ public class DesignerController extends Controller {
         //Get the current application and game
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
-        //IF THERE IS A WINTILE ON THE BOARD FIND IT AND DELETE IT BEFORE DOING REST
-
+        //if there is a win tile on the board, delete it before continuing
+        if(game.hasWinTile()) {
+            WinTile oldWinTile = game.getWinTile();
+            oldWinTile.delete();
+        }
         //Save the tile's connections, x and y coordinates. The tile is then deleted.
         List<Connection> tileConnections = tile.getConnections();
         int x = tile.getX();
