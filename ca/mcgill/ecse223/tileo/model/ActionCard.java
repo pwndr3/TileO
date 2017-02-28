@@ -94,5 +94,4 @@ public abstract class ActionCard
   }
 }
 
-  public Mode getActionCardGameMode(){
-  }
+  public virtual Mode getActionCardGameMode();
