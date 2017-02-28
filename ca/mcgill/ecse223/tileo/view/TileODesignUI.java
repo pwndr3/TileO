@@ -7,11 +7,8 @@
 import javax.swing.*;
 import java.util.*;
 import java.awt.*;
+import javax.imageio.*;
 
-/**
- *
- * @author karinemellata
- */
 public class TileODesignUI extends javax.swing.JFrame {
     private String hLength = "";
     private String vLength = "";
@@ -587,6 +584,48 @@ public class TileODesignUI extends javax.swing.JFrame {
        removeConnectionButton.setEnabled(true);
        addConnectionButton.setEnabled(true);
        
+       //Select Player
+       if(buttonSelected == ButtonSelection.SELECT) {
+           int playerNumber = Integer.valueOf(chosenPlayer.getSelectedItem().toString());
+           
+           if(playerNumber == 1) {
+             for(JToggleButton button : tilesButtons) {
+               if(button.isSelected()) {
+                 button.setBackground(new java.awt.Color(240,10,10));
+                 button.setSelected(false);
+               }
+             }
+           }
+           
+           if(playerNumber == 2) {
+             for(JToggleButton button : tilesButtons) {
+               if(button.isSelected()) {
+                 button.setBackground(new java.awt.Color(10,10,240));
+                 button.setSelected(false);
+                 
+               }
+             }
+           }
+           
+           if(playerNumber == 3) {
+             for(JToggleButton button : tilesButtons) {
+               if(button.isSelected()) {
+                 button.setBackground(new java.awt.Color(10,240,10));
+                 button.setSelected(false);
+               }
+             }
+           }
+           
+           if(playerNumber == 4) {
+             for(JToggleButton button : tilesButtons) {
+               if(button.isSelected()) {
+                 button.setBackground(new java.awt.Color(240,240,10));
+                 button.setSelected(false);
+               }
+             }
+           }
+       }
+       
        //Remove Tiles
        if(buttonSelected == ButtonSelection.REMOVETILE) {
            for(JToggleButton button : tilesButtons) {
@@ -596,10 +635,14 @@ public class TileODesignUI extends javax.swing.JFrame {
             }
        }
        
+       //Reset Tiles
+       if(buttonSelected == ButtonSelection.ADDTILE) {
+          hideDisabledTiles();
+       }
+       
        //Reset button
-       buttonSelected = ButtonSelection.NONE;
        applyChangesButton.setSelected(false);
-       hideDisabledTiles();
+       buttonSelected = ButtonSelection.NONE;
        
        //Repaint GUI
        repaint();
