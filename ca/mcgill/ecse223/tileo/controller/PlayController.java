@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PlayController extends Controller {
 
-    public boolean startGame(Game selectedGame) throws InvalidInputException {
+    public void startGame(Game selectedGame) throws InvalidInputException {
        TileOApplication.setCurrentGame(selectedGame);
            Deck deck = selectedGame.getDeck();
            List <Player> allPlayers = selectedGame.getPlayers();
@@ -41,7 +41,6 @@ public class PlayController extends Controller {
            selectedGame.setCurrentPlayer(allPlayers.get(0));
            selectedGame.setCurrentConnectionPieces(selectedGame.getCurrentConnectionPieces());
            selectedGame.setMode(Mode.GAME);
-           return true;
        }
     public boolean getTopCard(){
         //Get info about the current game
@@ -68,7 +67,7 @@ public class PlayController extends Controller {
         Game currentGame = TileOApplication.getCurrentGame();
         return currentGame.rollTheDie();
     }
-    public boolean land(Tile tile) throws InvalidInputException{
+    public void land(Tile tile) throws InvalidInputException{
         //karine
     }
     
@@ -103,7 +102,7 @@ public class PlayController extends Controller {
     }
 
     //TODO Finish exception for whether tiles already have a connection.
-    public boolean playAddConnectionActionCard(Tile tile1, Tile tile2) throws InvalidInputException{
+    public void playAddConnectionActionCard(Tile tile1, Tile tile2) throws InvalidInputException{
         Game currentGame = TileOApplication.getCurrentGame();
 
         //Check if connection pieces are still available and if tiles are adjacent.
