@@ -44,6 +44,22 @@ public class TileODesignUI extends javax.swing.JFrame {
                                   Integer.valueOf(nbConnectTilesCard.getText()));
     }
     
+    private void showDisabledTiles() {
+      for(JToggleButton button : tilesButtons) {
+        if(!button.isVisible()) {
+           button.setVisible(true);
+        }
+      }
+    }
+    
+    private void hideDisabledTiles() {
+      for(JToggleButton button : tilesButtons) {
+        if(button.isSelected()) {
+           button.setVisible(false);
+        }
+      }
+    }
+    
     private void changeNumberOfCardsLeft() {
       int nbOfCardsLeft = getNumberOfCardsLeft();
       
@@ -75,6 +91,11 @@ public class TileODesignUI extends javax.swing.JFrame {
         for(int j = 0; j < n; j++) {
           JToggleButton tile = new JToggleButton();
           tile.setPreferredSize(new java.awt.Dimension(30,30));
+          tile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tileActionPerformed(evt);
+            }
+        });
           
           tilesButtons.add(tile);
         }
@@ -578,6 +599,7 @@ public class TileODesignUI extends javax.swing.JFrame {
        //Reset button
        buttonSelected = ButtonSelection.NONE;
        applyChangesButton.setSelected(false);
+       hideDisabledTiles();
        
        //Repaint GUI
        repaint();
@@ -616,6 +638,8 @@ public class TileODesignUI extends javax.swing.JFrame {
        removeTileButton.setEnabled(false);
        removeConnectionButton.setEnabled(false);
        addConnectionButton.setEnabled(false);
+       
+       showDisabledTiles();
        
        //Repaint GUI
        repaint();
@@ -690,6 +714,24 @@ public class TileODesignUI extends javax.swing.JFrame {
     private void nbConnectTilesCardActionPerformed(java.awt.event.ActionEvent evt) {
         // Change cards left
       changeNumberOfCardsLeft();
+    }
+    
+    private void tileActionPerformed(java.awt.event.ActionEvent evt) {
+      if(buttonSelected == ButtonSelection.NONE) {
+        JToggleButton button = (JToggleButton)evt.getSource();
+        button.setSelected(false);
+        button.setBorderPainted( false );
+        button.setFocusPainted( false );
+      }
+      
+      if(buttonSelected == ButtonSelection.ADDTILE) {
+        JToggleButton button = (JToggleButton)evt.getSource();
+        if(button.isSelected()) {
+          button.setSelected(false);
+          button.setBorderPainted(false);
+          button.setFocusPainted(false);
+        }
+      }
     }
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
