@@ -68,6 +68,7 @@ public class PlayController extends Controller {
         return currentGame.rollTheDie();
     }
 
+    //TODO Add land method to tile class.
     public void land(Tile tile) throws InvalidInputException{
         Game currentGame = TileOApplication.getCurrentGame();
 
