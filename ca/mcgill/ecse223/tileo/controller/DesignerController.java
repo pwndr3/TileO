@@ -7,12 +7,32 @@ package ca.mcgill.ecse223.tileo.controller;
 public class DesignerController extends Controller {
 
     public boolean startingPosition(Tile tile, int playerNumber) throws InvalidInputException{
+        //Get info about current game
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
-        //EXCEPTIONS
-        Player player= getWithNumber(playerNumber);
+        Player player= getWithNumber(playerNumber); //not sure if u implemented correctly
+
+        //Exceptions
+        if(tile==game.getWinTile()) {
+            throw new InvalidInputException("Cannot place a player on the win tile.");
+        }
+        else if(tile==ActionTile) {
+            throw new InvalidInputException("Cannot place a player on an action tile.");
+        }
+        else {
+            for(int i=0; i<=game.numberOfPlayers(); i++) {
+                Player otherPlayer = getWithNumber(i);  //not sure if i can implement it like this
+                if(otherPlayer.hasSartingTile()) {
+                    if(otherPlayer.getStartingTile==tile) {  //this one too
+                        throw new InvalidInputException("This tile is already a start tile for another player");
+                    }
+                }
+            }
+        }
+        //Set players start tile
         return player.setStartingTile(tile);
     }
+
     public boolean createWinTile(Tile tile) throws InvalidInputException{
         //Get info about the current game
         TileO tileo = TileOApplication.getTileO();
@@ -20,7 +40,7 @@ public class DesignerController extends Controller {
 
         //Check if the game already has a win tile
             if(game.hasWinTile()) {
-                throw new InvalidInputException("Win tile already exists");
+                throw new InvalidInputException("Win tile already exists.");
             }
 
         //Get all info about the tile that will be replaced
