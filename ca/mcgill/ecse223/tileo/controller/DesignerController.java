@@ -122,7 +122,6 @@ public class DesignerController extends Controller {
         currentGame.eliminateConnection(aConnection);
     }
 
-    //TODO Check if tiles are already connected.
     public void connectTiles(Tile tile1, Tile tile2) throws InvalidInputException{
     	Game currentGame = TileOApplication.getCurrentGame();
     	//Created "placeConnection" method in game class that is used by ConnectTiles Action Card as well.
