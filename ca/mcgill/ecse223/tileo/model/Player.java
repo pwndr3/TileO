@@ -211,4 +211,9 @@ public class Player
             "  " + "game = "+(getGame()!=null?Integer.toHexString(System.identityHashCode(getGame())):"null")
      + outputString;
   }
+  
+   public List<Tile> getPossibleMoves (int aRolledNumber){
+	 List<Tile> possibleMoves = currentTile.getNeighbours(aRolledNumber);
+	 return possibleMoves;
+  }
 }
