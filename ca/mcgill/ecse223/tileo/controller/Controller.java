@@ -5,13 +5,7 @@ import ca.mcgill.ecse223.tileo.model.Game;
 import ca.mcgill.ecse223.tileo.model.TileO;
 
 public class Controller {
-
-    public Game.Mode getGameMode() {
-
-    }
-    public Game getCurrentGame() {
-
-    }
+    
     public boolean saveGame(){
         //andre
     }
