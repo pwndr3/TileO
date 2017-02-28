@@ -68,13 +68,11 @@ public class PlayController extends Controller {
         return currentGame.rollTheDie();
     }
 
-    public boolean land(Tile tile) throws InvalidInputException{
+    public void land(Tile tile) throws InvalidInputException{
         Game currentGame = TileOApplication.getCurrentGame();
 
         if(currentGame.indexOfTile(tile)== -1) throw new InvalidInputException("This tile does not exist in the current game.");
         tile.land();
-        return true;
-
     }
     
     public List<Tile> playRollDieActionCard() throws InvalidInputException{
@@ -154,7 +152,7 @@ public class PlayController extends Controller {
 		currentGame.setMode(Mode.GAME);
     }
 
-    public boolean removeConnectionAction(Connection connection) throws InvalidInputException{
+    public void playRemoveConnectionAction(Connection connection) throws InvalidInputException{
         //Get info about the current game
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
@@ -175,11 +173,11 @@ public class PlayController extends Controller {
         else{
             deck.setCurrentCard(deck.getCard(deck.indexOfCard(playedCard) + 1));
         }
-        return game.setMode(Mode.GAME);
+        game.setMode(Mode.GAME);
     }
 
     }
-    public boolean teleport(Tile tile) throws InvalidInputException {
+    public void teleport(Tile tile) throws InvalidInputException {
         //Get info about the current game
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
@@ -201,5 +199,5 @@ public class PlayController extends Controller {
         else
             deck.setCurrentCard(deck.getCard(deck.indexOfCard(playedCard) + 1));
     }
-        return game.setMode(Mode.GAME); //not sure about the set mode input
+        game.setMode(Mode.GAME); //not sure about the set mode input
 }
