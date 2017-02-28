@@ -40,6 +40,7 @@ public class PlayController extends Controller {
         selectedGame.setCurrentPlayer(selectedGame.getPlayers().get(0));
         selectedGame.setCurrentConnectionPieces(SpareConnectionPieces);
         selectedGame.setMode(Mode.GAME);
+        return true;
     }
     public boolean getTopCard(){
         //Get info about the current game
@@ -156,7 +157,29 @@ public class PlayController extends Controller {
     }
 
     public boolean removeConnectionAction(Connection connection) throws InvalidInputException{
-        //andre
+        //Get info about the current game
+        TileO tileo = TileOApplication.getTileO();
+        Game game = tileo.getCurrentGame();
+        Deck deck = game.getDeck();
+        RemoveConnectionActionCard card = deck.getCurrentCard();
+        play(connection);
+
+        if(game.indexOfPlayer(currentPlayer) == game.numberOfPlayers()){
+            game.setCurrentPlayer(player.getWithNumber(0));
+        }
+        else{
+            game.setCurrentPlayer(game.getPlayer(game.indexOfPlayers(currentPlayer) + 1));
+        }
+        // Check if card is last card, if so set the current card to top of deck, if not set it to the next card
+        if(deck.indexOfCard(playedCard) == deck.numberOfCards()){
+            deck.shuffle();
+        }
+        else{
+            deck.setCurrentCard(deck.getCard(deck.indexOfCard(playedCard) + 1));
+        }
+        return game.setMode(Mode.GAME);
+    }
+
     }
     public boolean teleport(Tile tile) throws InvalidInputException {
         //Get info about the current game
@@ -176,7 +199,6 @@ public class PlayController extends Controller {
         // Check if card is last card, if so set the current card to top of deck, if not set it to the next card
         if(deck.indexOfCard(playedCard) == deck.numberOfCards()){
             deck.shuffle();
-            deck.setCurrentCard(deck.getCard(0));
         }
         else
             deck.setCurrentCard(deck.getCard(deck.indexOfCard(playedCard) + 1));
