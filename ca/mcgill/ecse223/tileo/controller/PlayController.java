@@ -8,8 +8,38 @@ import java.util.List;
 
 public class PlayController extends Controller {
 
-    public boolean startGame(Game game) throws InvalidInputException {
-        //alex
+    public boolean startGame(Game selectedGame) throws InvalidInputException {
+        setCurrentGame(selectedGame);
+        Deck deck = selectedGame.getDeck();
+
+        if(!(selectedGame.hasWinTile())){
+            throw new InvalidInputException("No win tile in the game");
+        }
+        for(int k=0; k<=selectedGame.numberOfPlayers(); k++){
+            Player allPlayers = getWithNumber(i);
+            if(!(allPlayers.hasStartingTile())){
+                throw new InvalidInputException("One or more players do not have a starting position.");
+            }
+        }
+        if(deck.numberOfCards()>=32){
+            throw new InvalidInputException("Too many card in the deck.");
+        }
+
+        deck.shuffle();     //make shuffle method
+        List<Tile> tiles = selectedGame.getTiles();
+        for(int i=0; i<tiles.size(); i++){
+            Tile checkTile = tiles.get(i);
+            checkTile.setHasBeenVisited(false);
+        }
+        for(int j=0; j<=selectedGame.numberOfPlayers(); j++){
+            Player thisPlayer = getWithNumber(i);
+            Tile startingTile = thisPlayer.getStartingTile();
+            thisPlayer.setCurrentTile(startingTile);
+            startingTile.setHasBeenVisited(true);
+        }
+        selectedGame.setCurrentPlayer(selectedGame.getPlayers().get(0));
+        selectedGame.setCurrentConnectionPieces(SpareConnectionPieces);
+        selectedGame.setMode(Mode.GAME);
     }
     public boolean getTopCard(){
         //Get info about the current game
@@ -151,5 +181,5 @@ public class PlayController extends Controller {
         else
             deck.setCurrentCard(deck.getCard(deck.indexOfCard(playedCard) + 1));
     }
-        return game.setMode(GAME); //not sure about the set mode input
+        return game.setMode(Mode.GAME); //not sure about the set mode input
 }

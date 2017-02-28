@@ -66,7 +66,7 @@ public class DesignerController extends Controller {
         List<Tile> tiles= game.getTiles();
 //iterate through list of tiles and see if a tile is already located at the location in the parameters
         for(int i=0;i<tiles.size() ;i++) {
-            spectile = tiles.get(i);
+            Tile spectile = tiles.get(i);
             if(spectile.getX() == x && spectile.getY() == y) throw new InvalidInputException("there is already a tile located there");
             break;
             else game.addTile(new NormalTile(x, y, game));
@@ -143,19 +143,19 @@ public class DesignerController extends Controller {
             ConnectTilesActionCard card = new ConnectTilesActionCard("Connect two tiles", deck);
             deck.add(card);
         }
-        for(int i=0; i<=loseturn; i++){
+        for(int j=0; j<=loseturn; j++){
             LoseTurnActionCard card = new LoseTurnActionCard("You lose a turn", deck);
             deck.add(card);
         }
-        for(int i=0; i<=removeConnection; i++){
+        for(int k=0; k<=removeConnection; k++){
             RemoveConnectionActionCard card = new RemoveConnectionActionCard("Remove Connection", deck);
             deck.add(card);
         }
-        for(int i=0; i<=rollDie; i++){
+        for(int x=0; x<=rollDie; x++){
             RollDieActionCard card = new RollDieActionCard("Roll die again", deck);
             deck.add(card);
         }
-        for(int i=0; i<=teleport; i++){
+        for(int y=0; y<=teleport; y++){
             TeleportActionCard card = new TeleportActionCard("Teleport anywhere on the board", deck);
             deck.add(card);
         }
