@@ -59,8 +59,7 @@ public class PlayController extends Controller {
 
         return setCurrentCard(nextTopCard);
     }
-
-    //TODO Add roll() method; Add getPossibleMoves method.
+    
     public List<Tile> rollDie () {
         Game currentGame = TileOApplication.getCurrentGame();
         Die die = currentGame.getDie();
