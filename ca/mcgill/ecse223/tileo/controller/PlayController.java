@@ -152,14 +152,10 @@ public class PlayController extends Controller {
 		currentGame.setMode(Mode.GAME);
     }
 
-    public void playRemoveConnectionActionActionCard(Connection connection) throws InvalidInputException{
+      public void playRemoveConnectionActionActionCard(Connection connection) throws InvalidInputException{
     	//Get info about the current game
         TileO tileo = TileOApplication.getTileO();
         Game currentGame = tileo.getCurrentGame();
-        
-        List<Connection> currentConnections = currentGame.getConnections();
-        if(!currentConnections.contains(connection))
-        	throw new InvalidInputException("This connection is not contained within current game");
         
         Deck deck = currentGame.getDeck();
         ActionCard currentCard = deck.getCurrentCard();
@@ -171,7 +167,7 @@ public class PlayController extends Controller {
       		currentCard = (RemoveConnectionActionCard)deck.getCurrentCard();
       	
       	//This function removes the connection.
-        play(connection);
+        currentGame.eliminateConnection(connection);
         
         Player currentPlayer = currentGame.getCurrentPlayer();
 		int indexOfCurrentPlayer = currentGame.indexOfPlayer(currentPlayer);
