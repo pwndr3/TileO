@@ -2,6 +2,7 @@
 /*This code was generated using the UMPLE 1.25.0-9e8af9e modeling language!*/
 
 package ca.mcgill.ecse223.tileo.model;
+import java.util.Random;
 
 // line 88 "../../../../../main.ump"
 public class Die
@@ -49,6 +50,14 @@ public class Die
     {
       existingGame.delete();
     }
+  }
+  
+    public int roll(){
+	  int max = 6;
+	  int min = 1;
+	  Random rand = new Random();
+	  int randomNum = rand.nextInt((max - min) + 1) + min;
+	  return randomNum;
   }
 
 }
