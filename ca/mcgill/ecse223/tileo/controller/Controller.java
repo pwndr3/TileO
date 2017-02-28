@@ -6,7 +6,7 @@ import ca.mcgill.ecse223.tileo.model.TileO;
 
 public class Controller {
 
-    public Game.Mode getGameMode() {
+    public Mode getGameMode() {
 
     }
     public Game getCurrentGame() {
