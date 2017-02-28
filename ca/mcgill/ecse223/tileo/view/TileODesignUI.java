@@ -699,6 +699,9 @@ public class TileODesignUI extends javax.swing.JFrame {
            
            if(playerNumber == 1) {
              for(JToggleButton button : tilesButtons) {
+               if(button.getBackground().equals(new java.awt.Color(240,10,10))) {
+                 button.setBackground(null);
+               }
                if(button.isSelected()) {
                  button.setBackground(new java.awt.Color(240,10,10));
                  button.setSelected(false);
@@ -708,6 +711,9 @@ public class TileODesignUI extends javax.swing.JFrame {
            
            if(playerNumber == 2) {
              for(JToggleButton button : tilesButtons) {
+               if(button.getBackground().equals(new java.awt.Color(10,10,240))) {
+                 button.setBackground(null);
+               }
                if(button.isSelected()) {
                  button.setBackground(new java.awt.Color(10,10,240));
                  button.setSelected(false);
@@ -718,6 +724,9 @@ public class TileODesignUI extends javax.swing.JFrame {
            
            if(playerNumber == 3) {
              for(JToggleButton button : tilesButtons) {
+               if(button.getBackground().equals(new java.awt.Color(10,240,10))) {
+                 button.setBackground(null);
+               }
                if(button.isSelected()) {
                  button.setBackground(new java.awt.Color(10,240,10));
                  button.setSelected(false);
@@ -727,6 +736,9 @@ public class TileODesignUI extends javax.swing.JFrame {
            
            if(playerNumber == 4) {
              for(JToggleButton button : tilesButtons) {
+               if(button.getBackground().equals(new java.awt.Color(240,240,10))) {
+                 button.setBackground(null);
+               }
                if(button.isSelected()) {
                  button.setBackground(new java.awt.Color(240,240,10));
                  button.setSelected(false);
@@ -936,19 +948,26 @@ public class TileODesignUI extends javax.swing.JFrame {
     }
     
     private void tileActionPerformed(java.awt.event.ActionEvent evt) {
+      JToggleButton button = (JToggleButton)evt.getSource();
+      
       if(buttonSelected == ButtonSelection.NONE) {
-        JToggleButton button = (JToggleButton)evt.getSource();
         button.setSelected(false);
         button.setBorderPainted( false );
         button.setFocusPainted( false );
       }
       
       if(buttonSelected == ButtonSelection.ADDTILE || buttonSelected == ButtonSelection.REMOVECONN || buttonSelected == ButtonSelection.ADDCONN) {
-        JToggleButton button = (JToggleButton)evt.getSource();
         if(button.isSelected()) {
           button.setSelected(false);
           button.setBorderPainted(false);
           button.setFocusPainted(false);
+        }
+      }
+      
+      if(buttonSelected == ButtonSelection.SELECT) {
+        for(JToggleButton butt : tilesButtons) {
+          if(butt.isSelected() && butt != button)
+            butt.setSelected(false);
         }
       }
     }
