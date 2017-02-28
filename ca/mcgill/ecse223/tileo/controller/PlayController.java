@@ -48,17 +48,19 @@ public class PlayController extends Controller {
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
         Deck deck = game.getDeck();
-        ActionCard actionCard = getCurrentCard();
+        ActionCard actionCard = deck.getCurrentCard();
 
-        int index = indexOfCard(actionCard);
+        int index = deck.indexOfCard(actionCard);
         //Return to the beginning of the deck when the counter reaches the end of the deck
-        if(index+1<=32){
-            ActionCard nextTopCard = getCard(index+1);}
+        ActionCard nextTopCard;
+        if(index+1<=31){
+            nextTopCard = deck.getCard(index+1);
+            }
         else {
-            ActionCard nextTopCard = getCard(0);
+            nextTopCard = deck.getCard(0);
         }
 
-        return setCurrentCard(nextTopCard);
+        return deck.setCurrentCard(nextTopCard);
     }
     
     public List<Tile> rollDie () {
