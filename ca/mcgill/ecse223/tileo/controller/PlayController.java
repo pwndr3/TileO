@@ -152,28 +152,51 @@ public class PlayController extends Controller {
 		currentGame.setMode(Mode.GAME);
     }
 
-    public void playRemoveConnectionAction(Connection connection) throws InvalidInputException{
-        //Get info about the current game
+    public void playRemoveConnectionActionActionCard(Connection connection) throws InvalidInputException{
+    	//Get info about the current game
         TileO tileo = TileOApplication.getTileO();
-        Game game = tileo.getCurrentGame();
-        Deck deck = game.getDeck();
-        RemoveConnectionActionCard card = deck.getCurrentCard();
+        Game currentGame = tileo.getCurrentGame();
+        
+        List<Connection> currentConnections = currentGame.getConnections();
+        if(!currentConnections.contains(connection))
+        	throw new InvalidInputException("This connection is not contained within current game");
+        
+        Deck deck = currentGame.getDeck();
+        ActionCard currentCard = deck.getCurrentCard();
+        
+        //Check if action card is a Remove Connection Action Card.
+      	if(currentCard instanceof RemoveConnectionActionCard == false)
+      		throw new InvalidInputException("The current card is not a Remove Connection Action Card");
+      	else
+      		currentCard = (RemoveConnectionActionCard)deck.getCurrentCard();
+      	
+      	//This function removes the connection.
         play(connection);
+        
+        Player currentPlayer = currentGame.getCurrentPlayer();
+		int indexOfCurrentPlayer = currentGame.indexOfPlayer(currentPlayer);
 
-        if(game.indexOfPlayer(currentPlayer) == game.numberOfPlayers()){
-            game.setCurrentPlayer(player.getWithNumber(0));
+		//If current player is last player, make the first player the current player.
+        if(indexOfCurrentPlayer == (currentGame.numberOfPlayers() - 1)){
+            currentGame.setCurrentPlayer(currentGame.getPlayer(0));
         }
+        //Set next player as current player.
         else{
-            game.setCurrentPlayer(game.getPlayer(game.indexOfPlayers(currentPlayer) + 1));
+            currentGame.setCurrentPlayer(currentGame.getPlayer(indexOfCurrentPlayer + 1));
         }
-        // Check if card is last card, if so set the current card to top of deck, if not set it to the next card
-        if(deck.indexOfCard(playedCard) == deck.numberOfCards()){
+        
+        // If current card is last card, shuffle and set new top card as current card.
+        if(deck.indexOfCard(deck.getCurrentCard()) == (deck.numberOfCards() - 1)){
             deck.shuffle();
+            currentCard = deck.getCard(0);
+            deck.setCurrentCard(currentCard);
         }
+        //If current card is not last card in deck, make next card in deck the current card.
         else{
-            deck.setCurrentCard(deck.getCard(deck.indexOfCard(playedCard) + 1));
+        	currentCard = deck.getCard((deck.indexOfCard(deck.getCurrentCard())+1));
+            deck.setCurrentCard(currentCard);
         }
-        game.setMode(Mode.GAME);
+        currentGame.setMode(Mode.GAME);
     }
 
     }
