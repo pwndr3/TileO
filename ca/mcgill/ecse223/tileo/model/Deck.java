@@ -183,11 +183,7 @@ public class Deck
     wasSet = true;
     return wasSet;
   }
-  public void shuffle(){
-    Collections.shuffle(cards);
-    ActionCard topCard = cards.get(0);
-    setCurrentCard(topCard);
-  }
+
   public void delete()
   {
     while (cards.size() > 0)
