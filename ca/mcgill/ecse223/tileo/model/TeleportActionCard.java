@@ -29,4 +29,7 @@ public class TeleportActionCard extends ActionCard
     super.delete();
   }
 
+  public void play(Tile tile) throws InvalidInputException{
+      this.land(tile);
+  }
 }
