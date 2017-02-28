@@ -14,18 +14,15 @@ public class PlayController extends Controller {
     public boolean getTopCard(){
         //alex
     }
-    public public List<Tile> roll() {
-        aGame = getCurrentGame();
 
-        //TODO Add roll() method; Add getPossibleMoves method.
-        public public List<Tile> rollDie () {
-            Game currentGame = TileOApplication.getCurrentGame();
-            Die die = currentGame.getDie();
-            int rolledNumber = die.roll();
-            Player currentPlayer = currentGame.getCurrentPlayer();
-            List<Tile> possibleMoves = currentPlayer.getPossibleMoves(rolledNumber);
-            return possibleMoves;
-        }
+     //TODO Add roll() method; Add getPossibleMoves method.
+     public List<Tile> rollDie () {
+     Game currentGame = TileOApplication.getCurrentGame();
+     Die die = currentGame.getDie();
+     int rolledNumber = die.roll();
+     Player currentPlayer = currentGame.getCurrentPlayer();
+     List<Tile> possibleMoves = currentPlayer.getPossibleMoves(rolledNumber);
+     return possibleMoves;
     }
     public boolean land(Tile tile) throws InvalidInputException{
         //karine
