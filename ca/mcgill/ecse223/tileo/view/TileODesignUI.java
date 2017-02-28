@@ -34,13 +34,13 @@ public class TileODesignUI extends javax.swing.JFrame {
     private void changeBoardSize(int m, int n) {
       //Clear
       tilesButtons.clear();
-      //tilesPanel = new javax.swing.JPanel();
+      tilesPanel.removeAll();
       
       //Create buttons and put in linked list
       for(int i = 0; i < m; i++) {
         for(int j = 0; j < n; j++) {
           JToggleButton tile = new JToggleButton();
-          tile.setPreferredSize(new java.awt.Dimension(40,40));
+          tile.setPreferredSize(new java.awt.Dimension(30,30));
           
           tilesButtons.add(tile);
         }
@@ -57,7 +57,7 @@ public class TileODesignUI extends javax.swing.JFrame {
           c.fill = GridBagConstraints.HORIZONTAL;
           c.gridx = row;
           c.gridy = col;
-          c.insets = new Insets(5,5,5,5);
+          c.insets = new Insets(3,3,3,3);
           
           tilesPanel.add(it.next(), c);
         }
@@ -302,8 +302,15 @@ public class TileODesignUI extends javax.swing.JFrame {
                 horizontalLengthActionPerformed(evt);
             }
         });
+        horizontalLength.setSelectedIndex(4-2);
 
         verticalLength.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }));
+        verticalLength.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                verticalLengthActionPerformed(evt);
+            }
+        });
+        verticalLength.setSelectedIndex(4-2);
         
         /*
          * 
@@ -322,7 +329,7 @@ public class TileODesignUI extends javax.swing.JFrame {
         tilesButtons = new LinkedList<JToggleButton>();
         
         tilesPanel = new javax.swing.JPanel();
-        tilesPanel.setPreferredSize(new java.awt.Dimension(1080, 600));
+        tilesPanel.setPreferredSize(new java.awt.Dimension(1080, 550));
           
         changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()), Integer.valueOf(verticalLength.getSelectedItem().toString()));
         
@@ -417,11 +424,11 @@ public class TileODesignUI extends javax.swing.JFrame {
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel6)
                                         .addGap(61, 61, 61)
-                                        .addComponent(horizontalLength, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(horizontalLength, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jLabel10)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(verticalLength, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(verticalLength, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel7)
                                         .addGap(18, 18, 18)
@@ -441,7 +448,8 @@ public class TileODesignUI extends javax.swing.JFrame {
                 .addComponent(backButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel17)
-                .addGap(376, 376, 376))
+                //.addGap(376, 376, 376))
+                        .addGap(120, 120, 120))
             .addComponent(tilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -606,6 +614,10 @@ public class TileODesignUI extends javax.swing.JFrame {
     }
 
     private void horizontalLengthActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+    
+    private void verticalLengthActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
