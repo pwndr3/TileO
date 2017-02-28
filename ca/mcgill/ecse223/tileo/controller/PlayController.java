@@ -62,18 +62,14 @@ public class PlayController extends Controller {
     }
     
     public List<Tile> rollDie () {
+        //Added common "Roll The Die Method" in game class for this feature and RollTheDie Action Card.
         Game currentGame = TileOApplication.getCurrentGame();
-        Die die = currentGame.getDie();
-        int rolledNumber = die.roll();
-        Player currentPlayer = currentGame.getCurrentPlayer();
-        List<Tile> possibleMoves = currentPlayer.getPossibleMoves(rolledNumber);
-        return possibleMoves;
+        return currentGame.rollTheDie();
     }
     public boolean land(Tile tile) throws InvalidInputException{
         //karine
     }
-    //TODO check if below method works.
-    //TODO Ask if index of cards start at 0 or 1?
+    
     public List<Tile> playRollDieActionCard() throws InvalidInputException{
 
         Game currentGame = TileOApplication.getCurrentGame();
