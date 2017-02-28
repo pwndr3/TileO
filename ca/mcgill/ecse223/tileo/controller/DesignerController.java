@@ -128,7 +128,38 @@ public class DesignerController extends Controller {
     }
   
     public boolean createDeck(int connectTiles, int loseTurn, int removeConnection, int rollDie, int teleport) throws InvalidInputException{
-        //andre
+        //Get info about current game
+        TileO tileo = TileOApplication.getTileO();
+        Game game = tileo.getCurrentGame();
+        Deck deck = game.getDeck();
+        //clear any previous cards added
+        deck.clearDeck();
+        //Exception if there are too many cards added
+        if(connectTiles + loseTurn + removeConnection + rollDie + teleport > 32){
+            throw new InvalidInputException("Cannot have more than 32 cards in a deck.")
+        }
+        //add cards to the deck
+        for(int i=0; i<=connectTiles; i++){
+            ConnectTilesActionCard card = new ConnectTilesActionCard("Connect two tiles", deck);
+            deck.add(card);
+        }
+        for(int i=0; i<=loseturn; i++){
+            LoseTurnActionCard card = new LoseTurnActionCard("You lose a turn", deck);
+            deck.add(card);
+        }
+        for(int i=0; i<=removeConnection; i++){
+            RemoveConnectionActionCard card = new RemoveConnectionActionCard("Remove Connection", deck);
+            deck.add(card);
+        }
+        for(int i=0; i<=rollDie; i++){
+            RollDieActionCard card = new RollDieActionCard("Roll die again", deck);
+            deck.add(card);
+        }
+        for(int i=0; i<=teleport; i++){
+            TeleportActionCard card = new TeleportActionCard("Teleport anywhere on the board", deck);
+            deck.add(card);
+        }
+        return deck.hasCards();
     }
 
     public boolean createGame(int numOfPlayersInGame){
