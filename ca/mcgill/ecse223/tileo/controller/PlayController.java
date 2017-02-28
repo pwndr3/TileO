@@ -15,14 +15,14 @@ public class PlayController extends Controller {
         //alex
     }
 
-     //TODO Add roll() method; Add getPossibleMoves method.
-     public List<Tile> rollDie () {
-     Game currentGame = TileOApplication.getCurrentGame();
-     Die die = currentGame.getDie();
-     int rolledNumber = die.roll();
-     Player currentPlayer = currentGame.getCurrentPlayer();
-     List<Tile> possibleMoves = currentPlayer.getPossibleMoves(rolledNumber);
-     return possibleMoves;
+    //TODO Add roll() method; Add getPossibleMoves method.
+    public List<Tile> rollDie () {
+        Game currentGame = TileOApplication.getCurrentGame();
+        Die die = currentGame.getDie();
+        int rolledNumber = die.roll();
+        Player currentPlayer = currentGame.getCurrentPlayer();
+        List<Tile> possibleMoves = currentPlayer.getPossibleMoves(rolledNumber);
+        return possibleMoves;
     }
     public boolean land(Tile tile) throws InvalidInputException{
         //karine
@@ -115,6 +115,7 @@ public class PlayController extends Controller {
         //andre
     }
     public boolean teleport(Tile tile) throws InvalidPositionException {
+        //Get info about the current game
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
         Deck deck = game.getDeck();
@@ -131,5 +132,5 @@ public class PlayController extends Controller {
         else
             deck.setCurrentCard(deck.getCard(deck.indexOfCard(playedCard) + 1));
     }
-
+        return game.setMode(GAME); //not sure about the set mode input
 }
