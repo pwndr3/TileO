@@ -72,30 +72,32 @@ public class PlayController extends Controller {
     
     public List<Tile> playRollDieActionCard() throws InvalidInputException{
 
-        Game currentGame = TileOApplication.getCurrentGame();
-        Deck deck = currentGame.getDeck();
-        ActionCard currentCard = deck.getCurrentCard();
-
-        if(currentCard instanceof RollDieActionCard == false)
-            throw new InvalidInputException("The current card is not a Roll Die Action Card");
-
-        //Play method returns possible tiles for player to move to.
-        List<Tile> tiles = currentCard.play();
-
-        int indexOfRollDieActionCard = deck.indexOfCard(currentCard);
-        //If the Roll Die Action Card was the last card in deck, shuffle deck and set the first card to the current card.
-        if(indexOfRollDieActionCard == 32){
-            deck.shuffle();
-            currentCard = deck.getCard(1);
-            deck.setCurrentCard(currentCard);
-        }
-        else{
-            currentCard = deck.getCard(indexOfRollDieActionCard+1);
-            deck.setCurrentCard(currentCard);
-        }
-
-        currentGame.setMode(Mode.GAME);
-        return tiles;
+            Game currentGame = TileOApplication.getCurrentGame();
+    		Deck deck = currentGame.getDeck();
+    		ActionCard currentCard = deck.getCurrentCard();
+    	
+    		if(currentCard instanceof RollDieActionCard == false)
+    			throw new InvalidInputException("The current card is not a Roll Die Action Card");
+    		else
+    			currentCard = (RollDieActionCard) deck.getCurrentCard();
+    		
+    		//Roll The Die method returns possible tiles for player to move to.
+    		List<Tile> tiles = currentGame.rollTheDie();
+    		
+    		int indexOfRollDieActionCard = deck.indexOfCard(currentCard);
+    		//If the Roll Die Action Card was the last card in deck, shuffle deck and set the first card to the current card.
+    		if(indexOfRollDieActionCard == 31){
+    			deck.shuffle();
+    			currentCard = deck.getCard(0);
+    			deck.setCurrentCard(currentCard);
+    		}
+    		else{
+    			currentCard = deck.getCard(indexOfRollDieActionCard+1);
+    			deck.setCurrentCard(currentCard);
+    		}
+    		
+    		currentGame.setMode(Mode.GAME);
+    		return tiles;
     }
 
     //TODO Finish exception for whether tiles already have a connection.
