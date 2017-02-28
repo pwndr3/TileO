@@ -117,12 +117,9 @@ public class DesignerController extends Controller {
 
     public void removeConnection(Connection aConnection) throws InvalidInputException{
         TileO tileO = TileOApplication.getTileO();
-        Game game = tileOApp.getCurrentGame();
-
-        if(theConnection ==  null || this.game.indexOfConnection(aConnection) == -1){
-                throw new InvalidInputException("There is no connection to remove");
-            }
-            theConnection.delete();
+        Game currentGame = tileO.getCurrentGame();
+        //Below is method in game class that removes connection.
+        currentGame.eliminateConnection(aConnection);
     }
 
     //TODO Check if tiles are already connected.
