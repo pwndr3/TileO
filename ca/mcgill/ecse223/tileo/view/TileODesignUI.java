@@ -15,6 +15,7 @@ public class TileODesignUI extends javax.swing.JFrame {
     private String numOfPlayersInGame = "";
     
     private LinkedList<JToggleButton> tilesButtons;
+    private LinkedList<JToggleButton> connectionButtons;
     private JPanel tilesPanel;
     
     private enum ButtonSelection { SELECT, ADDTILE, REMOVETILE, ADDCONN, REMOVECONN, NONE }
@@ -81,37 +82,89 @@ public class TileODesignUI extends javax.swing.JFrame {
 
       //Clear
       tilesButtons.clear();
+      connectionButtons.clear();
       tilesPanel.removeAll();
       
       //Create buttons and put in linked list
-      for(int i = 0; i < m; i++) {
-        for(int j = 0; j < n; j++) {
-          JToggleButton tile = new JToggleButton();
-          tile.setPreferredSize(new java.awt.Dimension(30,30));
-          tile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tileActionPerformed(evt);
-            }
-        });
+      for(int i = 0; i < m+(m-1); i++) {
+        for(int j = 0; j < n+(n-1); j++) {
+          JToggleButton toggleButton = new JToggleButton();
           
-          tilesButtons.add(tile);
-        }
-        }
+          //Tile
+          if(i%2 == 0 && j%2 == 0) {
+             toggleButton.setPreferredSize(new java.awt.Dimension(30,30));
+             toggleButton.addActionListener(new java.awt.event.ActionListener() {
+             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                 tileActionPerformed(evt);
+             }
+             });
+             tilesButtons.add(toggleButton);
+          }
+            
+            //Horizontal connection
+            else if(i%2 == 1 && j%2 == 0) {
+              toggleButton.setPreferredSize(new java.awt.Dimension(10,10));
+              toggleButton.addActionListener(new java.awt.event.ActionListener() {
+              public void actionPerformed(java.awt.event.ActionEvent evt) {
+                 connectionActionPerformed(evt);
+              }
+            });
+              toggleButton.setVisible(false);
+              toggleButton.setSelected(true);
+              connectionButtons.add(toggleButton);
+           }
+                                     
+            //Vertical connection
+            else if(i%2 == 0 && j%2 == 1) {
+              toggleButton.setPreferredSize(new java.awt.Dimension(10,10));
+              toggleButton.addActionListener(new java.awt.event.ActionListener() {
+              public void actionPerformed(java.awt.event.ActionEvent evt) {
+                 connectionActionPerformed(evt);
+              }});
+              toggleButton.setVisible(false);
+              toggleButton.setSelected(true);
+              connectionButtons.add(toggleButton);
+            }
+            
+        }}
+       
         
        //Create grids      
       tilesPanel.setLayout(new GridBagLayout());
       GridBagConstraints c = new GridBagConstraints();
       
-      ListIterator<JToggleButton> it = tilesButtons.listIterator();
+      ListIterator<JToggleButton> tiles_it = tilesButtons.listIterator();
+      ListIterator<JToggleButton> conn_it = connectionButtons.listIterator();
       
-      for(int row = 0; row < m; row++) {
-        for(int col = 0; col < n; col++) {
+      for(int row = 0; row < m+(m-1); row++) {
+        for(int col = 0; col < n+(n-1); col++) {
           c.fill = GridBagConstraints.HORIZONTAL;
           c.gridx = row;
           c.gridy = col;
-          c.insets = new Insets(3,3,3,3);
           
-          tilesPanel.add(it.next(), c);
+          //Tile
+          if(row%2 == 0 && col%2 == 0) {
+                tilesPanel.add(tiles_it.next(), c);
+          }
+          
+          //Horizontal connection
+            else if(row%2 == 1 && col%2 == 0) {
+              c.fill = GridBagConstraints.HORIZONTAL;
+              tilesPanel.add(conn_it.next(), c);
+            }
+            
+            //Vertical connection
+            else if(row%2 == 0 && col%2 == 1) {
+              c.fill = GridBagConstraints.VERTICAL;
+              tilesPanel.add(conn_it.next(), c);
+            }
+            
+            //Gap
+            else {
+              JPanel gap = new JPanel();
+              gap.setPreferredSize(new java.awt.Dimension(10,10));
+              tilesPanel.add(gap, c);
+            }
         }
       }
     }
@@ -354,7 +407,7 @@ public class TileODesignUI extends javax.swing.JFrame {
                 horizontalLengthActionPerformed(evt);
             }
         });
-        horizontalLength.setSelectedIndex(4-2);
+        horizontalLength.setSelectedIndex(8-2);
 
         verticalLength.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }));
         verticalLength.addActionListener(new java.awt.event.ActionListener() {
@@ -362,7 +415,7 @@ public class TileODesignUI extends javax.swing.JFrame {
                 verticalLengthActionPerformed(evt);
             }
         });
-        verticalLength.setSelectedIndex(4-2);
+        verticalLength.setSelectedIndex(8-2);
         
         /*
          * 
@@ -379,9 +432,10 @@ public class TileODesignUI extends javax.swing.JFrame {
         //Board
         
         tilesButtons = new LinkedList<JToggleButton>();
+        connectionButtons = new LinkedList<JToggleButton>();
         
         tilesPanel = new javax.swing.JPanel();
-        tilesPanel.setPreferredSize(new java.awt.Dimension(1080, 550));
+        tilesPanel.setPreferredSize(new java.awt.Dimension(1080, 600));
           
         changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()), Integer.valueOf(verticalLength.getSelectedItem().toString()));
         
@@ -729,6 +783,10 @@ public class TileODesignUI extends javax.swing.JFrame {
        removeConnectionButton.setEnabled(false);
        addConnectionButton.setEnabled(true);
        
+      for(JToggleButton button : connectionButtons) {
+         button.setVisible(true);
+       }
+       
        //Repaint GUI
        repaint();
        revalidate();
@@ -775,6 +833,10 @@ public class TileODesignUI extends javax.swing.JFrame {
           button.setFocusPainted(false);
         }
       }
+    }
+    
+    private void connectionActionPerformed(java.awt.event.ActionEvent evt) {
+
     }
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
