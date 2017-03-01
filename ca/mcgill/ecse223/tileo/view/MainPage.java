@@ -150,5 +150,5 @@ public class MainPage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     
     private Controller currentController;
-    // End of variables declaration
+    // End of variables declaratio
 }
