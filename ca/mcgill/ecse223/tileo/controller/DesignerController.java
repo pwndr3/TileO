@@ -14,10 +14,10 @@ public class DesignerController extends Controller {
 
         //Validation check
         if(!(game.hasPlayers())){
-            throw new InvalidInputException("There are no players in the current game.")
+            throw new InvalidInputException("There are no players in the current game.");
         }
         else if(playerNumber >= game.numberOfPlayers()){
-            throw new InvalidInputException("Player selected is not in the current game.")
+            throw new InvalidInputException("Player selected is not in the current game.");
         }
 
         //Get the specific player
@@ -27,14 +27,14 @@ public class DesignerController extends Controller {
         if(tile==game.getWinTile()) {
             throw new InvalidInputException("Cannot place a player on the win tile.");
         }
-        else if(tile==ActionTile) {
+        else if(tile instanceof ActionTile ) {
             throw new InvalidInputException("Cannot place a player on an action tile.");
         }
         else {
             for(int i=0; i<game.numberOfPlayers(); i++) {
                 Player otherPlayer = allPlayers.get(i);
-                if(otherPlayer.hasSartingTile()) {
-                    if(otherPlayer.getStartingTile==tile) {  //this one too
+                if(otherPlayer.hasStartingTile()) {
+                    if(otherPlayer.getStartingTile() == tile) {  //this one too
                         throw new InvalidInputException("This tile is already a start tile for another player");
                     }
                 }
