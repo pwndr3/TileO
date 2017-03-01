@@ -1,15 +1,19 @@
-package ca.mcgill.ecse223.tileo.application;
+public class TileOApplication {
 
-import ca.mcgill.ecse223.tileo.model.Game;
-import ca.mcgill.ecse223.tileo.model.TileO;
-import ca.mcgill.ecse223.tileo.persistence.PersistenceObjectStream;
-import ca.mcgill.ecse223.tileo.view.TileOPage;
+ public static void main(String[] args) {
+   //create the object
+   TileODesignUI designUI = new TileODesignUI();
 
+   //call the pack function to make sure everything is displayed well
+   designUI.pack();
+   //calll the setLocationRelativeTo null so the screen just appears in the middle of the screen
+   designUI.setLocationRelativeTo(null);
 
-public static TileO getTileO(){
-        if (tileO == null)
-        {
-        tileO = new TileO();
-        }
-        return tileO;
-        }
+   //as always, everything we open, we must always close
+   java.awt.EventQueue.invokeLater(new Runnable() {
+                 public void run() {
+                     designUI.setVisible(true);
+              } }  );
+  }
+
+ }
