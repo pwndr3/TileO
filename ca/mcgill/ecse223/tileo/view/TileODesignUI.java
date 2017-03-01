@@ -1,13 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+package ca.mcgill.ecse223.tileo.view;
+
+import ca.mcgill.ecse223.tileo.controller.*;
+
 import javax.swing.*;
 import java.util.*;
 import java.awt.*;
 
 public class TileODesignUI extends javax.swing.JFrame {
+    private DesignController currentController;
+  
     private String hLength = "";
     private String vLength = "";
     private String numOfPlayersInGame = "";
@@ -49,6 +50,10 @@ public class TileODesignUI extends javax.swing.JFrame {
         }
         
         initComponents();
+        
+        //
+        
+        currentController = new DesignController(this);
     }
     
     private int getNumberOfCardsLeft() {
@@ -122,7 +127,7 @@ public class TileODesignUI extends javax.swing.JFrame {
       for(int i = 0; i < m+(m-1); i++) {
         for(int j = 0; j < n+(n-1); j++) {
           JToggleButton toggleButton = new JToggleButton();
-          toggleButton.setFont(new java.awt.Font("Lucida Grande", 1, 10));
+          toggleButton.setFont(new java.awt.Font("Lucida Grande", 0, 8));
           
           //Tile
           if(i%2 == 0 && j%2 == 0) {

@@ -1,3 +1,7 @@
+package ca.mcgill.ecse223.tileo.application;
+
+import ca.mcgill.ecse223.tileo.view.*;
+
 public class TileOApplication {
 
  public static void main(String[] args) {
