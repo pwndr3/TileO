@@ -1,6 +1,7 @@
 package ca.mcgill.ecse223.tileo.view;
 
 import ca.mcgill.ecse223.tileo.controller.*;
+import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import javax.swing.*;
 
 public class MainPage extends javax.swing.JFrame {

@@ -2,12 +2,12 @@ package ca.mcgill.ecse223.tileo.controller;
 
 import ca.mcgill.ecse223.tileo.model.*;
 import ca.mcgill.ecse223.tileo.view.*;
+import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import java.util.List;
 
 public class DesignController {
   
-  public DesignController(TileODesignUI theUI) {
-    currentUI = theUI;
+  public DesignController() {
   }
 
     /*public boolean startingPosition(Tile tile, int playerNumber) throws InvalidInputException{
@@ -74,25 +74,21 @@ public class DesignController {
 
         //Set win tile to the game
         return (game.setWinTile(wintile));
-    }
+    }*/
 
-    public boolean createNormalTile(int x, int y) throws InvalidInputException{
+    public boolean createNormalTile(int x, int y) {
         TileO tileO = TileOApplication.getTileO();
         Game game = tileO.getCurrentGame();
-        List<Tile> tiles= game.getTiles();
-//iterate through list of tiles and see if a tile is already located at the location in the parameters
-        for(int i=0;i<tiles.size() ;i++) {
-            Tile spectile = tiles.get(i);
-            if(spectile.getX() == x && spectile.getY() == y) {
-              throw new InvalidInputException("there is already a tile located there");
-              break;}
-            
-            else game.addTile(new NormalTile(x, y, game));
-        }
+        
+        if(game == null)
+          System.out.println("kasjdas");
+        
+        game.addTile(new NormalTile(x, y, game));
+
         return true;
     }
 
-    public boolean deleteTile(Tile tile) throws InvalidInputException{
+    /*public boolean deleteTile(Tile tile) throws InvalidInputException{
 
         if(tile==null ){
             throw new InvalidInputExceptions("there is no tile to delete");
@@ -185,7 +181,6 @@ public class DesignController {
     }*/
     
     //Fields
-    private TileODesignUI currentUI;
 }
 
 

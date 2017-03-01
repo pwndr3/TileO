@@ -6,7 +6,7 @@ import java.util.*;
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.model.Game.Mode;
 import ca.mcgill.ecse223.tileo.controller.InvalidInputException;
-import java.io.Serializable;
+import ca.mcgill.ecse223.tileo.application.TileOApplication;
 
 import java.io.Serializable;
 

@@ -1,6 +1,7 @@
 package ca.mcgill.ecse223.tileo.view;
 
 import java.awt.*;
+import ca.mcgill.ecse223.tileo.application.TileOApplication;
 
 /**
  *

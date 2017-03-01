@@ -3,7 +3,7 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
-import java.io.Serializable;
+import ca.mcgill.ecse223.tileo.application.TileOApplication;
 
 import java.io.Serializable;
 
@@ -24,10 +24,7 @@ public abstract class Tile implements Serializable
   private List<Connection> connections;
   private Game game;
 
-<<<<<<< HEAD
   private static final long serialVersionUID = 1267381293123L;
-=======
->>>>>>> 93a073978c3199331ee3458326fa9d10049797d6
 
   //------------------------
   // CONSTRUCTOR

@@ -5,10 +5,7 @@ package ca.mcgill.ecse223.tileo.model;
 
 import java.util.*;
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
-<<<<<<< HEAD
 
-=======
->>>>>>> 93a073978c3199331ee3458326fa9d10049797d6
 import java.io.Serializable;
 
 // line 39 "../../../../../main.ump"

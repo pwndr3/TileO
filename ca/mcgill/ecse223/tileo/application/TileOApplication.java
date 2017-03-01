@@ -8,21 +8,15 @@ public class TileOApplication{
 
  public static void main(String[] args) {
    //create the object
+   loadGame("");
    designUI = new TileODesignUI();
    mainUI = new MainPage();
    playUI = new TileOPlayUI();
-
-   //call the pack function to make sure everything is displayed well
-   designUI.pack();
-   //calll the setLocationRelativeTo null so the screen just appears in the middle of the screen
-   designUI.setLocationRelativeTo(null);
 
    //as always, everything we open, we must always close
    java.awt.EventQueue.invokeLater(new Runnable() {
                  public void run() {
                      mainUI.setVisible(true);
-                     designUI.setVisible(false);
-                     playUI.setVisible(false);
               } }  );
   }
  
@@ -36,8 +30,12 @@ public class TileOApplication{
  public static void loadGame(String filename) {
    Game game = (Game) PersistenceObjectStream.deserialize(filename);
    
+   if (game == null) {
+         game = new Game(32, getTileO());
+   }
+   
    getTileO().addGame(game);
-   tileo.setCurrentGame(game);
+   getTileO().setCurrentGame(game);
  }
  
  public static void saveGame(String filename) {

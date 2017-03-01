@@ -50,11 +50,9 @@ public class TileODesignUI extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(TileODesignUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         
+        currentController = new DesignController();
+        
         initComponents();
-        
-        //
-        
-        currentController = new DesignController(this);
     }
     
     private int getNumberOfCardsLeft() {
@@ -139,6 +137,7 @@ public class TileODesignUI extends javax.swing.JFrame {
              }
              });
              tilesButtons.add(toggleButton);
+             currentController.createNormalTile(i,j);
           }
             
             //Horizontal connection

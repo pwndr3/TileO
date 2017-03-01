@@ -3,8 +3,7 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import java.util.Random;
-import java.io.Serializable;
-
+import ca.mcgill.ecse223.tileo.application.TileOApplication;
 
 import java.io.Serializable;
 
