@@ -3,6 +3,8 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
+import ca.mcgill.ecse223.tileo.application.TileOApplication;
+
 
 // line 46 "../../../../../main.ump"
 public class NormalTile extends Tile
