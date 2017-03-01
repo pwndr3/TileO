@@ -2,6 +2,7 @@
 /*This code was generated using the UMPLE 1.25.0-9e8af9e modeling language!*/
 
 package ca.mcgill.ecse223.tileo.model;
+import ca.mcgill.ecse223.tileo.model.Game.Mode;
 
 // line 76 "../../../../../main.ump"
 public class RemoveConnectionActionCard extends ActionCard
