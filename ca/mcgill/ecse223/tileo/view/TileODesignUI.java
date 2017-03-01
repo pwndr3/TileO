@@ -15,6 +15,7 @@ public class TileODesignUI extends javax.swing.JFrame {
     private String numOfPlayersInGame = "";
     
     private LinkedList<JToggleButton> tilesButtons;
+    private LinkedList<Point> connectionCoord;
     private LinkedList<JToggleButton> connectionButtons;
     private LinkedList<Integer> tilesButtonsBackup;
     private LinkedList<Integer> connectionButtonsBackup;
@@ -51,6 +52,11 @@ public class TileODesignUI extends javax.swing.JFrame {
         }
         
         currentController = new DesignController();
+        
+        //Init
+        currentController.initGame(2);
+      
+        //
         
         initComponents();
     }
@@ -166,7 +172,6 @@ public class TileODesignUI extends javax.swing.JFrame {
             }
             
         }}
-       
         
        //Create grids      
       tilesPanel.setLayout(new GridBagLayout());
@@ -190,12 +195,14 @@ public class TileODesignUI extends javax.swing.JFrame {
             else if(row%2 == 1 && col%2 == 0) {
               c.fill = GridBagConstraints.HORIZONTAL;
               tilesPanel.add(conn_it.next(), c);
+              connectionCoord.add(new Point(row,col));
             }
             
             //Vertical connection
             else if(row%2 == 0 && col%2 == 1) {
               c.fill = GridBagConstraints.VERTICAL;
               tilesPanel.add(conn_it.next(), c);
+              connectionCoord.add(new Point(row,col));
             }
             
             //Gap
@@ -515,6 +522,7 @@ public class TileODesignUI extends javax.swing.JFrame {
         
         tilesButtons = new LinkedList<JToggleButton>();
         connectionButtons = new LinkedList<JToggleButton>();
+        connectionCoord = new LinkedList<Point>();
         tilesButtonsBackup = new LinkedList<Integer>();
         connectionButtonsBackup = new LinkedList<Integer>();
         
@@ -787,26 +795,36 @@ public class TileODesignUI extends javax.swing.JFrame {
        
       //Remove Tiles
        if(buttonSelected == ButtonSelection.REMOVETILE) {
+         int i = 0;
            for(JToggleButton button : tilesButtons) {
              if(button.isSelected()) {
                button.setVisible(false);
                button.setText("");
                button.setBackground(null);
+               currentController.deleteTile((i/numberOfRows)*2, (i%numberOfRows)*2);
              }
+             i++;
             }
        }
        
        //Remove Connections
        if(buttonSelected == ButtonSelection.REMOVECONN) {
+         int i = 0;
            for(JToggleButton button : connectionButtons) {
              if(button.isSelected()) {
                button.setVisible(false);
+               
+               Point pos = connectionCoord.get(i);
+               currentController.removeConnection(pos.x, pos.y);
              }
+             i++;
             }
+           
        }
        
        
        if(buttonSelected == ButtonSelection.ADDTILE){
+         int i = 0;
          for(JToggleButton tile : tilesButtons){
            //Add Win Tile
           if(tileType.getSelectedItem().toString().equals("Win Tile")){
@@ -817,6 +835,7 @@ public class TileODesignUI extends javax.swing.JFrame {
              if(tile.isSelected() && tile.isVisible()){
                tile.setText("W");
                  tile.setBackground(Color.pink);
+                 currentController.createWinTile((i/numberOfRows)*2, (i%numberOfRows)*2);
                }
            }
           
@@ -825,8 +844,10 @@ public class TileODesignUI extends javax.swing.JFrame {
           if(tile.isSelected() && tile.isVisible()){
                 tile.setText("A");
                   tile.setBackground(Color.magenta);
-                    }
+                  currentController.createActionTile((i/numberOfRows)*2, (i%numberOfRows)*2);
            }
+           }
+          i++;
          }
          
          //Reset Tiles
@@ -841,6 +862,18 @@ public class TileODesignUI extends javax.swing.JFrame {
        //Reset Connections
        if(buttonSelected == ButtonSelection.ADDCONN) {
           hideDisabledConnections();
+          
+          int i = 0;
+         for(JToggleButton conn : connectionButtons) {
+           if(conn.isVisible()) {
+               Point pos = connectionCoord.get(i);
+               if((pos.y % 2) == 0)
+                    currentController.connectTiles(pos.x, pos.y, true);
+               else
+                 currentController.connectTiles(pos.x, pos.y, false);
+           }
+           i++;
+          }
        }
        
        //Change colors for connections
@@ -1105,6 +1138,23 @@ public class TileODesignUI extends javax.swing.JFrame {
         else{
             chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2" }));
         }
+        
+             for(JToggleButton button : tilesButtons) {
+               if(button.getBackground().equals(new java.awt.Color(240,10,10))) {
+                 button.setBackground(null);
+               }
+               if(button.getBackground().equals(new java.awt.Color(240,240,10))) {
+                 button.setBackground(null);
+               }
+               if(button.getBackground().equals(new java.awt.Color(10,10,240))) {
+                 button.setBackground(null);
+               }
+               if(button.getBackground().equals(new java.awt.Color(240,240,10))) {
+                 button.setBackground(null);
+               }
+             }
+             
+             currentController.changeNumberOfPlayers(Integer.valueOf(nbOfPlayersChosen));
     }
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {

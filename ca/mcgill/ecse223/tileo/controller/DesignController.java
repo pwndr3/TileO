@@ -3,6 +3,7 @@ package ca.mcgill.ecse223.tileo.controller;
 import ca.mcgill.ecse223.tileo.model.*;
 import ca.mcgill.ecse223.tileo.view.*;
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DesignController {
@@ -25,7 +26,7 @@ public class DesignController {
         }
 
         //Get the specific player
-        Player player = allPlayers.get(playerNumber); //not sure if u implemented correctly
+        Player player = allPlayers.get(playerNumber); 
 
         //Exceptions
         if(tile==game.getWinTile()) {
@@ -47,23 +48,34 @@ public class DesignController {
 
         //Set players start tile
         return player.setStartingTile(tile);
-    }
+    }*/
 
-    public boolean createWinTile(Tile tile) throws InvalidInputException{
+    public boolean createWinTile(int x, int y){
         //Get info about the current game
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
 
         //Check if the game already has a win tile
             if(game.hasWinTile()) {
-                throw new InvalidInputException("Win tile already exists.");
-            }
+                WinTile prevWin = game.getWinTile();
+                List<Connection> tileConnections = prevWin.getConnections();
+                int prevX = prevWin.getX();
+                int prevY = prevWin.getY();
+                
+                deleteTile(prevX, prevY);
 
+                //Replace the tile with a win tile
+                NormalTile normalTile = new NormalTile(x,y,game);
+
+                 for(int i = tileConnections.size()-1; i>0; i--){
+                     normalTile.addConnection(tileConnections.get(i));
+                 }
+
+            }
+            
         //Get all info about the tile that will be replaced
-        List<Connection> tileConnections = tile.getConnections();
-        int x = tile.getX();
-        int y = tile.getY();
-        tile.delete();
+        List<Connection> tileConnections = game.getTileFromXY(x,y).getConnections();
+        game.getTileFromXY(x,y).delete();
 
         //Replace the tile with a win tile
         WinTile winTile = new WinTile(x,y,game);
@@ -73,64 +85,81 @@ public class DesignController {
         }
 
         //Set win tile to the game
-        return (game.setWinTile(wintile));
-    }*/
+        return (game.setWinTile(winTile));
+    }
 
     public boolean createNormalTile(int x, int y) {
         TileO tileO = TileOApplication.getTileO();
         Game game = tileO.getCurrentGame();
-        
-        if(game == null)
-          System.out.println("kasjdas");
         
         game.addTile(new NormalTile(x, y, game));
 
         return true;
     }
 
-    /*public boolean deleteTile(Tile tile) throws InvalidInputException{
-
-        if(tile==null ){
-            throw new InvalidInputExceptions("there is no tile to delete");
-        }
-        //delete the tile
-        tile.delete();
+    public boolean deleteTile(int x, int y){
+      //delete the tile
+       if(TileOApplication.getCurrentGame().getTileFromXY(x,y) != null)
+           TileOApplication.getCurrentGame().getTileFromXY(x,y).delete();
         return true;
     }
 
-    public boolean identifyActionTile(Tile tile) throws InvalidInputException{
+    public boolean createActionTile(int x, int y) {
         //get current game and application
         TileO tileOApp = TileOApplication.getTileO();
         Game game = tileOApp.getCurrentGame();
         // the initial coordinates of x and y, and connections are saved
-        int firstx = tile.getX();
-        int firsty = tile.getY();
-        List<Connection> connections = tile.getConnections();
+        List<Connection> connections = game.getTileFromXY(x,y).getConnections();
         //delete the tile
-        tile.delete();
+        game.getTileFromXY(x,y).delete();
+        
         // an action tile created at the previous location
-        ActionTile actionTile = new ActionTile(firstx,firsty,game, 1); //inactivity period 1 but will be implemented otherwise for deliverable 4
+        ActionTile actionTile = new ActionTile(x,y,game, 1); //inactivity period 1 but will be implemented otherwise for deliverable 4
         for(int i = connections.size()-1; i>=0; i--){
             actionTile.addConnection(connections.get(i));
         }
+        
         game.addTile(actionTile);
         return true;
     }
 
-    public void removeConnection(Connection aConnection) throws InvalidInputException{
-        TileO tileO = TileOApplication.getTileO();
-        Game currentGame = tileO.getCurrentGame();
+    public void removeConnection(int x, int y) {
+        Game currentGame = TileOApplication.getCurrentGame();
         //Below is method in game class that removes connection.
-        currentGame.eliminateConnection(aConnection);
+        //currentGame.getConnectionFromXY(x,y).delete();
     }
 
-    public void connectTiles(Tile tile1, Tile tile2) throws InvalidInputException{
+    public void connectTiles(int x, int y, boolean isHorizontal) {
      Game currentGame = TileOApplication.getCurrentGame();
-     //Created "placeConnection" method in game class that is used by ConnectTiles Action Card as well.
-     currentGame.placeConnection(tile1, tile2);
+     
+     ArrayList<Tile> tiles = new ArrayList<Tile>();
+     
+      for(Tile tile : currentGame.getTiles()) {
+        if(isHorizontal) {
+          if(tile.getX() == x-1 && tile.getY() == y) {
+               tiles.add(tile);
+          }
+          
+          if(tile.getX() == x+1 && tile.getY() == y) {
+               tiles.add(tile);
+          }
+        } else {
+          
+          if(tile.getX() == x && tile.getY() == y-1) {
+               tiles.add(tile);
+          }
+          
+          if(tile.getX() == x && tile.getY() == y+1) {
+               tiles.add(tile);
+          }
+        }
+      }
+     
+      //Created "placeConnection" method in game class that is used by ConnectTiles Action Card as well.
+      currentGame.placeConnection(tiles.get(0), tiles.get(1));
     }
   
-    public boolean createDeck(int connectTiles, int loseTurn, int removeConnection, int rollDie, int teleport) throws InvalidInputException{
+    /*public boolean createDeck(int connectTiles, int loseTurn, int removeConnection, int rollDie, int teleport) throws InvalidInputException{
         //Get info about current game
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
@@ -163,24 +192,59 @@ public class DesignController {
             deck.add(card);
         }
         return deck.hasCards();
-    }
-
-    public void createGame(int numOfPlayersInGame){
-        TileO tileo = new TileO();
-        Game aGame = new Game(0,tileo);
-        tileo.setCurrentGame(aGame);
-        aGame.setMode(Mode.DESIGN);
-        Die die = new Die(aGame);
-        Deck deck = new Deck(aGame);
-        for(n=1;n<=numOfPlayersInGame;n++){
-            Player player = new Player(n,aGame);
-            player.setColor(Color.RED);
-            aGame.addPlayer(player);
-        }
-        TileOApplication.getTileO().addGame(aGame);
     }*/
+
+    public void initGame(int numOfPlayersInGame){
+        /*Game aGame = TileOApplication.getCurrentGame();
+        
+        for(int n = 1; n <= numOfPlayersInGame; n++){
+            Player player = new Player(n,aGame);
+            switch(n) {
+              case 1:
+                 player.setColor(Player.Color.RED);
+                 break;
+              case 2:
+                player.setColor(Player.Color.BLUE);
+                break;
+              case 3:
+                player.setColor(Player.Color.GREEN);
+                break;
+              case 4:
+                player.setColor(Player.Color.YELLOW);
+                break;
+            }
+            aGame.addPlayer(player);
+        }*/
+    }
     
-    //Fields
+    public void changeNumberOfPlayers(int numOfPlayers) {
+      /*Game aGame = TileOApplication.getCurrentGame();
+      
+      for(Player player : aGame.getPlayers()) {
+        aGame.removePlayer(player);
+      }
+      
+      for(int n = 1; n <= numOfPlayers; n++){
+            Player player = new Player(n,aGame);
+            switch(n) {
+              case 1:
+                 player.setColor(Player.Color.RED);
+                 break;
+              case 2:
+                player.setColor(Player.Color.BLUE);
+                break;
+              case 3:
+                player.setColor(Player.Color.GREEN);
+                break;
+              case 4:
+                player.setColor(Player.Color.YELLOW);
+                break;
+            }
+            
+            aGame.addPlayer(player);
+        }*/
+    }
 }
+    
 
 

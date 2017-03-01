@@ -32,7 +32,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
       
         initComponents();
     }
-    int currentPlayer = 4;
+    int currentPlayer = 1;
 
     /**
      * This method is called from within the constructor to initialize the form.

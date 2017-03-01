@@ -38,6 +38,10 @@ public class TileOApplication{
    getTileO().setCurrentGame(game);
  }
  
+ public static Game getCurrentGame() {
+  return getTileO().getCurrentGame(); 
+ }
+ 
  public static void saveGame(String filename) {
    Game game = getTileO().getCurrentGame();
 

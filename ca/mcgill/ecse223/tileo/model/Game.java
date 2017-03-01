@@ -505,6 +505,26 @@ public class Game implements Serializable
     wasSet = true;
     return wasSet;
   }
+  
+  public Tile getTileFromXY(int x, int y) {
+    for(Tile tile : getTiles()) {
+        if(tile.getX() == x && tile.getY() == y)
+          return tile;
+      }
+        
+        return null;
+  }
+  
+  public Connection getConnectionFromXY(int x, int y) {
+    /*for(Connection connection : getConnections()) {
+        if(Math.abs(connection.getTile(0).getX()-x)==1 && Math.abs(connection.getTile(1).getX()-x)==1 && connection.getTile(0).getY() == y && connection.getTile(1).getY() == y)
+          return connection;
+         if(Math.abs(connection.getTile(0).getY()-y)==1 && Math.abs(connection.getTile(1).getY()-y)==1 && connection.getTile(0).getX() == x && connection.getTile(1).getX() == x)
+          return connection;
+      }*/
+        
+        return null; 
+  }
 
   public boolean setWinTile(WinTile aNewWinTile)
   {
@@ -597,26 +617,9 @@ public class Game implements Serializable
       return possibleMoves;
   }
 
-  public void placeConnection(Tile tile1, Tile tile2) throws InvalidInputException{
-  
- //Checks if tiles are adjacent.  
- if((tile1.getY() - tile2.getY()) > 1 || (tile1.getY() - tile2.getY()) < -1 || (tile1.getX() - tile2.getX()) > 1 || (tile1.getX() - tile2.getX()) < -1){
-  throw new InvalidInputException("The tiles are not adjacent");
- }
- 
- //Checks if tiles exist.
- else if((this.tiles.contains(tile1))|| (this.tiles.contains(tile2)))
-  throw new InvalidInputException("One or both of the tiles do not exist");
- 
+  public void placeConnection(Tile tile1, Tile tile2) {
     Connection connectionPiece = this.addConnection();
     connectionPiece.addTile(tile1);
     connectionPiece.addTile(tile2);
-  }
-  public void eliminateConnection(Connection aConnection) throws InvalidInputException{
-
-      if(!connections.contains(aConnection))
-       throw new InvalidInputException("There is no connection to remove");
-      else
-          aConnection.delete();
   }
 }
