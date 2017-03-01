@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 import javax.swing.*;
 import java.util.*;
 import java.awt.*;
@@ -32,6 +31,23 @@ public class TileODesignUI extends javax.swing.JFrame {
      * Creates new form TileOUGUI
      */
     public TileODesignUI() {
+      try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(TileODesignUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(TileODesignUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(TileODesignUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(TileODesignUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        
         initComponents();
     }
     
@@ -106,10 +122,11 @@ public class TileODesignUI extends javax.swing.JFrame {
       for(int i = 0; i < m+(m-1); i++) {
         for(int j = 0; j < n+(n-1); j++) {
           JToggleButton toggleButton = new JToggleButton();
+          toggleButton.setFont(new java.awt.Font("Lucida Grande", 1, 10));
           
           //Tile
           if(i%2 == 0 && j%2 == 0) {
-             toggleButton.setPreferredSize(new java.awt.Dimension(30,30));
+             toggleButton.setPreferredSize(new java.awt.Dimension(35,35));
              toggleButton.addActionListener(new java.awt.event.ActionListener() {
              public void actionPerformed(java.awt.event.ActionEvent evt) {
                  tileActionPerformed(evt);
@@ -497,7 +514,7 @@ public class TileODesignUI extends javax.swing.JFrame {
         connectionButtonsBackup = new LinkedList<Integer>();
         
         tilesPanel = new javax.swing.JPanel();
-        tilesPanel.setPreferredSize(new java.awt.Dimension(1080, 600));
+        tilesPanel.setPreferredSize(new java.awt.Dimension(1130, 680));
           
         changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()), Integer.valueOf(verticalLength.getSelectedItem().toString()));
         
@@ -614,8 +631,8 @@ public class TileODesignUI extends javax.swing.JFrame {
                 .addComponent(backButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel17)
-                //.addGap(376, 376, 376))
-                        .addGap(120, 120, 120))
+                .addGap(376, 376, 376))
+                        //.addGap(120, 120, 120))
             .addComponent(tilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -704,6 +721,7 @@ public class TileODesignUI extends javax.swing.JFrame {
                }
                if(button.isSelected()) {
                  button.setBackground(new java.awt.Color(240,10,10));
+                 button.setText("");
                  button.setSelected(false);
                }
              }
@@ -716,6 +734,7 @@ public class TileODesignUI extends javax.swing.JFrame {
                }
                if(button.isSelected()) {
                  button.setBackground(new java.awt.Color(10,10,240));
+                 button.setText("");
                  button.setSelected(false);
                  
                }
@@ -729,6 +748,7 @@ public class TileODesignUI extends javax.swing.JFrame {
                }
                if(button.isSelected()) {
                  button.setBackground(new java.awt.Color(10,240,10));
+                 button.setText("");
                  button.setSelected(false);
                }
              }
@@ -741,6 +761,7 @@ public class TileODesignUI extends javax.swing.JFrame {
                }
                if(button.isSelected()) {
                  button.setBackground(new java.awt.Color(240,240,10));
+                 button.setText("");
                  button.setSelected(false);
                }
              }
@@ -764,6 +785,8 @@ public class TileODesignUI extends javax.swing.JFrame {
            for(JToggleButton button : tilesButtons) {
              if(button.isSelected()) {
                button.setVisible(false);
+               button.setText("");
+               button.setBackground(null);
              }
             }
        }
@@ -777,10 +800,38 @@ public class TileODesignUI extends javax.swing.JFrame {
             }
        }
        
-       //Reset Tiles
-       if(buttonSelected == ButtonSelection.ADDTILE) {
-          hideDisabledTiles();
-       }
+       
+       if(buttonSelected == ButtonSelection.ADDTILE){
+         for(JToggleButton tile : tilesButtons){
+           //Add Win Tile
+          if(tileType.getSelectedItem().toString().equals("Win Tile")){
+              if(tile.getBackground().equals(Color.pink)) {
+                 tile.setBackground(null);
+                 tile.setText("");
+               }
+             if(tile.isSelected() && tile.isVisible()){
+               tile.setText("W");
+                 tile.setBackground(Color.pink);
+               }
+           }
+          
+          // Add Action Tile
+          if(tileType.getSelectedItem().toString().equals("Action Tile")){
+          if(tile.isSelected() && tile.isVisible()){
+                tile.setText("A");
+                  tile.setBackground(Color.magenta);
+                    }
+           }
+         }
+         
+         //Reset Tiles
+         //Normal Tile
+          if(tileType.getSelectedItem().toString().equals("Regular Tile")){
+               hideDisabledTiles();
+           }
+         
+         }
+
        
        //Reset Connections
        if(buttonSelected == ButtonSelection.ADDCONN) {
@@ -794,9 +845,23 @@ public class TileODesignUI extends javax.swing.JFrame {
          else
            button.setBackground(new java.awt.Color(0, 0, 0));
        }
+      
+      if(buttonSelected == ButtonSelection.ADDTILE){
+         // Add Action Tile
+          if(tileType.getSelectedItem().toString().equals("Action Tile") || tileType.getSelectedItem().toString().equals("Win Tile")){
+            for(JToggleButton tile : tilesButtons) {
+              if(tile.isVisible() && tile.isSelected()) {
+                tile.setSelected(false);
+              }
+            }
+           }
+         }
+      
+
        
        //Reset button
        applyChangesButton.setSelected(false);
+       tileType.setEnabled(true);
        buttonSelected = ButtonSelection.NONE;
        
        //Repaint GUI
@@ -811,6 +876,7 @@ public class TileODesignUI extends javax.swing.JFrame {
     private void removeTileButtonActionPerformed(java.awt.event.ActionEvent evt) {
       if(removeTileButton.isSelected()) {
       buttonSelected = ButtonSelection.REMOVETILE;
+      tileType.setEnabled(false);
       backupLists();
       
         //Change buttons
@@ -820,6 +886,7 @@ public class TileODesignUI extends javax.swing.JFrame {
        removeConnectionButton.setEnabled(false);
        addConnectionButton.setEnabled(false);
       } else {
+        tileType.setEnabled(true);
         resetUI();
       }
       
@@ -844,7 +911,10 @@ public class TileODesignUI extends javax.swing.JFrame {
        removeConnectionButton.setEnabled(false);
        addConnectionButton.setEnabled(false);
        
-       showDisabledTiles();
+       if(tileType.getSelectedItem().toString().equals("Regular Tile")){
+         showDisabledTiles();
+       }
+       
        } else {
         resetUI();
       }
@@ -924,26 +994,41 @@ public class TileODesignUI extends javax.swing.JFrame {
 
     private void nbRollDieCardActionPerformed(java.awt.event.ActionEvent evt) {
       // Change cards left
+      if( Integer.valueOf(nbRollDieCard.getText())< 0)
+      nbRollDieCard.setText("0");
+      
       changeNumberOfCardsLeft();
     }
 
     private void nbRemoveConnectionCardActionPerformed(java.awt.event.ActionEvent evt) {
       // Change cards left
+      if( Integer.valueOf(nbRemoveConnectionCard.getText())< 0)
+      nbRemoveConnectionCard.setText("0");
+      
       changeNumberOfCardsLeft();
     }
 
     private void nbTeleportCardActionPerformed(java.awt.event.ActionEvent evt) {
       // Change cards left
+      if( Integer.valueOf(nbTeleportCard.getText())< 0)
+      nbTeleportCard.setText("0");
+      
       changeNumberOfCardsLeft();
     }
 
     private void nbLoseTurnCardActionPerformed(java.awt.event.ActionEvent evt) {
         // Change cards left
+      if( Integer.valueOf(nbLoseTurnCard.getText())< 0)
+      nbLoseTurnCard.setText("0");
+      
       changeNumberOfCardsLeft();
     }
 
     private void nbConnectTilesCardActionPerformed(java.awt.event.ActionEvent evt) {
         // Change cards left
+      if( Integer.valueOf(nbConnectTilesCard.getText())< 0)
+      nbConnectTilesCard.setText("0");
+      
       changeNumberOfCardsLeft();
     }
     
@@ -956,7 +1041,7 @@ public class TileODesignUI extends javax.swing.JFrame {
         button.setFocusPainted( false );
       }
       
-      if(buttonSelected == ButtonSelection.ADDTILE || buttonSelected == ButtonSelection.REMOVECONN || buttonSelected == ButtonSelection.ADDCONN) {
+      if((buttonSelected == ButtonSelection.ADDTILE && (tileType.getSelectedItem().toString().equals("Regular Tile")) || buttonSelected == ButtonSelection.REMOVECONN || buttonSelected == ButtonSelection.ADDCONN)) {
         if(button.isSelected()) {
           button.setSelected(false);
           button.setBorderPainted(false);
@@ -970,6 +1055,14 @@ public class TileODesignUI extends javax.swing.JFrame {
             butt.setSelected(false);
         }
       }
+      
+      if(buttonSelected == ButtonSelection.ADDTILE && (tileType.getSelectedItem().toString().equals("Win Tile"))) {
+        for(JToggleButton butt : tilesButtons) {
+          if(butt.isSelected() && butt != button)
+            butt.setSelected(false);
+        }
+      }
+        
     }
     
     private void connectionActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1023,42 +1116,6 @@ public class TileODesignUI extends javax.swing.JFrame {
     
     private void verticalLengthActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TileODesignUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TileODesignUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TileODesignUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TileODesignUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TileODesignUI().setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify
