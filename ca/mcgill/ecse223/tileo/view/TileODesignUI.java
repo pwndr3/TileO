@@ -1,6 +1,7 @@
 package ca.mcgill.ecse223.tileo.view;
 
 import ca.mcgill.ecse223.tileo.controller.*;
+import ca.mcgill.ecse223.tileo.application.TileOApplication;
 
 import javax.swing.*;
 import java.util.*;
@@ -1112,7 +1113,7 @@ public class TileODesignUI extends javax.swing.JFrame {
     }
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        //changeBoardSize(10,10);
+        TileOApplication.loadMenuWindow();
     }
 
     private void horizontalLengthActionPerformed(java.awt.event.ActionEvent evt) {

@@ -4,10 +4,11 @@
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
 
-// line 3 "../../../../../main.ump"
-public class TileO
-{
+import java.io.Serializable;
 
+// line 3 "../../../../../main.ump"
+public class TileO implements Serializable
+{
   //------------------------
   // MEMBER VARIABLES
   //------------------------

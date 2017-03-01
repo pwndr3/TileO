@@ -4,8 +4,10 @@
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
 
+import java.io.Serializable;
+
 // line 54 "../../../../../main.ump"
-public class Connection
+public class Connection implements Serializable
 {
 
   //------------------------
@@ -15,6 +17,8 @@ public class Connection
   //Connection Associations
   private Game game;
   private List<Tile> tiles;
+  
+  private static final long serialVersionUID = 9812738123912L;
 
   //------------------------
   // CONSTRUCTOR

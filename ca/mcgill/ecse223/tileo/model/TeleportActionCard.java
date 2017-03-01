@@ -4,6 +4,8 @@
 package ca.mcgill.ecse223.tileo.model;
 import ca.mcgill.ecse223.tileo.model.Game.Mode;
 
+import java.io.Serializable;
+
 // line 80 "../../../../../main.ump"
 public class TeleportActionCard extends ActionCard
 {
@@ -11,7 +13,7 @@ public class TeleportActionCard extends ActionCard
   //------------------------
   // MEMBER VARIABLES
   //------------------------
-
+  private static final long serialVersionUID = 6483241928348L;
   //------------------------
   // CONSTRUCTOR
   //------------------------

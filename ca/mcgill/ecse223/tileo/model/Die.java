@@ -4,8 +4,10 @@
 package ca.mcgill.ecse223.tileo.model;
 import java.util.Random;
 
+import java.io.Serializable;
+
 // line 88 "../../../../../main.ump"
-public class Die
+public class Die implements Serializable
 {
 
   //------------------------
@@ -14,6 +16,8 @@ public class Die
 
   //Die Associations
   private Game game;
+
+  private static final long serialVersionUID = 2382713981239L;
 
   //------------------------
   // CONSTRUCTOR
@@ -53,11 +57,11 @@ public class Die
   }
   
     public int roll(){
-	  int max = 6;
-	  int min = 1;
-	  Random rand = new Random();
-	  int randomNum = rand.nextInt((max - min) + 1) + min;
-	  return randomNum;
+   int max = 6;
+   int min = 1;
+   Random rand = new Random();
+   int randomNum = rand.nextInt((max - min) + 1) + min;
+   return randomNum;
   }
 
 }

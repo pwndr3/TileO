@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public static PersistenceObjectStream {
+public class PersistenceObjectStream {
 
     public static void serialize(String filename, Object object) {
         FileOutputStream fileOut;

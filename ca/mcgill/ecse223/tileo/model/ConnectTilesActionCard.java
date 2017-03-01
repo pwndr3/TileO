@@ -4,6 +4,8 @@
 package ca.mcgill.ecse223.tileo.model;
 import ca.mcgill.ecse223.tileo.model.Game.Mode;
 
+import java.io.Serializable;
+
 // line 72 "../../../../../main.ump"
 public class ConnectTilesActionCard extends ActionCard
 {
@@ -11,7 +13,7 @@ public class ConnectTilesActionCard extends ActionCard
   //------------------------
   // MEMBER VARIABLES
   //------------------------
-
+  private static final long serialVersionUID = 7238971239812L;
   //------------------------
   // CONSTRUCTOR
   //------------------------
@@ -27,11 +29,6 @@ public class ConnectTilesActionCard extends ActionCard
 
   public Mode getActionCardGameMode() {
     return Mode.GAME_CONNECTTILESACTIONCARD;
-  }
-
-  public void play(Tile tile1, Tile tile2) {
-    //Created "placeConnection" method in game class that is used by ConnectTiles Action Card as well.
-    currentGame.placeConnection(tile1, tile2);
   }
 
   public void delete()

@@ -4,8 +4,10 @@
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
 
+import java.io.Serializable;
+
 // line 30 "../../../../../main.ump"
-public abstract class Tile
+public abstract class Tile implements Serializable
 {
 
   //------------------------
@@ -20,6 +22,8 @@ public abstract class Tile
   //Tile Associations
   private List<Connection> connections;
   private Game game;
+
+  private static final long serialVersionUID = 1267381293123L;
 
   //------------------------
   // CONSTRUCTOR
@@ -267,35 +271,35 @@ public abstract class Tile
   }
   
   public List<Tile> getNeighbours(int aRolledNumber){
-	  
-	  List<Tile> neighbours = new ArrayList<Tile>();
-	  
-	  //Base case below: if rolled number equals/reduces to 1:
-	  if(aRolledNumber == 1){
-		  int i;
-		  for(i = 0; i < connections.size(); i++){
-			  Connection connection = connections.get(i); 
-			  //List of tiles for a particular connection can only contain 2 tiles.
-			  //If tile at index 0 of this list is "this" tile, then tile at index 1 must be added as neighbor.
-			  if(connection.getTile(0) == this)
-				  neighbours.add(connection.getTile(1));
-			  else
-				  neighbours.add(connection.getTile(0));		  
-		  }
-	  }
-	  
-	  //If rolled number is greater than 1:
-	  else{
-		  int i;
-		  for(i = 0; i < connections.size(); i++){
-			  Connection connection = connections.get(i);
-			  if(connection.getTile(0) == this)
-				  (connection.getTile(1)).getNeighbours(aRolledNumber - 1);
-			  else
-				  connection.getTile(0).getNeighbours(aRolledNumber - 1);
-		  }
-	  }
-	  
-	  return neighbours;
+   
+   List<Tile> neighbours = new ArrayList<Tile>();
+   
+   //Base case below: if rolled number equals/reduces to 1:
+   if(aRolledNumber == 1){
+    int i;
+    for(i = 0; i < connections.size(); i++){
+     Connection connection = connections.get(i); 
+     //List of tiles for a particular connection can only contain 2 tiles.
+     //If tile at index 0 of this list is "this" tile, then tile at index 1 must be added as neighbor.
+     if(connection.getTile(0) == this)
+      neighbours.add(connection.getTile(1));
+     else
+      neighbours.add(connection.getTile(0));    
+    }
+   }
+   
+   //If rolled number is greater than 1:
+   else{
+    int i;
+    for(i = 0; i < connections.size(); i++){
+     Connection connection = connections.get(i);
+     if(connection.getTile(0) == this)
+      (connection.getTile(1)).getNeighbours(aRolledNumber - 1);
+     else
+      connection.getTile(0).getNeighbours(aRolledNumber - 1);
+    }
+   }
+   
+   return neighbours;
   }
 }

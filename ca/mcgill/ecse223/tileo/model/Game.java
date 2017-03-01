@@ -3,9 +3,12 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
+import ca.mcgill.ecse223.tileo.controller.*;
+
+import java.io.Serializable;
 
 // line 8 "../../../../../main.ump"
-public class Game
+public class Game implements Serializable
 {
 
   //------------------------
@@ -14,6 +17,8 @@ public class Game
 
   public static final int SpareConnectionPieces = 32;
   public static final int NumberOfActionCards = 32;
+
+  private static final long serialVersionUID = 8239472342398L;
 
   //------------------------
   // MEMBER VARIABLES
@@ -353,10 +358,10 @@ public class Game
     return 0;
   }
 
-  public Tile addTile(int aX, int aY)
+  /*public Tile addTile(int aX, int aY)
   {
     return new Tile(aX, aY, this);
-  }
+  }*/
 
   public boolean addTile(Tile aTile)
   {
@@ -584,7 +589,7 @@ public class Game
   }
   
   public List<Tile> rollTheDie(){
-	  Die die = this.getDie();
+   Die die = this.getDie();
       int rolledNumber = die.roll();
       Player currentPlayer = this.getCurrentPlayer();
       List <Tile> possibleMoves = currentPlayer.getPossibleMoves(rolledNumber);
@@ -592,16 +597,16 @@ public class Game
   }
 
   public void placeConnection(Tile tile1, Tile tile2) throws InvalidInputException{
-	 
-	//Checks if tiles are adjacent.  
-	if((tile1.getY() - tile2.getY()) > 1 || (tile1.getY() - tile2.getY()) < -1 || (tile1.getX() - tile2.getX()) > 1 || (tile1.getX() - tile2.getX()) < -1){
-		throw new InvalidInputException("The tiles are not adjacent");
-	}
-	
-	//Checks if tiles exist.
-	else if((this.tiles.contains(tile1))|| (this.tiles.contains(tile2)))
-		throw new InvalidInputException("One or both of the tiles do not exist");
-	
+  
+ //Checks if tiles are adjacent.  
+ if((tile1.getY() - tile2.getY()) > 1 || (tile1.getY() - tile2.getY()) < -1 || (tile1.getX() - tile2.getX()) > 1 || (tile1.getX() - tile2.getX()) < -1){
+  throw new InvalidInputException("The tiles are not adjacent");
+ }
+ 
+ //Checks if tiles exist.
+ else if((this.tiles.contains(tile1))|| (this.tiles.contains(tile2)))
+  throw new InvalidInputException("One or both of the tiles do not exist");
+ 
     Connection connectionPiece = this.addConnection();
     connectionPiece.addTile(tile1);
     connectionPiece.addTile(tile2);
@@ -609,7 +614,7 @@ public class Game
   public void eliminateConnection(Connection aConnection) throws InvalidInputException{
 
       if(!connections.contains(aConnection))
-      	throw new InvalidInputException("There is no connection to remove");
+       throw new InvalidInputException("There is no connection to remove");
       else
           aConnection.delete();
   }

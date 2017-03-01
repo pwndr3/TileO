@@ -4,6 +4,8 @@
 package ca.mcgill.ecse223.tileo.model;
 import ca.mcgill.ecse223.tileo.model.Game.Mode;
 
+import java.io.Serializable;
+
 // line 68 "../../../../../main.ump"
 public class RollDieActionCard extends ActionCard
 {
@@ -11,7 +13,7 @@ public class RollDieActionCard extends ActionCard
   //------------------------
   // MEMBER VARIABLES
   //------------------------
-
+  private static final long serialVersionUID = 3487593045723L;
   //------------------------
   // CONSTRUCTOR
   //------------------------
@@ -24,20 +26,6 @@ public class RollDieActionCard extends ActionCard
   //------------------------
   // INTERFACE
   //------------------------
-
-  public List<Tile> play(){
-    TileO tileO = TileOApplication.getTileO();
-    Game currentGame = tileO.getCurrentGame();
-    Die die = currentGame.getDie();
-    int number = die.roll();
-
-    Player currentPlayer = currentGame.getCurrentPlayer();
-    List<Tile> tiles;
-    tiles = currentPlayer.getPossibleMoves(number);
-
-    return tiles;
-
-  }
 
   public Mode getActionCardGameMode() {
     return Mode.GAME_ROLLDIEACTIONCARD;

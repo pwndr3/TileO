@@ -4,6 +4,8 @@
 package ca.mcgill.ecse223.tileo.model;
 import ca.mcgill.ecse223.tileo.model.Game.Mode;
 
+import java.io.Serializable;
+
 // line 76 "../../../../../main.ump"
 public class RemoveConnectionActionCard extends ActionCard
 {
@@ -11,7 +13,7 @@ public class RemoveConnectionActionCard extends ActionCard
   //------------------------
   // MEMBER VARIABLES
   //------------------------
-
+  private static final long serialVersionUID = 8791273123071L;
   //------------------------
   // CONSTRUCTOR
   //------------------------
@@ -29,12 +31,10 @@ public class RemoveConnectionActionCard extends ActionCard
     return Mode.GAME_REMOVECONNECTIONACTIONCARD;
   }
 
-  public void play(Connection connection){
-    public void removeConnection(Connection aConnection) {
+  public void removeConnection(Connection aConnection) {
       //Below is method in game class that removes connection.
-      game.eliminateConnection(aConnection);
+      //game.eliminateConnection(aConnection);
     }
-  }
 
   public void delete()
   {

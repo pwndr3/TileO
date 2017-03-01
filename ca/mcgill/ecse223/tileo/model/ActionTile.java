@@ -2,9 +2,11 @@
 /*This code was generated using the UMPLE 1.25.0-9e8af9e modeling language!*/
 
 package ca.mcgill.ecse223.tileo.model;
+
 import java.util.*;
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 
+import java.io.Serializable;
 
 // line 39 "../../../../../main.ump"
 public class ActionTile extends Tile
@@ -17,6 +19,8 @@ public class ActionTile extends Tile
   //ActionTile Attributes
   private int inactivityPeriod;
   private int turnsUntilActive;
+  
+  private static final long serialVersionUID = 1298712387189L;
 
   //------------------------
   // CONSTRUCTOR
@@ -34,7 +38,8 @@ public class ActionTile extends Tile
   //------------------------
 
   public void land(){
-    Game currentGame= TileOApplication.getCurrentGame();
+    TileO tileo = TileOApplication.getTileO();
+    Game currentGame= tileo.getCurrentGame();
     Player currentPlayer = currentGame.getCurrentPlayer();
     currentPlayer.setCurrentTile(this);
 
@@ -42,8 +47,7 @@ public class ActionTile extends Tile
     this.setHasBeenVisited(true);
     Deck deck = currentGame.getDeck();
     ActionCard currentCard = deck.getCurrentCard();
-    Mode mode = currentCard.getActionCardGameMode();
-    currentGame.setMode(mode);
+    currentGame.setMode(currentCard.getActionCardGameMode());
   }
 
 

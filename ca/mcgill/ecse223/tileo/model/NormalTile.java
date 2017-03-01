@@ -7,7 +7,7 @@ import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.model.Game.Mode;
 import ca.mcgill.ecse223.tileo.controller.InvalidInputException;
 
-
+import java.io.Serializable;
 
 // line 46 "../../../../../main.ump"
 public class NormalTile extends Tile
@@ -16,6 +16,7 @@ public class NormalTile extends Tile
   //------------------------
   // MEMBER VARIABLES
   //------------------------
+  private static final long serialVersionUID = 6483246234823L;
 
   //------------------------
   // CONSTRUCTOR
@@ -31,7 +32,7 @@ public class NormalTile extends Tile
   //------------------------
 
     public void land(){
-        Game currentGame= TileOApplication.getGame();
+        Game currentGame = TileOApplication.getTileO().getCurrentGame();
         Player currentPlayer = currentGame.getCurrentPlayer();
         currentPlayer.setCurrentTile(this);
         if(currentGame.indexOfPlayer(currentPlayer) == (currentGame.numberOfPlayers() - 1)) {
@@ -40,15 +41,10 @@ public class NormalTile extends Tile
             currentGame.setCurrentPlayer(currentGame.getPlayer(currentGame.indexOfPlayer(currentPlayer) + 1));
 
         }
+        
         this.setHasBeenVisited(true);
 
-        try{
-            currentGame.setMode(Mode.GAME);
-        }catch(RuntimeException e)
-
-        {
-            throw new InvalidInputException(e.getMessage());
-        }
+        currentGame.setMode(Mode.GAME);
     }
 
 

@@ -1,12 +1,16 @@
 package ca.mcgill.ecse223.tileo.application;
 
 import ca.mcgill.ecse223.tileo.view.*;
+import ca.mcgill.ecse223.tileo.model.*;
+import ca.mcgill.ecse223.tileo.persistence.*;
 
-public class TileOApplication {
+public class TileOApplication{
 
  public static void main(String[] args) {
    //create the object
-   TileODesignUI designUI = new TileODesignUI();
+   designUI = new TileODesignUI();
+   mainUI = new MainPage();
+   playUI = new TileOPlayUI();
 
    //call the pack function to make sure everything is displayed well
    designUI.pack();
@@ -16,8 +20,59 @@ public class TileOApplication {
    //as always, everything we open, we must always close
    java.awt.EventQueue.invokeLater(new Runnable() {
                  public void run() {
-                     designUI.setVisible(true);
+                     mainUI.setVisible(true);
+                     designUI.setVisible(false);
+                     playUI.setVisible(false);
               } }  );
   }
+ 
+ public static TileO getTileO() {
+        if (tileo == null) {
+            tileo = new TileO();
+        }
+        return tileo;
+    }
+ 
+ public static void loadGame(String filename) {
+   Game game = (Game) PersistenceObjectStream.deserialize(filename);
+   
+   getTileO().addGame(game);
+   tileo.setCurrentGame(game);
+ }
+ 
+ public static void saveGame(String filename) {
+   Game game = getTileO().getCurrentGame();
+
+   PersistenceObjectStream.serialize(filename, game);
+ }
+ 
+ public static void loadDesignWindow() {
+   designUI = new TileODesignUI();
+   
+   mainUI.setVisible(false);
+   designUI.setVisible(true);
+   playUI.setVisible(false);
+ }
+ 
+ public static void loadPlayWindow() {
+ playUI = new TileOPlayUI();
+   
+   mainUI.setVisible(false);
+   designUI.setVisible(false);
+   playUI.setVisible(true);
+ }
+ 
+ public static void loadMenuWindow() {
+ mainUI = new MainPage();
+   
+   mainUI.setVisible(true);
+   designUI.setVisible(false);
+   playUI.setVisible(false);
+ }
+ 
+ private static TileO tileo;
+ private static TileODesignUI designUI;
+ private static MainPage mainUI;
+ private static TileOPlayUI playUI;
 
  }

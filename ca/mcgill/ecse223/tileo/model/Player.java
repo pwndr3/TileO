@@ -4,8 +4,10 @@
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
 
+import java.io.Serializable;
+
 // line 22 "../../../../../main.ump"
-public class Player
+public class Player implements Serializable
 {
 
   //------------------------
@@ -30,6 +32,8 @@ public class Player
   private Tile startingTile;
   private Tile currentTile;
   private Game game;
+
+  private static final long serialVersionUID = -9127381273012L;
 
   //------------------------
   // CONSTRUCTOR
@@ -213,7 +217,7 @@ public class Player
   }
   
    public List<Tile> getPossibleMoves (int aRolledNumber){
-	 List<Tile> possibleMoves = currentTile.getNeighbours(aRolledNumber);
-	 return possibleMoves;
+  List<Tile> possibleMoves = currentTile.getNeighbours(aRolledNumber);
+  return possibleMoves;
   }
 }

@@ -6,6 +6,8 @@ import java.util.*;
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.model.Game.Mode;
 
+import java.io.Serializable;
+
 // line 50 "../../../../../main.ump"
 public class WinTile extends Tile
 {
@@ -13,7 +15,7 @@ public class WinTile extends Tile
   //------------------------
   // MEMBER VARIABLES
   //------------------------
-
+  private static final long serialVersionUID = 4324810230912L;
   //------------------------
   // CONSTRUCTOR
   //------------------------
@@ -28,7 +30,7 @@ public class WinTile extends Tile
   //------------------------
 
   public void land(){
-    Game currentGame= TileOApplication.getGame();
+    Game currentGame= TileOApplication.getTileO().getCurrentGame();
     Player currentPlayer = currentGame.getCurrentPlayer();
     this.setHasBeenVisited(true);
 

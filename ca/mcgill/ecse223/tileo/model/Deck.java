@@ -4,8 +4,10 @@
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
 
+import java.io.Serializable;
+
 // line 57 "../../../../../main.ump"
-public class Deck
+public class Deck implements Serializable
 {
 
   //------------------------
@@ -16,6 +18,8 @@ public class Deck
   private List<ActionCard> cards;
   private ActionCard currentCard;
   private Game game;
+
+  private static final long serialVersionUID = 7283492340912L;
 
   //------------------------
   // CONSTRUCTOR
@@ -97,7 +101,7 @@ public class Deck
     return 32;
   }
 
-  public ActionCard addCard(String aInstructions)
+  /*public ActionCard addCard(String aInstructions)
   {
     if (numberOfCards() >= maximumNumberOfCards())
     {
@@ -107,7 +111,7 @@ public class Deck
     {
       return new ActionCard(aInstructions, this);
     }
-  }
+  }*/
 
   public boolean addCard(ActionCard aCard)
   {

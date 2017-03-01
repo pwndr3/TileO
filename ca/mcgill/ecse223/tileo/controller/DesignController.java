@@ -4,13 +4,13 @@ import ca.mcgill.ecse223.tileo.model.*;
 import ca.mcgill.ecse223.tileo.view.*;
 import java.util.List;
 
-public class DesignController extends Controller {
+public class DesignController {
   
   public DesignController(TileODesignUI theUI) {
     currentUI = theUI;
   }
 
-    public boolean startingPosition(Tile tile, int playerNumber) throws InvalidInputException{
+    /*public boolean startingPosition(Tile tile, int playerNumber) throws InvalidInputException{
         //Get info about current game
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
@@ -83,8 +83,10 @@ public class DesignController extends Controller {
 //iterate through list of tiles and see if a tile is already located at the location in the parameters
         for(int i=0;i<tiles.size() ;i++) {
             Tile spectile = tiles.get(i);
-            if(spectile.getX() == x && spectile.getY() == y) throw new InvalidInputException("there is already a tile located there");
-            break;
+            if(spectile.getX() == x && spectile.getY() == y) {
+              throw new InvalidInputException("there is already a tile located there");
+              break;}
+            
             else game.addTile(new NormalTile(x, y, game));
         }
         return true;
@@ -92,25 +94,25 @@ public class DesignController extends Controller {
 
     public boolean deleteTile(Tile tile) throws InvalidInputException{
 
-        if(tile==null|| ){
-            throws new InvalidInputExceptions("there is no tile to delete");
+        if(tile==null ){
+            throw new InvalidInputExceptions("there is no tile to delete");
         }
-        /*delete the tile*/
+        //delete the tile
         tile.delete();
         return true;
     }
 
     public boolean identifyActionTile(Tile tile) throws InvalidInputException{
-        /*get current game and application*/
+        //get current game and application
         TileO tileOApp = TileOApplication.getTileO();
         Game game = tileOApp.getCurrentGame();
-        /* the initial coordinates of x and y, and connections are saved*/
+        // the initial coordinates of x and y, and connections are saved
         int firstx = tile.getX();
         int firsty = tile.getY();
         List<Connection> connections = tile.getConnections();
-        /*delete the tile*/
+        //delete the tile
         tile.delete();
-        /* an action tile created at the previous location*/
+        // an action tile created at the previous location
         ActionTile actionTile = new ActionTile(firstx,firsty,game, 1); //inactivity period 1 but will be implemented otherwise for deliverable 4
         for(int i = connections.size()-1; i>=0; i--){
             actionTile.addConnection(connections.get(i));
@@ -141,7 +143,7 @@ public class DesignController extends Controller {
         deck.clearDeck();
         //Exception if there are too many cards added
         if(connectTiles + loseTurn + removeConnection + rollDie + teleport > 32){
-            throw new InvalidInputException("Cannot have more than 32 cards in a deck.")
+            throw new InvalidInputException("Cannot have more than 32 cards in a deck.");
         }
         //add cards to the deck
         for(int i=0; i<=connectTiles; i++){
@@ -180,7 +182,7 @@ public class DesignController extends Controller {
             aGame.addPlayer(player);
         }
         TileOApplication.getTileO().addGame(aGame);
-    }
+    }*/
     
     //Fields
     private TileODesignUI currentUI;
