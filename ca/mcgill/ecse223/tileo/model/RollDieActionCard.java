@@ -25,6 +25,20 @@ public class RollDieActionCard extends ActionCard
   // INTERFACE
   //------------------------
 
+  public List<Tile> play(){
+    TileO tileO = TileOApplication.getTileO();
+    Game currentGame = tileO.getCurrentGame();
+    Die die = currentGame.getDie();
+    int number = die.roll();
+
+    Player currentPlayer = currentGame.getCurrentPlayer();
+    List<Tile> tiles;
+    tiles = currentPlayer.getPossibleMoves(number);
+
+    return tiles;
+
+  }
+
   public Mode getActionCardGameMode() {
     return Mode.GAME_ROLLDIEACTIONCARD;
   }
