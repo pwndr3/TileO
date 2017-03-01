@@ -3,6 +3,7 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import ca.mcgill.ecse223.tileo.model.Game.Mode;
+import java.io.Serializable;
 
 import java.io.Serializable;
 

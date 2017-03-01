@@ -3,6 +3,7 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
+import java.io.Serializable;
 
 import java.io.Serializable;
 

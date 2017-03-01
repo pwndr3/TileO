@@ -3,11 +3,12 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import ca.mcgill.ecse223.tileo.model.Game.Mode;
+import java.io.Serializable;
 
 import java.io.Serializable;
 
 // line 84 "../../../../../main.ump"
-public class LoseTurnActionCard extends ActionCard
+public class LoseTurnActionCard extends ActionCard implements Serializable
 {
 
   //------------------------
