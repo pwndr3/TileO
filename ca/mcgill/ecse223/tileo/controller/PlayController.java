@@ -152,8 +152,8 @@ public class PlayController extends Controller {
 		currentGame.setMode(Mode.GAME);
     }
 	
-	//TODO see if number of connections must be increased after a connection is added.
-      public void playRemoveConnectionActionActionCard(Connection connection) throws InvalidInputException{
+//TODO see if number of connections must be increased after a connection is added.
+    public void playRemoveConnectionActionActionCard(Connection connection) throws InvalidInputException{
     	//Get info about the current game
         TileO tileo = TileOApplication.getTileO();
         Game currentGame = tileo.getCurrentGame();
@@ -196,7 +196,6 @@ public class PlayController extends Controller {
         currentGame.setMode(Mode.GAME);
     }
 
-    }
     public void teleport(Tile tile) throws InvalidInputException {
         //Get info about the current game
         TileO tileo = TileOApplication.getTileO();
@@ -204,20 +203,22 @@ public class PlayController extends Controller {
         Deck deck = game.getDeck();
         //Exception
         if(!(deck.getCurrentCard() instanceof TeleportActionCard)){
-            throw new InvalidInputException("Card is not a telport action card.")
+            throw new InvalidInputException("Action card is not a teleport action card");
         }
 
-        TeleportActionCard playedCard = deck.getCurrentCard();
+        TeleportActionCard playedCard = (TeleportActionCard) deck.getCurrentCard();
 
         // Play the card
         playedCard.play(tile);
 
         // Check if card is last card, if so set the current card to top of deck, if not set it to the next card
-        if(deck.indexOfCard(playedCard) == deck.numberOfCards()){
+        if(deck.indexOfCard(playedCard) == (deck.numberOfCards()-1)){
             deck.shuffle();
+            deck.setCurrentCard(deck.getCard(0));
         }
         else
             deck.setCurrentCard(deck.getCard(deck.indexOfCard(playedCard) + 1));
+        
+        game.setMode(Mode.GAME);
     }
-        game.setMode(Mode.GAME); //not sure about the set mode input
 }
