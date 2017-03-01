@@ -29,6 +29,11 @@ public class ConnectTilesActionCard extends ActionCard
     return Mode.GAME_CONNECTTILESACTIONCARD;
   }
 
+  public void play(Tile tile1, Tile tile2) {
+    //Created "placeConnection" method in game class that is used by ConnectTiles Action Card as well.
+    currentGame.placeConnection(tile1, tile2);
+  }
+
   public void delete()
   {
     super.delete();
