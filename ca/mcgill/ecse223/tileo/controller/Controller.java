@@ -7,7 +7,7 @@ import ca.mcgill.ecse223.tileo.model.TileO;
 public class Controller {
     
     public boolean saveGame(){
-        //andre
+
     }
     public Game loadGame(String fileName) throws InvalidInputException{
         //andre

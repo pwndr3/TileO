@@ -3,9 +3,10 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
+import java.io.Serializable;
 
 // line 57 "../../../../../main.ump"
-public class Deck
+public class Deck implements Serializable
 {
 
   //------------------------

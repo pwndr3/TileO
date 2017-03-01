@@ -3,9 +3,10 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import ca.mcgill.ecse223.tileo.model.Game.Mode;
+import java.io.Serializable;
 
 // line 62 "../../../../../main.ump"
-public abstract class ActionCard
+public abstract class ActionCard implements Serializable
 {
 
   //------------------------

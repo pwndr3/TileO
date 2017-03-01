@@ -5,9 +5,10 @@ package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.model.Game.Mode;
+import java.io.Serializable;
 
 // line 50 "../../../../../main.ump"
-public class WinTile extends Tile
+public class WinTile extends Tile implements Serializable
 {
 
   //------------------------

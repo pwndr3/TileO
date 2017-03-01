@@ -3,9 +3,10 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
+import java.io.Serializable;
 
 // line 54 "../../../../../main.ump"
-public class Connection
+public class Connection implements Serializable
 {
 
   //------------------------

@@ -4,10 +4,10 @@
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
-
+import java.io.Serializable;
 
 // line 39 "../../../../../main.ump"
-public class ActionTile extends Tile
+public class ActionTile extends Tile implements Serializable
 {
 
   //------------------------

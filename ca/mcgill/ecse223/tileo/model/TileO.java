@@ -3,9 +3,10 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
+import java.io.Serializable;
 
 // line 3 "../../../../../main.ump"
-public class TileO
+public class TileO implements Serializable
 {
 
   //------------------------

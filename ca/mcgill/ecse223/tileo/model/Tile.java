@@ -3,9 +3,10 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
+import java.io.Serializable;
 
 // line 30 "../../../../../main.ump"
-public abstract class Tile
+public abstract class Tile implements Serializable
 {
 
   //------------------------
@@ -20,6 +21,7 @@ public abstract class Tile
   //Tile Associations
   private List<Connection> connections;
   private Game game;
+
 
   //------------------------
   // CONSTRUCTOR

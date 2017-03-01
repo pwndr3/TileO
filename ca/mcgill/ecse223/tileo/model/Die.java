@@ -3,9 +3,11 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import java.util.Random;
+import java.io.Serializable;
+
 
 // line 88 "../../../../../main.ump"
-public class Die
+public class Die implements Serializable
 {
 
   //------------------------
