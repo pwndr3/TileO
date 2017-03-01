@@ -1,3 +1,4 @@
+
 public class PopUpTeleport extends javax.swing.JFrame {
 
     /**
@@ -17,15 +18,13 @@ public class PopUpTeleport extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextPane2 = new javax.swing.JTextPane();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTextPane3 = new javax.swing.JTextPane();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setBackground(new java.awt.Color(204, 229, 255));
+        setBounds(new java.awt.Rectangle(0, 25, 0, 0));
         setResizable(false);
 
         jButton1.setBackground(new java.awt.Color(153, 153, 255));
@@ -38,59 +37,48 @@ public class PopUpTeleport extends javax.swing.JFrame {
             }
         });
 
-        jTextPane1.setEditable(false);
-        jTextPane1.setBackground(new java.awt.Color(204, 229, 255));
-        jTextPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jTextPane1.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
-        jTextPane1.setText("ACTION CARD");
-        jScrollPane1.setViewportView(jTextPane1);
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
+        jLabel1.setText("ACTION CARD");
 
-        jTextPane2.setEditable(false);
-        jTextPane2.setBackground(new java.awt.Color(204, 229, 255));
-        jTextPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jTextPane2.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
-        jTextPane2.setText("Teleport");
-        jScrollPane2.setViewportView(jTextPane2);
+        jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        jLabel2.setText("Teleport");
 
-        jTextPane3.setEditable(false);
-        jTextPane3.setBackground(new java.awt.Color(204, 229, 255));
-        jTextPane3.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
-        jTextPane3.setText("Select a tile to move to");
-        jScrollPane3.setViewportView(jTextPane3);
+        jLabel3.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
+        jLabel3.setText("Select a tile to move to ");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGap(81, 81, 81)
-                                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGap(133, 133, 133)
-                                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGap(112, 112, 112)
-                                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addContainerGap(69, Short.MAX_VALUE))
+                                .addGap(36, 36, 36)
+                                .addComponent(jLabel1)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(87, 87, 87)
+                                .addComponent(jLabel2)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(56, 56, 56))
+                                .addGap(0, 26, Short.MAX_VALUE)
+                                .addComponent(jLabel3)
+                                .addGap(20, 20, 20))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(64, 64, 64))
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(16, 16, 16)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(15, 15, 15)
+                                .addComponent(jLabel1)
                                 .addGap(18, 18, 18)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(31, 31, 31)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel3)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(25, Short.MAX_VALUE))
+                                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         pack();
@@ -137,12 +125,8 @@ public class PopUpTeleport extends javax.swing.JFrame {
 
     // Variables declaration - do not modify
     private javax.swing.JButton jButton1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextPane jTextPane1;
-    private javax.swing.JTextPane jTextPane2;
-    private javax.swing.JTextPane jTextPane3;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     // End of variables declaration
 }
-
