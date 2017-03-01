@@ -29,6 +29,13 @@ public class RemoveConnectionActionCard extends ActionCard
     return Mode.GAME_REMOVECONNECTIONACTIONCARD;
   }
 
+  public void play(Connection connection){
+    public void removeConnection(Connection aConnection) {
+      //Below is method in game class that removes connection.
+      game.eliminateConnection(aConnection);
+    }
+  }
+
   public void delete()
   {
     super.delete();
