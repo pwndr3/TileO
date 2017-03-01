@@ -36,10 +36,10 @@ public class ActionTile extends Tile
   public void land(){
     Game currentGame= TileOApplication.getCurrentGame();
     Player currentPlayer = currentGame.getCurrentPlayer();
-    currentPlayer.setCurrentTile(tile);
+    currentPlayer.setCurrentTile(this);
 
     currentGame.setCurrentPlayer(currentGame.getPlayer(currentGame.indexOfPlayer(currentPlayer)+1));
-    tile.setHasBeenVisited(true);
+    this.setHasBeenVisited(true);
     Deck deck = currentGame.getDeck();
     ActionCard currentCard = deck.getCurrentCard();
     Mode mode = currentCard.getActionCardGameMode();
