@@ -3,6 +3,8 @@
 
 package ca.mcgill.ecse223.tileo.model;
 import java.util.*;
+import ca.mcgill.ecse223.tileo.application.TileOApplication;
+import ca.mcgill.ecse223.tileo.model.Game.Mode;
 
 // line 50 "../../../../../main.ump"
 public class WinTile extends Tile
@@ -28,9 +30,9 @@ public class WinTile extends Tile
   public void land(){
     Game currentGame= TileOApplication.getGame();
     Player currentPlayer = currentGame.getCurrentPlayer();
-    tile.setHasBeenVisited(true);
+    this.setHasBeenVisited(true);
 
-    setMode(Mode.GAME_WON);
+    currentGame.setMode(Mode.GAME_WON);
   }
 
 
