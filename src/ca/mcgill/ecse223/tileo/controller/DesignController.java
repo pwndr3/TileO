@@ -45,7 +45,7 @@ public boolean startingPosition(Tile tile, int playerNumber) throws InvalidInput
             }
         }
     }
-    //Set players start tile
+    //Set player's start tile
     return player.setStartingTile(tile);
 }
 
