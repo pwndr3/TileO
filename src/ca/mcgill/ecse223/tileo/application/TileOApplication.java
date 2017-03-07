@@ -24,7 +24,6 @@ public class TileOApplication {
 
 	public static void load() {
 		tileo = (TileO) PersistenceObjectStream.deserialize();
-		//hola
 	}
 
 	public static void save() {

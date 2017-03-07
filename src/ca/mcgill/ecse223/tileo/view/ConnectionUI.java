@@ -64,12 +64,38 @@ public class ConnectionUI extends JToggleButton {
 	public int getUIY() {
 		return y;
 	}
-	//
 	
+	//Backup/restore UI state
+	public void saveUIState() {
+		previousUIState = currentUIState = ((getBackground() == (new java.awt.Color(0, 0, 0)) ? 1 : 0) << 1) | (isSelected() ? 1 : 0);
+	}
+	
+	public int getUIState() {
+		return currentUIState;
+	}
+	
+	public void restoreUIState() {
+		currentUIState = previousUIState;
+		applyUIState();
+	}
+	
+	private void applyUIState() {
+		//Black
+		if((currentUIState >> 1 & 0x1) == 1) {
+			setBackground(new java.awt.Color(0,0,0));
+		} else {
+			setBackground(null);
+		}
+		
+		setSelected((currentUIState & 0x1) == 1);
+	}
 	//
 	private boolean visible;
 	private Type type;
 	private State currentState;
+	
+	private int currentUIState;
+	private int previousUIState;
 	
 	int x;
 	int y;
