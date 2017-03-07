@@ -12,33 +12,45 @@ public class DesignController {
 		game = aGame;
 	}
 
-	/*
-	 * public boolean startingPosition(Tile tile, int playerNumber) throws
-	 * InvalidInputException{ //Get info about current game TileO tileo =
-	 * TileOApplication.getTileO(); Game game = tileo.getCurrentGame(); List
-	 * <Player> allPlayers = game.getPlayers();
-	 * 
-	 * //Validation check if(!(game.hasPlayers())){ throw new
-	 * InvalidInputException("There are no players in the current game."); }
-	 * else if(playerNumber >= game.numberOfPlayers()){ throw new
-	 * InvalidInputException("Player selected is not in the current game."); }
-	 * 
-	 * //Get the specific player Player player = allPlayers.get(playerNumber);
-	 * 
-	 * //Exceptions if(tile==game.getWinTile()) { throw new
-	 * InvalidInputException("Cannot place a player on the win tile."); } else
-	 * if(tile instanceof ActionTile ) { throw new
-	 * InvalidInputException("Cannot place a player on an action tile."); } else
-	 * { for(int i=0; i<game.numberOfPlayers(); i++) { Player otherPlayer =
-	 * allPlayers.get(i); if(otherPlayer.hasStartingTile()) {
-	 * if(otherPlayer.getStartingTile() == tile) { //this one too throw new
-	 * InvalidInputException("This tile is already a start tile for another player"
-	 * ); } } } }
-	 * 
-	 * //Set players start tile return player.setStartingTile(tile); }
-	 */
+	
+public boolean startingPosition(Tile tile, int playerNumber) throws InvalidInputException{
+    
+	//Get info about current game
+    List <Player> allPlayers = game.getPlayers();
+    
+    //Validation check
+    if(!(game.hasPlayers())){
+        throw new InvalidInputException("There are no players in the current game.");
+    }
+   
+    else if(playerNumber >= game.numberOfPlayers()){
+        throw new InvalidInputException("Player selected is not in the current game.");
+    }
+    //Get the specific player
+    Player player = allPlayers.get(playerNumber);
+    //Exceptions
+    if(tile==game.getWinTile()) {
+        throw new InvalidInputException("Cannot place a player on the win tile.");
+    }
+    else if(tile instanceof ActionTile ) {
+        throw new InvalidInputException("Cannot place a player on an action tile.");
+    }
+    else {
+        for(int i=0; i<game.numberOfPlayers(); i++) {
+            Player otherPlayer = allPlayers.get(i);
+            if(otherPlayer.hasStartingTile()) {
+                if(otherPlayer.getStartingTile() == tile) {  //this one too
+                    throw new InvalidInputException("This tile is already a start tile for another player");
+                }
+            }
+        }
+    }
+    //Set players start tile
+    return player.setStartingTile(tile);
+}
 
-	public boolean createWinTile(int x, int y) {
+	
+	public boolean createWinTile(Tile winTile) {
 		// Check if the game already has a win tile
 		if (game.hasWinTile()) {
 			WinTile prevWin = game.getWinTile();
@@ -46,98 +58,134 @@ public class DesignController {
 			int prevX = prevWin.getX();
 			int prevY = prevWin.getY();
 
-			deleteTile(prevX, prevY);
+			try {
+				deleteTile(prevWin);
+			} catch (InvalidInputException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			// Replace the delelted with a win Tile
+			// **Check if necessary to send game**
+			NormalTile normalTile = new NormalTile(prevX, prevY, game);
 
-			// Replace the tile with a win tile
-			NormalTile normalTile = new NormalTile(x, y, game);
-
-			for (int i = tileConnections.size() - 1; i > 0; i--) {
-				normalTile.addConnection(tileConnections.get(i));
+			for (Connection conn: tileConnections) {
+				//normalTile.addConnection(tileConnections.get(i));
+				normalTile.addConnection(conn);
 			}
 
 		}
+		// Get the X and Y cordinates
+		int winX = winTile.getX();
+		int winY = winTile.getY();
 
 		// Get all info about the tile that will be replaced
-		List<Connection> tileConnections = game.getTileFromXY(x, y).getConnections();
-		game.getTileFromXY(x, y).delete();
-
+		List<Connection> tileConnections = game.getTileFromXY(winX, winY).getConnections();
+		game.getTileFromXY(winX, winY).delete();
+		//game.deleteTile(win)
+		
 		// Replace the tile with a win tile
-		WinTile winTile = new WinTile(x, y, game);
+		WinTile newWinTile = new WinTile(winX, winY, game);
 
-		for (int i = tileConnections.size() - 1; i > 0; i--) {
-			winTile.addConnection(tileConnections.get(i));
+		// Add previous connections to winTile
+		for (Connection conn: tileConnections) {
+			newWinTile.addConnection(conn);
 		}
 
 		// Set win tile to the game
-		return (game.setWinTile(winTile));
+		return (game.setWinTile(newWinTile));
 	}
 
-	public boolean createNormalTile(int x, int y) {
+	public boolean createNormalTile(Tile tile) {
+		
+		int x = tile.getX();
+		int y = tile.getY();
+
 		game.addTile(new NormalTile(x, y, game));
 
 		return true;
 	}
 
-	public boolean deleteTile(int x, int y) {
+	
+	public boolean deleteTile(Tile tile) throws InvalidInputException{
 		// delete the tile
-		if (game.getTileFromXY(x, y) != null)
-			game.getTileFromXY(x, y).delete();
+		if(tile==null){
+			throw new InvalidInputException("There is no tile to delete");
+		}
+		
+		int x = tile.getX();
+		int y = tile.getY();
+		game.getTileFromXY(x, y).delete();
 		return true;
 	}
 
-	public boolean createActionTile(int x, int y) {
+	public boolean createActionTile(Tile tile, int disableTurn) {
 		// the initial coordinates of x and y, and connections are saved
-		List<Connection> connections = game.getTileFromXY(x, y).getConnections();
+		int x = tile.getX();
+		int y = tile.getY();
+		
+		List<Connection> tileConnections = game.getTileFromXY(x, y).getConnections();
+		
 		// delete the tile
 		game.getTileFromXY(x, y).delete();
 
 		// an action tile created at the previous location
-		ActionTile actionTile = new ActionTile(x, y, game, 1); // inactivity
+		ActionTile actionTile = new ActionTile(x, y, game, disableTurn); // inactivity
 																// period 1 but
 																// will be
 																// implemented
 																// otherwise for
 																// deliverable 4
-		for (int i = connections.size() - 1; i >= 0; i--) {
-			actionTile.addConnection(connections.get(i));
+		
+		for (Connection conn: tileConnections) {
+			actionTile.addConnection(conn);
 		}
 
 		game.addTile(actionTile);
 		return true;
 	}
 
-	public void removeConnection(int x, int y) {
-		// Below is method in game class that removes connection.
-		// game.getConnectionFromXY(x,y).delete();
-	}
-
-	public void connectTiles(int x, int y, boolean isHorizontal) {
-		ArrayList<Tile> tiles = new ArrayList<Tile>();
-
-		for (Tile tile : game.getTiles()) {
-			if (isHorizontal) {
-				if (tile.getX() == x - 1 && tile.getY() == y) {
-					tiles.add(tile);
-				}
-
-				if (tile.getX() == x + 1 && tile.getY() == y) {
-					tiles.add(tile);
-				}
-			} else {
-
-				if (tile.getX() == x && tile.getY() == y - 1) {
-					tiles.add(tile);
-				}
-
-				if (tile.getX() == x && tile.getY() == y + 1) {
-					tiles.add(tile);
+	//public void removeConnection(int x, int y) {
+	public void removeConnection(Tile tile1, Tile tile2)throws InvalidInputException {
+		//Check if we can delete connection
+		
+		List<Connection> conns = tile1.getConnections();
+		
+		for(Connection conn: conns){
+			List <Tile> tiles = conn.getTiles();{
+				for(Tile tile: tiles){
+					if(tile==tile2){
+						conn.delete();
+						return;
+					}
 				}
 			}
 		}
+		//Throw exception
+		throw new InvalidInputException("No connection to be deleted");
+	}
 
-		// Created "placeConnection" method in game class that is used by
-		// ConnectTiles Action Card as well.
-		game.placeConnection(tiles.get(0), tiles.get(1));
+	public void connectTiles(Tile tile1, Tile tile2)throws InvalidInputException {
+		
+		int x1 = tile1.getX();
+		int y1 = tile1.getY();
+		
+		int x2 = tile2.getX();
+		int y2 = tile2.getY();
+		
+		//Check if tiles are adjancent to one another
+		if(x1==x2 && Math.abs((y1-y2))==1) {
+			//You made connetion
+			game.placeConnection(tile1, tile2);
+		}
+			
+		if(y1==y2 && Math.abs((x1-x2))==1){
+			//You made connection
+			game.placeConnection(tile1, tile2);
+			}
+		
+		throw new InvalidInputException("No connection to be deleted");
+
 	}
 
 	/*
