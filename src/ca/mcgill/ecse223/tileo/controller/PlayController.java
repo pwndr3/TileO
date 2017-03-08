@@ -1,5 +1,6 @@
 package ca.mcgill.ecse223.tileo.controller;
 
+import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.model.*;
 import ca.mcgill.ecse223.tileo.model.Game.Mode;
 
@@ -7,7 +8,7 @@ import java.util.List;
 
 public class PlayController {
 
-    /*public void startGame(Game selectedGame) throws InvalidInputException {
+   /* public void startGame(Game selectedGame) throws InvalidInputException {
        TileOApplication.setCurrentGame(selectedGame);
            Deck deck = selectedGame.getDeck();
            List <Player> allPlayers = selectedGame.getPlayers();

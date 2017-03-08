@@ -223,21 +223,22 @@ public class DesignController {
 	public void initGame(int numOfPlayersInGame) {
 		
 		 for(int n = 1; n <= numOfPlayersInGame; n++){ 
-		Player player = new Player(n, game); 
-		switch(n) { 
-		 case 1:
-		 player.setColor(Player.Color.RED); 
-		 break; 
-		 case 2:
-		 player.setColor(Player.Color.BLUE); 
-		 break; 
-		 case 3:
-		 player.setColor(Player.Color.GREEN); 
-		 break; 
-		 case 4:
-		 player.setColor(Player.Color.YELLOW); 
-		 break; }
-		 game.addPlayer(player); }
+			
+			 Player player = new Player(n, game); 
+			 switch(n) { 
+			 case 1:
+			 player.setColor(Player.Color.RED); 
+			 break; 
+			 case 2:
+			 player.setColor(Player.Color.BLUE); 
+			 break; 
+			 case 3:
+			 player.setColor(Player.Color.GREEN); 
+			 break; 
+			 case 4:
+			 player.setColor(Player.Color.YELLOW); 
+			 break; }
+			 game.addPlayer(player); }
 	}
 
 	public void changeNumberOfPlayers(int numOfPlayers) {
