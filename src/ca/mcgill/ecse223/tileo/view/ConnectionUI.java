@@ -7,7 +7,7 @@ import ca.mcgill.ecse223.tileo.view.TileUI.State;
 public class ConnectionUI extends JToggleButton {
 	private static final long serialVersionUID = 2470222051170835904L;
 
-	public enum State { EXIST, NONEXIST }
+	public enum LifeState { EXIST, NOTEXIST }
 	public enum Type {HORIZONTAL, VERTICAL }
 	
 	public ConnectionUI(Type aType) {
@@ -15,7 +15,7 @@ public class ConnectionUI extends JToggleButton {
 		setSelected(true);
 		
 		setVisible(false);
-		currentState = State.NONEXIST;
+		currentState = LifeState.NOTEXIST;
 		type = aType;
 	}
 	
@@ -23,7 +23,7 @@ public class ConnectionUI extends JToggleButton {
 		setPreferredSize(new java.awt.Dimension(10, 10));
 		
 		visible = false;
-		currentState = State.NONEXIST;
+		currentState = LifeState.NOTEXIST;
 		type = aType;
 		
 		x = aX;
@@ -39,8 +39,16 @@ public class ConnectionUI extends JToggleButton {
 		return visible;
 	}
 	
-	public State getCurrentState() {
+	public LifeState getLifeState() {
 		return currentState;
+	}
+	
+	public void show() {
+		setVisible(true);
+	}
+	
+	public void hide() {
+		setVisible(false);
 	}
 	
 	//Position-related
@@ -92,7 +100,7 @@ public class ConnectionUI extends JToggleButton {
 	//
 	private boolean visible;
 	private Type type;
-	private State currentState;
+	private LifeState currentState;
 	
 	private int currentUIState;
 	private int previousUIState;

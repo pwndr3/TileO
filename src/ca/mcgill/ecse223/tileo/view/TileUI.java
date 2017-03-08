@@ -6,6 +6,7 @@ public class TileUI extends JToggleButton {
 	private static final long serialVersionUID = -6618880778915250080L;
 
 	public enum State { NORMAL, WIN, ACTION, PLAYER1, PLAYER2, PLAYER3, PLAYER4, VISITED }
+	public enum LifeState { EXIST, NOTEXIST }
 	
 	public TileUI() {
 		setFont(new java.awt.Font("Lucida Grande", 0, 8));
@@ -13,6 +14,7 @@ public class TileUI extends JToggleButton {
 		
 		visible = true;
 		currentState = State.NORMAL;
+		currentLifeState = LifeState.EXIST;
 	}
 	
 	public TileUI(int aX, int aY) {
@@ -24,6 +26,26 @@ public class TileUI extends JToggleButton {
 		
 		x = aX;
 		y = aY;
+	}
+	
+	public void makeExist(boolean exist) {
+		if(exist) {
+			currentLifeState = LifeState.EXIST;
+		} else {
+			currentLifeState = LifeState.NOTEXIST;
+		}
+	}
+	
+	public LifeState getLifeState() {
+		return currentLifeState;
+	}
+	
+	public void show() {
+		setVisible(true);
+	}
+	
+	public void hide() {
+		setVisible(false);
 	}
 	
 	public void setVisible(boolean makeVisible) {
@@ -68,6 +90,7 @@ public class TileUI extends JToggleButton {
 	//
 	private boolean visible;
 	private State currentState;
+	private LifeState currentLifeState;
 	
 	private int currentUIState;
 	private int previousUIState;
