@@ -12,7 +12,7 @@ public class TileUI extends JToggleButton {
 		setFont(new java.awt.Font("Lucida Grande", 0, 8));
 		setPreferredSize(new java.awt.Dimension(35, 35));
 		
-		currentState = State.NORMAL;
+		state = State.NORMAL;
 		currentLifeState = LifeState.EXIST;
 		
 		saveUIState();
@@ -22,7 +22,7 @@ public class TileUI extends JToggleButton {
 		setFont(new java.awt.Font("Lucida Grande", 0, 8));
 		setPreferredSize(new java.awt.Dimension(35, 35));
 		
-		currentState = State.NORMAL;
+		state = State.NORMAL;
 		
 		x = aX;
 		y = aY;
@@ -50,8 +50,8 @@ public class TileUI extends JToggleButton {
 		setVisible(false);
 	}
 	
-	public State getCurrentState() {
-		return currentState;
+	public State getState() {
+		return state;
 	}
 	
 	//Position-related
@@ -89,7 +89,7 @@ public class TileUI extends JToggleButton {
 		setSelected((currentUIState & 0x1) == 1);
 	}
 	//
-	private State currentState;
+	private State state;
 	private LifeState currentLifeState;
 	
 	private int currentUIState;

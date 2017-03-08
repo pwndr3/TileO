@@ -997,19 +997,48 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 		// Cannot select 2 at a time
 		if (designState == DesignState.SELECT_STARTING_POSITION) {
-			tilesButtons.parallelStream().filter(s -> s.isSelected() && s != tile).forEach(s -> s.setSelected(false));
-			enableChanges();
+			//If tile is normal
+			if(tile.getState() == TileUI.State.NORMAL) {
+				tilesButtons.parallelStream().filter(s -> s.isSelected() && s != tile).forEach(s -> s.setSelected(false));
+				enableChanges();
+			}
+			else {
+				tile.setSelected(false);
+				tile.setBorderPainted(false);
+				tile.setFocusPainted(false);
+				disableChanges();
+			}
 		}
 		
 		else if (designState == DesignState.ADD_TILE) {
 			//WinTile - Cannot select 2 at a time
 			if(tileType.getSelectedItem().toString().equals("Win Tile")) {
-				tilesButtons.parallelStream().filter(s -> s.isSelected() && s != tile).forEach(s -> s.setSelected(false));
-				enableChanges();
+				//If tile is normal
+				if(tile.getState() == TileUI.State.NORMAL) {
+					tilesButtons.parallelStream().filter(s -> s.isSelected() && s != tile).forEach(s -> s.setSelected(false));
+					enableChanges();
+				}
+				else {
+					tile.setSelected(false);
+					tile.setBorderPainted(false);
+					tile.setFocusPainted(false);
+					disableChanges();
+				}
 			}
 			
 			else if(tileType.getSelectedItem().toString().equals("Action Tile")) {
 				// TODO : Action tile - MessageBox
+				
+				//If tile is normal
+				if(tile.getState() == TileUI.State.NORMAL) {
+					enableChanges();
+				}
+				else {
+					tile.setSelected(false);
+					tile.setBorderPainted(false);
+					tile.setFocusPainted(false);
+					disableChanges();
+				}
 			}
 			
 			//Normal tile
