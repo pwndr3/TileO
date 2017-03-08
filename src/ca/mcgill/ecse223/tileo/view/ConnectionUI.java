@@ -8,7 +8,7 @@ public class ConnectionUI extends JToggleButton {
 	private static final long serialVersionUID = 2470222051170835904L;
 
 	public enum LifeState { EXIST, NOTEXIST }
-	public enum Type {HORIZONTAL, VERTICAL }
+	public enum Type { HORIZONTAL, VERTICAL }
 	
 	public ConnectionUI(Type aType) {
 		setPreferredSize(new java.awt.Dimension(10, 10));

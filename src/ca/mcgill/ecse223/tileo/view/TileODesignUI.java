@@ -1,12 +1,16 @@
 package ca.mcgill.ecse223.tileo.view;
 
+import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.*;
 import ca.mcgill.ecse223.tileo.model.*;
+import ca.mcgill.ecse223.tileo.view.ConnectionUI.LifeState;
 
 import javax.swing.*;
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
+
+//TODO : Check connection visibility
 
 public class TileODesignUI extends javax.swing.JFrame {
 	private static final long serialVersionUID = -4784304605398643427L;
@@ -424,6 +428,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 					designState = DesignState.ADD_CONNECTION;
 					
 					backupLists();
+					maskButtons(ADDCONNBTN);
+					
 					showDisabledConnections();
 				} else {
 					resetUI();
@@ -864,14 +870,6 @@ public class TileODesignUI extends javax.swing.JFrame {
 			}
 		}
 
-		// Enable all buttons
-		maskButtons(ALLBTN);
-		selectPositionButton.setSelected(false);
-		addTileButton.setSelected(false);
-		removeTileButton.setSelected(false);
-		removeConnectionButton.setSelected(false);
-		addConnectionButton.setSelected(false);
-
 		// Remove Tiles
 		if (designState == DesignState.REMOVE_TILE) {
 			int i = 0;
@@ -965,11 +963,11 @@ public class TileODesignUI extends javax.swing.JFrame {
 		}
 
 		// Change colors for connections
-		for (JToggleButton button : connectionButtons) {
-			if (button.isSelected())
-				button.setBackground(null);
+		for (ConnectionUI conn : connectionButtons) {
+			if (conn.getLifeState() == ConnectionUI.LifeState.NOTEXIST)
+				conn.setBackground(null);
 			else
-				button.setBackground(new java.awt.Color(0, 0, 0));
+				conn.setBackground(new java.awt.Color(0, 0, 0));
 		}
 
 		if (designState == DesignState.ADD_TILE) {
@@ -984,16 +982,24 @@ public class TileODesignUI extends javax.swing.JFrame {
 			}
 		}
 
-		// Reset button
-		applyChangesButton.setSelected(false);
-		tileType.setEnabled(true);
+		// Reset states
+		disableChanges();
+		maskButtons(ALLBTN);
 		designState = DesignState.NONE;
+		
+		// Unselect all buttons
+		selectPositionButton.setSelected(false);
+		addTileButton.setSelected(false);
+		removeTileButton.setSelected(false);
+		removeConnectionButton.setSelected(false);
+		addConnectionButton.setSelected(false);
 
 		// Repaint GUI
 		repaint();
 		revalidate();
 	}
-
+	
+	//Tile clicked
 	private void tileActionPerformed(java.awt.event.ActionEvent evt) {
 		JToggleButton button = (JToggleButton) evt.getSource();
 
@@ -1028,6 +1034,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 	}
 
+	//Connection clicked
 	private void connectionActionPerformed(java.awt.event.ActionEvent evt) {
 		if (designState == DesignState.ADD_TILE || designState == DesignState.REMOVE_TILE
 				|| designState == DesignState.ADD_CONNECTION) {
@@ -1041,13 +1048,20 @@ public class TileODesignUI extends javax.swing.JFrame {
 	}
 
 	private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		//TODO : Check if game is playable to change game state
+		TileOApplication.save();
 	}
 
 	private void nbOfPlayersChanged() {
+		//TODO : MessageBox - game will be reset
 		String nbOfPlayersChosen = String.valueOf(nbOfPlayers.getSelectedItem());
+		if(game.numberOfPlayers() != Integer.valueOf(nbOfPlayersChosen))
+			enableChanges();
+		else
+			disableChanges();
 
-		if (nbOfPlayers.getSelectedItem() == "4") { // Setting value of combo
+		//Only when apply changes
+		/*if (nbOfPlayers.getSelectedItem() == "4") { // Setting value of combo
 													// box for choosing a player
 													// to defined number of
 													// players
@@ -1056,31 +1070,14 @@ public class TileODesignUI extends javax.swing.JFrame {
 			chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3" }));
 		} else {
 			chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2" }));
-		}
-
-		for (JToggleButton button : tilesButtons) {
-			if (button.getBackground().equals(new java.awt.Color(240, 10, 10))) {
-				button.setBackground(null);
-			}
-			if (button.getBackground().equals(new java.awt.Color(240, 240, 10))) {
-				button.setBackground(null);
-			}
-			if (button.getBackground().equals(new java.awt.Color(10, 10, 240))) {
-				button.setBackground(null);
-			}
-			if (button.getBackground().equals(new java.awt.Color(240, 240, 10))) {
-				button.setBackground(null);
-			}
-		}
-
-		if(game.numberOfPlayers() != Integer.valueOf(nbOfPlayersChosen))
-			enableChanges();
-		else
-			disableChanges();
+		}*/
 	}
 
 	private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		//TODO : MessageBox - any unsaved changes will be lost
+		//then show available games OR create new board
+		
+		TileOApplication.load();
 	}
 
 	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1089,6 +1086,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 	}
 
 	private void horizontalLengthActionPerformed(java.awt.event.ActionEvent evt) {
+		designState = DesignState.BOARD_SIZE;
+		
 		if(Integer.valueOf(String.valueOf(horizontalLength.getSelectedItem())) != numberOfRows)
 			enableChanges();
 		else
@@ -1096,7 +1095,9 @@ public class TileODesignUI extends javax.swing.JFrame {
 	}
 
 	private void verticalLengthActionPerformed(java.awt.event.ActionEvent evt) {
-		if(Integer.valueOf(String.valueOf(verticalLength.getSelectedItem())) != numberOfRows)
+		designState = DesignState.BOARD_SIZE;
+		
+		if(Integer.valueOf(String.valueOf(verticalLength.getSelectedItem())) != numberOfCols)
 			enableChanges();
 		else
 			disableChanges();
@@ -1104,10 +1105,12 @@ public class TileODesignUI extends javax.swing.JFrame {
 	
 	private void enableChanges() {
 		applyChangesButton.setEnabled(true);
+		applyChangesButton.setSelected(false);
 	}
 	
 	private void disableChanges() {
 		applyChangesButton.setEnabled(false);
+		applyChangesButton.setSelected(false);
 	}
 	
 	private void showDisabledTiles() {
