@@ -12,20 +12,22 @@ public class TileUI extends JToggleButton {
 		setFont(new java.awt.Font("Lucida Grande", 0, 8));
 		setPreferredSize(new java.awt.Dimension(35, 35));
 		
-		visible = true;
 		currentState = State.NORMAL;
 		currentLifeState = LifeState.EXIST;
+		
+		saveUIState();
 	}
 	
 	public TileUI(int aX, int aY) {
 		setFont(new java.awt.Font("Lucida Grande", 0, 8));
 		setPreferredSize(new java.awt.Dimension(35, 35));
 		
-		visible = true;
 		currentState = State.NORMAL;
 		
 		x = aX;
 		y = aY;
+		
+		saveUIState();
 	}
 	
 	public void makeExist(boolean exist) {
@@ -40,21 +42,12 @@ public class TileUI extends JToggleButton {
 		return currentLifeState;
 	}
 	
-	public void show() {
+	public void showUI() {
 		setVisible(true);
 	}
 	
-	public void hide() {
+	public void hideUI() {
 		setVisible(false);
-	}
-	
-	public void setVisible(boolean makeVisible) {
-		visible = makeVisible;
-		super.setVisible(visible);
-	}
-	
-	public boolean isVisible() {
-		return visible;
 	}
 	
 	public State getCurrentState() {
@@ -65,6 +58,14 @@ public class TileUI extends JToggleButton {
 	public void setPosition(int aX, int aY) {
 		x = aX;
 		y = aY;
+	}
+	
+	public int getUIX() {
+		return x;
+	}
+	
+	public int getUIY() {
+		return y;
 	}
 	//
 	
@@ -88,13 +89,12 @@ public class TileUI extends JToggleButton {
 		setSelected((currentUIState & 0x1) == 1);
 	}
 	//
-	private boolean visible;
 	private State currentState;
 	private LifeState currentLifeState;
 	
 	private int currentUIState;
 	private int previousUIState;
 	
-	int x;
-	int y;
+	private int x;
+	private int y;
 }

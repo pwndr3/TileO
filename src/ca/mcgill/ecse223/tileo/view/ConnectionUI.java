@@ -12,17 +12,18 @@ public class ConnectionUI extends JToggleButton {
 	
 	public ConnectionUI(Type aType) {
 		setPreferredSize(new java.awt.Dimension(10, 10));
-		setSelected(true);
+		setSelected(false);
 		
 		setVisible(false);
 		currentState = LifeState.NOTEXIST;
 		type = aType;
+		
+		saveUIState();
 	}
 	
 	public ConnectionUI(Type aType, int aX, int aY) {
 		setPreferredSize(new java.awt.Dimension(10, 10));
 		
-		visible = false;
 		currentState = LifeState.NOTEXIST;
 		type = aType;
 		
@@ -30,24 +31,15 @@ public class ConnectionUI extends JToggleButton {
 		y = aY;
 	}
 	
-	public void setVisible(boolean makeVisible) {
-		visible = makeVisible;
-		super.setVisible(makeVisible);
-	}
-	
-	public boolean isVisible() {
-		return visible;
-	}
-	
 	public LifeState getLifeState() {
 		return currentState;
 	}
 	
-	public void show() {
+	public void showUI() {
 		setVisible(true);
 	}
 	
-	public void hide() {
+	public void hideUI() {
 		setVisible(false);
 	}
 	
@@ -98,13 +90,12 @@ public class ConnectionUI extends JToggleButton {
 		setSelected((currentUIState & 0x1) == 1);
 	}
 	//
-	private boolean visible;
 	private Type type;
 	private LifeState currentState;
 	
 	private int currentUIState;
 	private int previousUIState;
 	
-	int x;
-	int y;
+	private int x;
+	private int y;
 }

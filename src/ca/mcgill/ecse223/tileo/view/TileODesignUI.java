@@ -3,14 +3,12 @@ package ca.mcgill.ecse223.tileo.view;
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.*;
 import ca.mcgill.ecse223.tileo.model.*;
-import ca.mcgill.ecse223.tileo.view.ConnectionUI.LifeState;
+import ca.mcgill.ecse223.tileo.view.*;
 
 import javax.swing.*;
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
-
-//TODO : Check connection visibility
 
 public class TileODesignUI extends javax.swing.JFrame {
 	private static final long serialVersionUID = -4784304605398643427L;
@@ -963,12 +961,12 @@ public class TileODesignUI extends javax.swing.JFrame {
 		}
 
 		// Change colors for connections
-		for (ConnectionUI conn : connectionButtons) {
+		/*for (ConnectionUI conn : connectionButtons) {
 			if (conn.getLifeState() == ConnectionUI.LifeState.NOTEXIST)
 				conn.setBackground(null);
 			else
 				conn.setBackground(new java.awt.Color(0, 0, 0));
-		}
+		}*/
 
 		if (designState == DesignState.ADD_TILE) {
 			// Add Action Tile
@@ -1132,7 +1130,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 	private void showDisabledConnections() {
 		for (ConnectionUI conn : connectionButtons) {
 			if (conn.getLifeState() == ConnectionUI.LifeState.NOTEXIST) {
-				conn.show();
+				conn.showUI();
 			}
 		}
 	}
@@ -1140,7 +1138,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 	private void hideDisabledConnections() {
 		for (ConnectionUI conn : connectionButtons) {
 			if (conn.getLifeState() == ConnectionUI.LifeState.NOTEXIST) {
-				conn.hide();
+				conn.hideUI();
 			}
 		}
 	}
