@@ -138,6 +138,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 		if (numberOfRows == m && numberOfCols == n)
 			return;
 
+		//Clear board and do a whole new one (with normal tiles)
 		numberOfRows = m;
 		numberOfCols = n;
 
@@ -145,12 +146,21 @@ public class TileODesignUI extends javax.swing.JFrame {
 		tilesButtons.clear();
 		connectionButtons.clear();
 		tilesPanel.removeAll();
+		
+		// Create grids
+		tilesPanel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
 
 		// Create buttons and put in linked list
 		for (int i = 0; i < m + (m - 1); i++) {
 			for (int j = 0; j < n + (n - 1); j++) {
+				c.fill = GridBagConstraints.BOTH;
+				c.gridx = i; //row
+				c.gridy = j; //col
+				
 				// Tile
 				if (i % 2 == 0 && j % 2 == 0) {
+					//UI
 					TileUI tile = new TileUI();
 					tile.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -159,7 +169,10 @@ public class TileODesignUI extends javax.swing.JFrame {
 					});
 					tilesButtons.add(tile);
 					
-					// Tile
+					tilesPanel.add(tile, c);
+					tile.setPosition(i/2, j/2);
+					
+					// Game
 					currentController.createNormalTile(i/2, j/2);
 				}
 
@@ -172,6 +185,10 @@ public class TileODesignUI extends javax.swing.JFrame {
 						}
 					});
 					connectionButtons.add(conn);
+					
+					c.fill = GridBagConstraints.HORIZONTAL;
+					tilesPanel.add(conn, c);
+					conn.setPosition(i, j);
 				}
 
 				// Vertical connection
@@ -183,46 +200,10 @@ public class TileODesignUI extends javax.swing.JFrame {
 						}
 					});
 					connectionButtons.add(conn);
-				}
-
-			}
-		}
-
-		// Create grids
-		tilesPanel.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-
-		ListIterator<TileUI> tiles_it = tilesButtons.listIterator();
-		ListIterator<ConnectionUI> conn_it = connectionButtons.listIterator();
-
-		for (int row = 0; row < m + (m - 1); row++) {
-			for (int col = 0; col < n + (n - 1); col++) {
-				c.fill = GridBagConstraints.BOTH;
-				c.gridx = row;
-				c.gridy = col;
-
-				// Tile
-				if (row % 2 == 0 && col % 2 == 0) {
-					TileUI next = tiles_it.next();
-					tilesPanel.add(next, c);
-					next.setPosition(row / 2, col / 2);
-					// TODO : Create tile in game
-				}
-
-				// Horizontal connection
-				else if (row % 2 == 1 && col % 2 == 0) {
-					ConnectionUI next = conn_it.next();
-					c.fill = GridBagConstraints.HORIZONTAL;
-					tilesPanel.add(next, c);
-					next.setPosition(row, col);
-				}
-
-				// Vertical connection
-				else if (row % 2 == 0 && col % 2 == 1) {
-					ConnectionUI next = conn_it.next();
+					
 					c.fill = GridBagConstraints.VERTICAL;
-					tilesPanel.add(next, c);
-					next.setPosition(row, col);
+					tilesPanel.add(conn, c);
+					conn.setPosition(i, j);
 				}
 
 				// Gap
