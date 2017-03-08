@@ -220,23 +220,13 @@ public class TileODesignUI extends javax.swing.JFrame {
 	}
 
 	private void backupLists() {
-		for (TileUI tile : tilesButtons) {
-			tile.saveUIState();
-		}
-
-		for (ConnectionUI conn : connectionButtons) {
-			conn.saveUIState();
-		}
+		tilesButtons.parallelStream().forEach(s -> s.saveUIState());
+		connectionButtons.parallelStream().forEach(s -> s.saveUIState());
 	}
 
 	private void restoreLists() {
-		for (TileUI tile : tilesButtons) {
-			tile.restoreUIState();
-		}
-
-		for (ConnectionUI conn : connectionButtons) {
-			conn.restoreUIState();
-		}
+		tilesButtons.parallelStream().forEach(s -> s.restoreUIState());
+		connectionButtons.parallelStream().forEach(s -> s.restoreUIState());
 	}
 
 	private void resetUI() {
@@ -804,6 +794,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 	}// </editor-fold>
 
 	private void applyChangesButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//TODO : Rewrite according to classes
+		
 		// Change board size
 		if (designState == DesignState.BOARD_SIZE) {
 			changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()),
@@ -991,57 +983,52 @@ public class TileODesignUI extends javax.swing.JFrame {
 		removeTileButton.setSelected(false);
 		removeConnectionButton.setSelected(false);
 		addConnectionButton.setSelected(false);
-
-		// Repaint GUI
-		repaint();
-		revalidate();
 	}
 	
 	//Tile clicked
 	private void tileActionPerformed(java.awt.event.ActionEvent evt) {
-		JToggleButton button = (JToggleButton) evt.getSource();
+		TileUI tile = (TileUI) evt.getSource();
 
-		if (designState == DesignState.NONE) {
-			button.setSelected(false);
-			button.setBorderPainted(false);
-			button.setFocusPainted(false);
+		//Cannot select 2 at a time
+		if (designState == DesignState.SELECT_STARTING_POSITION ||
+				designState == DesignState.ADD_TILE && (tileType.getSelectedItem().toString().equals("Win Tile"))) {
+			tilesButtons.parallelStream().filter(s -> s.isSelected() && s != tile).forEach(s -> s.setSelected(false));
 		}
-
-		if ((designState == DesignState.ADD_TILE && (tileType.getSelectedItem().toString().equals("Regular Tile"))
-				|| designState == DesignState.REMOVE_CONNECTION || designState == DesignState.ADD_CONNECTION)) {
-			if (button.isSelected()) {
-				button.setSelected(false);
-				button.setBorderPainted(false);
-				button.setFocusPainted(false);
-			}
+		
+		//TODO : Action tile - MessageBox
+		
+		//If cannot click tile
+		else {
+			tile.setSelected(false);
+			tile.setBorderPainted(false);
+			tile.setFocusPainted(false);
 		}
-
-		if (designState == DesignState.SELECT_STARTING_POSITION) {
-			for (JToggleButton butt : tilesButtons) {
-				if (butt.isSelected() && butt != button)
-					butt.setSelected(false);
-			}
-		}
-
-		if (designState == DesignState.ADD_TILE && (tileType.getSelectedItem().toString().equals("Win Tile"))) {
-			for (JToggleButton butt : tilesButtons) {
-				if (butt.isSelected() && butt != button)
-					butt.setSelected(false);
-			}
-		}
-
 	}
 
 	//Connection clicked
 	private void connectionActionPerformed(java.awt.event.ActionEvent evt) {
-		if (designState == DesignState.ADD_TILE || designState == DesignState.REMOVE_TILE
-				|| designState == DesignState.ADD_CONNECTION) {
-			JToggleButton button = (JToggleButton) evt.getSource();
-			if (button.isSelected()) {
-				button.setSelected(false);
-				button.setBorderPainted(false);
-				button.setFocusPainted(false);
+		ConnectionUI conn = (ConnectionUI) evt.getSource();
+		 
+		if (designState == DesignState.ADD_CONNECTION) {
+			//If already exists - do nothing
+			if (conn.getLifeState() == ConnectionUI.LifeState.EXIST) {
+				conn.setSelected(false);
+				conn.setBorderPainted(false);
+				conn.setFocusPainted(false);
 			}
+			//Enable changes
+			else {
+				enableChanges();
+			}
+		}
+		else if (designState == DesignState.REMOVE_CONNECTION) {
+			enableChanges();
+		}
+		//Does not allow connections to be clicked
+		else {
+			conn.setSelected(false);
+			conn.setBorderPainted(false);
+			conn.setFocusPainted(false);
 		}
 	}
 
@@ -1112,35 +1099,19 @@ public class TileODesignUI extends javax.swing.JFrame {
 	}
 	
 	private void showDisabledTiles() {
-		for (TileUI tile : tilesButtons) {
-			if (tile.getLifeState() == TileUI.LifeState.NOTEXIST) {
-				tile.show();
-			}
-		}
+		tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).forEach(s -> s.showUI());
 	}
 
 	private void hideDisabledTiles() {
-		for (TileUI tile : tilesButtons) {
-			if (tile.getLifeState() == TileUI.LifeState.NOTEXIST) {
-				tile.hide();
-			}
-		}
+		tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).forEach(s -> s.hideUI());
 	}
 
 	private void showDisabledConnections() {
-		for (ConnectionUI conn : connectionButtons) {
-			if (conn.getLifeState() == ConnectionUI.LifeState.NOTEXIST) {
-				conn.showUI();
-			}
-		}
+		connectionButtons.parallelStream().filter(s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST).forEach(s -> s.showUI());
 	}
 
 	private void hideDisabledConnections() {
-		for (ConnectionUI conn : connectionButtons) {
-			if (conn.getLifeState() == ConnectionUI.LifeState.NOTEXIST) {
-				conn.hideUI();
-			}
-		}
+		connectionButtons.parallelStream().filter(s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST).forEach(s -> s.hideUI());
 	}
 
 	//
