@@ -152,14 +152,14 @@ public class TileODesignUI extends javax.swing.JFrame {
 		GridBagConstraints c = new GridBagConstraints();
 
 		// Create buttons and put in linked list
-		for (int i = 0; i < m + (m - 1); i++) {
-			for (int j = 0; j < n + (n - 1); j++) {
+		for (int row = 0; row < m + (m - 1); row++) {
+			for (int col = 0; col < n + (n - 1); col++) {
 				c.fill = GridBagConstraints.BOTH;
-				c.gridx = i; //row
-				c.gridy = j; //col
+				c.gridx = row; //row
+				c.gridy = col; //column
 				
 				// Tile
-				if (i % 2 == 0 && j % 2 == 0) {
+				if (row % 2 == 0 && col % 2 == 0) {
 					//UI
 					TileUI tile = new TileUI();
 					tile.addActionListener(new java.awt.event.ActionListener() {
@@ -170,14 +170,14 @@ public class TileODesignUI extends javax.swing.JFrame {
 					tilesButtons.add(tile);
 					
 					tilesPanel.add(tile, c);
-					tile.setPosition(i/2, j/2);
+					tile.setPosition(row/2, col/2);
 					
 					// Game
-					currentController.createNormalTile(i/2, j/2);
+					currentController.createNormalTile(row/2, col/2);
 				}
 
 				// Horizontal connection
-				else if (i % 2 == 1 && j % 2 == 0) {
+				else if (row % 2 == 1 && col % 2 == 0) {
 					ConnectionUI conn = new ConnectionUI(ConnectionUI.Type.HORIZONTAL);
 					conn.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -188,11 +188,11 @@ public class TileODesignUI extends javax.swing.JFrame {
 					
 					c.fill = GridBagConstraints.HORIZONTAL;
 					tilesPanel.add(conn, c);
-					conn.setPosition(i, j);
+					conn.setPosition(row, col);
 				}
 
 				// Vertical connection
-				else if (i % 2 == 0 && j % 2 == 1) {
+				else if (row % 2 == 0 && col % 2 == 1) {
 					ConnectionUI conn = new ConnectionUI(ConnectionUI.Type.VERTICAL);
 					conn.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -203,7 +203,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 					
 					c.fill = GridBagConstraints.VERTICAL;
 					tilesPanel.add(conn, c);
-					conn.setPosition(i, j);
+					conn.setPosition(row, col);
 				}
 
 				// Gap
@@ -228,8 +228,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 	private void resetUI() {
 		restoreLists();
-
-		applyChangesButtonActionPerformed(new java.awt.event.ActionEvent(new Object(), 0, ""));
+		update();
 	}
 
 	// Setup new board
@@ -317,11 +316,9 @@ public class TileODesignUI extends javax.swing.JFrame {
 		applyChangesButton.setForeground(new java.awt.Color(255, 255, 255));
 		applyChangesButton.setText("Apply changes");
 		applyChangesButton.setEnabled(false);
-		applyChangesButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				applyChangesButtonActionPerformed(evt);
+		applyChangesButton.addActionListener(e -> {
+				update();
 				designState = DesignState.NONE;
-			}
 		});
 
 		chosenPlayer.setBackground(new java.awt.Color(204, 204, 255));
@@ -777,7 +774,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 		pack();
 	}// </editor-fold>
 
-	private void applyChangesButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void update() {
 		// TODO : Rewrite according to classes
 
 		// Change board size
