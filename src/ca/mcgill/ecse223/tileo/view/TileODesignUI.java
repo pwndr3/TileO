@@ -27,6 +27,9 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 	private int numberOfRows = 0;
 	private int numberOfCols = 0;
+	
+	private int nbOfCardsLeft = 32;
+	int[] cardsCounts = {0,0,0,0,0};
 
 	/**
 	 * Creates new form TileOUGUI
@@ -35,17 +38,17 @@ public class TileODesignUI extends javax.swing.JFrame {
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 		} catch (Exception e) {
-			//Too bad
+			// Too bad
 		}
-		
+
 		game = aGame;
 		currentController = new DesignController(game);
 
-		//Init layout
+		// Init layout
 		initComponents();
 		disableChanges();
 	}
-	
+
 	private static final int BOARDSIZE = 1;
 	private static final int PLAYERS = 2;
 	private static final int STARTINGBTN = 4;
@@ -58,7 +61,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 	private static final int SAVEBTN = 512;
 	private static final int LOADBTN = 1024;
 	private static final int ALLBTN = 4095;
-	
+
 	private void maskButtons(int param) {
 		verticalLength.setEnabled((param & BOARDSIZE) == BOARDSIZE);
 		horizontalLength.setEnabled((param & BOARDSIZE) == BOARDSIZE);
@@ -90,35 +93,47 @@ public class TileODesignUI extends javax.swing.JFrame {
 	}
 
 	private void changeNumberOfCardsLeft() {
-		//Forbid negative numbers
-		if (Integer.valueOf(nbRollDieCard.getText()) < 0)
-			nbRollDieCard.setText("0");
-		if (Integer.valueOf(nbRemoveConnectionCard.getText()) < 0)
-			nbRemoveConnectionCard.setText("0");
-		if (Integer.valueOf(nbTeleportCard.getText()) < 0)
-			nbTeleportCard.setText("0");
-		if (Integer.valueOf(nbLoseTurnCard.getText()) < 0)
-			nbLoseTurnCard.setText("0");
-		if (Integer.valueOf(nbConnectTilesCard.getText()) < 0)
-			nbConnectTilesCard.setText("0");
-		
-		int nbOfCardsLeft = 32 - (Integer.valueOf(nbRollDieCard.getText()) + 
-									Integer.valueOf(nbRemoveConnectionCard.getText()) + 
-									Integer.valueOf(nbTeleportCard.getText()) + 
-									Integer.valueOf(nbLoseTurnCard.getText()) + 
-									Integer.valueOf(nbConnectTilesCard.getText()));
-
-		if (nbOfCardsLeft < 0) {
-			cardsLeft.setForeground(new java.awt.Color(255, 0, 0));
-			applyChangesButton.setEnabled(false);
-		} else {
-			cardsLeft.setForeground(new java.awt.Color(0, 0, 0));
-			applyChangesButton.setEnabled(true);
+		// Forbid negative numbers
+		if((Integer.valueOf(nbRollDieCard.getText()) < 0) ||
+				(Integer.valueOf(nbRemoveConnectionCard.getText()) < 0) ||
+				(Integer.valueOf(nbTeleportCard.getText()) < 0) ||
+				(Integer.valueOf(nbLoseTurnCard.getText()) < 0) ||
+				(Integer.valueOf(nbConnectTilesCard.getText()) < 0)) {
+			
+			if (Integer.valueOf(nbRollDieCard.getText()) < 0)
+				nbRollDieCard.setText(String.valueOf(cardsCounts[0]));
+			else if (Integer.valueOf(nbRemoveConnectionCard.getText()) < 0)
+				nbRemoveConnectionCard.setText(String.valueOf(cardsCounts[1]));
+			else if (Integer.valueOf(nbTeleportCard.getText()) < 0)
+				nbTeleportCard.setText(String.valueOf(cardsCounts[2]));
+			else if (Integer.valueOf(nbLoseTurnCard.getText()) < 0)
+				nbLoseTurnCard.setText(String.valueOf(cardsCounts[3]));
+			else if (Integer.valueOf(nbConnectTilesCard.getText()) < 0)
+				nbConnectTilesCard.setText(String.valueOf(cardsCounts[4]));
 		}
-
-		cardsLeft.setText(String.valueOf(nbOfCardsLeft));
+		
+		cardsCounts[0] = Integer.valueOf(nbRollDieCard.getText());
+		cardsCounts[1] = Integer.valueOf(nbRemoveConnectionCard.getText());
+		cardsCounts[2] = Integer.valueOf(nbTeleportCard.getText());
+		cardsCounts[3] = Integer.valueOf(nbLoseTurnCard.getText());
+		cardsCounts[4] = Integer.valueOf(nbConnectTilesCard.getText());
+		
+		//If number has changed
+		if(nbOfCardsLeft != (32 - cardsCounts[0] - cardsCounts[1] - cardsCounts[2] - cardsCounts[3] - cardsCounts[4])) {
+			nbOfCardsLeft = (32 - cardsCounts[0] - cardsCounts[1] - cardsCounts[2] - cardsCounts[3] - cardsCounts[4]);
+			
+			if (nbOfCardsLeft < 0) {
+				cardsLeft.setForeground(new java.awt.Color(255, 0, 0));
+				disableChanges();
+			} else {
+				cardsLeft.setForeground(new java.awt.Color(0, 0, 0));
+				enableChanges();
+			}
+			
+			cardsLeft.setText(String.valueOf(nbOfCardsLeft));
+		}
 	}
-	
+
 	private void changeBoardSize(int m, int n) {
 		if (numberOfRows == m && numberOfCols == n)
 			return;
@@ -143,8 +158,9 @@ public class TileODesignUI extends javax.swing.JFrame {
 						}
 					});
 					tilesButtons.add(tile);
-					//Tile
-					//currentController.createNormalTile(i/2, j/2);
+					
+					// Tile
+					currentController.createNormalTile(i/2, j/2);
 				}
 
 				// Horizontal connection
@@ -189,8 +205,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 				if (row % 2 == 0 && col % 2 == 0) {
 					TileUI next = tiles_it.next();
 					tilesPanel.add(next, c);
-					next.setPosition(row/2, col/2);
-					//TODO : Create tile in game
+					next.setPosition(row / 2, col / 2);
+					// TODO : Create tile in game
 				}
 
 				// Horizontal connection
@@ -198,7 +214,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 					ConnectionUI next = conn_it.next();
 					c.fill = GridBagConstraints.HORIZONTAL;
 					tilesPanel.add(next, c);
-					next.setPosition(row,col);
+					next.setPosition(row, col);
 				}
 
 				// Vertical connection
@@ -206,7 +222,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 					ConnectionUI next = conn_it.next();
 					c.fill = GridBagConstraints.VERTICAL;
 					tilesPanel.add(next, c);
-					next.setPosition(row,col);
+					next.setPosition(row, col);
 				}
 
 				// Gap
@@ -235,7 +251,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 		applyChangesButtonActionPerformed(new java.awt.event.ActionEvent(new Object(), 0, ""));
 	}
 
-	//Setup new board
+	// Setup new board
 	private void setupBoard() {
 		tilesButtons = new LinkedList<TileUI>();
 		connectionButtons = new LinkedList<ConnectionUI>();
@@ -243,9 +259,10 @@ public class TileODesignUI extends javax.swing.JFrame {
 		tilesPanel = new javax.swing.JPanel();
 		tilesPanel.setPreferredSize(new java.awt.Dimension(1130, 680));
 
-		changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()), Integer.valueOf(verticalLength.getSelectedItem().toString()));
+		changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()),
+				Integer.valueOf(verticalLength.getSelectedItem().toString()));
 	}
-	
+
 	private void initComponents() {
 		jLabel1 = new javax.swing.JLabel();
 		jLabel2 = new javax.swing.JLabel();
@@ -331,19 +348,17 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 		removeTileButton.setBackground(new java.awt.Color(153, 153, 255));
 		removeTileButton.setText("Remove Tile");
-		removeTileButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				if(removeTileButton.isSelected()) {
-					designState = DesignState.REMOVE_TILE;
-					tileType.setEnabled(false);
-					
-					backupLists();
-					maskButtons(REMOVETILEBTN);
-				} else {
-					tileType.setEnabled(true);
-					resetUI();
-					designState = DesignState.NONE;
-				}
+		removeTileButton.addActionListener(e -> {
+			if (removeTileButton.isSelected()) {
+				designState = DesignState.REMOVE_TILE;
+				tileType.setEnabled(false);
+
+				backupLists();
+				maskButtons(REMOVETILEBTN);
+			} else {
+				tileType.setEnabled(true);
+				resetUI();
+				designState = DesignState.NONE;
 			}
 		});
 
@@ -352,77 +367,67 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 		addTileButton.setBackground(new java.awt.Color(153, 153, 255));
 		addTileButton.setText("Add Tile");
-		addTileButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				if(addTileButton.isSelected()) {
-					designState = DesignState.ADD_TILE;
-					
-					backupLists();
-					maskButtons(ADDTILEBTN);
-					
-					//Show disabled tiles when "Regular Tile" is selected 
-					if (tileType.getSelectedItem().toString().equals("Regular Tile")) {
-						showDisabledTiles();
-					}
-				} else {
-					resetUI();
-					designState = DesignState.NONE;
+		addTileButton.addActionListener(e -> {
+			if (addTileButton.isSelected()) {
+				designState = DesignState.ADD_TILE;
+
+				backupLists();
+				maskButtons(ADDTILEBTN);
+
+				// Show disabled tiles when "Regular Tile" is selected
+				if (tileType.getSelectedItem().toString().equals("Regular Tile")) {
+					showDisabledTiles();
 				}
+			} else {
+				resetUI();
+				designState = DesignState.NONE;
 			}
 		});
 
 		selectPositionButton.setBackground(new java.awt.Color(153, 153, 255));
 		selectPositionButton.setText("Select Start Position");
-		selectPositionButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				if(selectPositionButton.isSelected()) {
-					designState = DesignState.SELECT_STARTING_POSITION;
-					
-					backupLists();
-					maskButtons(STARTINGBTN);
-				} else {
-					resetUI();
-					designState = DesignState.NONE;
-				}
+		selectPositionButton.addActionListener(e -> {
+			if (selectPositionButton.isSelected()) {
+				designState = DesignState.SELECT_STARTING_POSITION;
+
+				backupLists();
+				maskButtons(STARTINGBTN);
+			} else {
+				resetUI();
+				designState = DesignState.NONE;
 			}
 		});
 
 		removeConnectionButton.setBackground(new java.awt.Color(153, 153, 255));
 		removeConnectionButton.setText("Remove Connection");
-		removeConnectionButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				if(removeConnectionButton.isSelected()) {
-					designState = DesignState.REMOVE_CONNECTION;
-					
-					backupLists();
-					maskButtons(REMOVECONNBTN);
-					
-					// Change colors for connections
-					for (ConnectionUI conn : connectionButtons) {
-						conn.setBackground(null);
-					}
-				} else {
-					resetUI();
-					designState = DesignState.NONE;
-				}
+		removeConnectionButton.addActionListener(e -> {
+			if (removeConnectionButton.isSelected()) {
+				designState = DesignState.REMOVE_CONNECTION;
+
+				backupLists();
+				maskButtons(REMOVECONNBTN);
+
+				// Change colors for connections
+				connectionButtons.parallelStream().forEach(s -> s.setBackground(null));
+			} else {
+				resetUI();
+				designState = DesignState.NONE;
 			}
 		});
 
 		addConnectionButton.setBackground(new java.awt.Color(153, 153, 255));
 		addConnectionButton.setText("Add Connection");
-		addConnectionButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				if(addConnectionButton.isSelected()) {
-					designState = DesignState.ADD_CONNECTION;
-					
-					backupLists();
-					maskButtons(ADDCONNBTN);
-					
-					showDisabledConnections();
-				} else {
-					resetUI();
-					designState = DesignState.NONE;
-				}
+		addConnectionButton.addActionListener(e -> {
+			if (addConnectionButton.isSelected()) {
+				designState = DesignState.ADD_CONNECTION;
+
+				backupLists();
+				maskButtons(ADDCONNBTN);
+
+				showDisabledConnections();
+			} else {
+				resetUI();
+				designState = DesignState.NONE;
 			}
 		});
 
@@ -439,78 +444,73 @@ public class TileODesignUI extends javax.swing.JFrame {
 		jLabel16.setText("Connect Tiles");
 
 		nbRollDieCard.setText("0");
-		nbRollDieCard.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				changeNumberOfCardsLeft();
-			}
+		nbRollDieCard.addActionListener(e -> {
+			changeNumberOfCardsLeft();
 		});
 		nbRollDieCard.addFocusListener(new FocusListener() {
-			 public void focusGained(FocusEvent e) {
-				 
-			 }
-		      public void focusLost(FocusEvent e) {
-		    	  changeNumberOfCardsLeft();
-		      }
+			public void focusGained(FocusEvent e) {
+
+			}
+
+			public void focusLost(FocusEvent e) {
+				changeNumberOfCardsLeft();
+			}
 		});
 
 		nbRemoveConnectionCard.setText("0");
-		nbRemoveConnectionCard.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				changeNumberOfCardsLeft();
-			}
+		nbRemoveConnectionCard.addActionListener(e -> {
+			changeNumberOfCardsLeft();
 		});
 		nbRemoveConnectionCard.addFocusListener(new FocusListener() {
-			 public void focusGained(FocusEvent e) {
-				 
-			 }
-		      public void focusLost(FocusEvent e) {
-		    	  changeNumberOfCardsLeft();
-		      }
+			public void focusGained(FocusEvent e) {
+
+			}
+
+			public void focusLost(FocusEvent e) {
+				changeNumberOfCardsLeft();
+			}
 		});
 
 		nbTeleportCard.setText("0");
-		nbTeleportCard.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				changeNumberOfCardsLeft();
-			}
+		nbTeleportCard.addActionListener(e -> {
+			changeNumberOfCardsLeft();
 		});
 		nbTeleportCard.addFocusListener(new FocusListener() {
-			 public void focusGained(FocusEvent e) {
-				 
-			 }
-		      public void focusLost(FocusEvent e) {
-		    	  changeNumberOfCardsLeft();
-		      }
+			public void focusGained(FocusEvent e) {
+
+			}
+
+			public void focusLost(FocusEvent e) {
+				changeNumberOfCardsLeft();
+			}
 		});
 
 		nbLoseTurnCard.setText("0");
-		nbLoseTurnCard.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				changeNumberOfCardsLeft();
-			}
+		nbLoseTurnCard.addActionListener(e -> {
+			changeNumberOfCardsLeft();
 		});
 		nbLoseTurnCard.addFocusListener(new FocusListener() {
-			 public void focusGained(FocusEvent e) {
-				 
-			 }
-		      public void focusLost(FocusEvent e) {
-		    	  changeNumberOfCardsLeft();
-		      }
+			public void focusGained(FocusEvent e) {
+
+			}
+
+			public void focusLost(FocusEvent e) {
+				changeNumberOfCardsLeft();
+			}
 		});
 
 		nbConnectTilesCard.setText("0");
-		nbConnectTilesCard.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				changeNumberOfCardsLeft();
-			}
+		nbConnectTilesCard.addActionListener(e -> {
+			changeNumberOfCardsLeft();
 		});
 		nbConnectTilesCard.addFocusListener(new FocusListener() {
-			 public void focusGained(FocusEvent e) {
-				 
-			 }
-		      public void focusLost(FocusEvent e) {
-		    	  changeNumberOfCardsLeft();
-		      }
+			public void focusGained(FocusEvent e) {
+
+			}
+
+			public void focusLost(FocusEvent e) {
+				changeNumberOfCardsLeft();
+			}
 		});
 
 		saveButton.setBackground(new java.awt.Color(0, 0, 255));
@@ -525,15 +525,13 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 		nbOfPlayers.setBackground(new java.awt.Color(204, 204, 255));
 		nbOfPlayers.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2", "3", "4" }));
-		nbOfPlayers.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				if(Integer.valueOf(String.valueOf(nbOfPlayers.getSelectedItem())) != game.numberOfPlayers()) {
-					designState = DesignState.CHANGE_NUMBER_OF_PLAYERS;
-					nbOfPlayersChanged();
-				} else {
-					resetUI();
-					designState = DesignState.NONE;
-				}
+		nbOfPlayers.addActionListener(e -> {
+			if (Integer.valueOf(String.valueOf(nbOfPlayers.getSelectedItem())) != game.numberOfPlayers()) {
+				designState = DesignState.CHANGE_NUMBER_OF_PLAYERS;
+				nbOfPlayersChanged();
+			} else {
+				resetUI();
+				designState = DesignState.NONE;
 			}
 		});
 
@@ -554,10 +552,9 @@ public class TileODesignUI extends javax.swing.JFrame {
 		backButton.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
 		backButton.setForeground(new java.awt.Color(255, 255, 255));
 		backButton.setText("Back");
-		backButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				backButtonActionPerformed(evt);
-			}
+		backButton.addActionListener(e -> {
+			new MainPage().setVisible(true);
+			dispose();
 		});
 
 		cardsLeft.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
@@ -565,19 +562,25 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 		horizontalLength.setModel(new javax.swing.DefaultComboBoxModel<>(
 				new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }));
-		horizontalLength.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				horizontalLengthActionPerformed(evt);
-			}
+		horizontalLength.addActionListener(e -> {
+			designState = DesignState.BOARD_SIZE;
+
+			if (Integer.valueOf(String.valueOf(horizontalLength.getSelectedItem())) != numberOfRows)
+				enableChanges();
+			else
+				disableChanges();
 		});
 		horizontalLength.setSelectedIndex(8 - 2);
 
 		verticalLength.setModel(new javax.swing.DefaultComboBoxModel<>(
 				new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }));
-		verticalLength.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				verticalLengthActionPerformed(evt);
-			}
+		verticalLength.addActionListener(e -> {
+			designState = DesignState.BOARD_SIZE;
+
+			if (Integer.valueOf(String.valueOf(verticalLength.getSelectedItem())) != numberOfCols)
+				enableChanges();
+			else
+				disableChanges();
 		});
 		verticalLength.setSelectedIndex(8 - 2);
 
@@ -590,7 +593,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 		//
 		GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		
+
 		layout.setHorizontalGroup(
 				layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
 						.createSequentialGroup().addContainerGap()
@@ -794,8 +797,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 	}// </editor-fold>
 
 	private void applyChangesButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		//TODO : Rewrite according to classes
-		
+		// TODO : Rewrite according to classes
+
 		// Change board size
 		if (designState == DesignState.BOARD_SIZE) {
 			changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()),
@@ -868,8 +871,9 @@ public class TileODesignUI extends javax.swing.JFrame {
 					button.setVisible(false);
 					button.setText("");
 					button.setBackground(null);
-					//Tile
-					//currentController.deleteTile((i / numberOfRows) * 2, (i % numberOfRows) * 2);
+					// Tile
+					// currentController.deleteTile((i / numberOfRows) * 2, (i %
+					// numberOfRows) * 2);
 				}
 				i++;
 			}
@@ -882,8 +886,9 @@ public class TileODesignUI extends javax.swing.JFrame {
 				if (button.isSelected()) {
 					button.setVisible(false);
 
-					//Tile 1 and 2
-					//currentController.removeConnection(button.getUIX(), button.getUIY());
+					// Tile 1 and 2
+					// currentController.removeConnection(button.getUIX(),
+					// button.getUIY());
 				}
 				i++;
 			}
@@ -902,8 +907,9 @@ public class TileODesignUI extends javax.swing.JFrame {
 					if (tile.isSelected() && tile.isVisible()) {
 						tile.setText("W");
 						tile.setBackground(Color.pink);
-						//Tile
-						//currentController.createWinTile((i / numberOfRows) * 2, (i % numberOfRows) * 2);
+						// Tile
+						// currentController.createWinTile((i / numberOfRows) *
+						// 2, (i % numberOfRows) * 2);
 					}
 				}
 
@@ -912,8 +918,9 @@ public class TileODesignUI extends javax.swing.JFrame {
 					if (tile.isSelected() && tile.isVisible()) {
 						tile.setText("A");
 						tile.setBackground(Color.magenta);
-						//Tile
-						//currentController.createActionTile((i / numberOfRows) * 2, (i % numberOfRows) * 2);
+						// Tile
+						// currentController.createActionTile((i / numberOfRows)
+						// * 2, (i % numberOfRows) * 2);
 					}
 				}
 				i++;
@@ -926,7 +933,6 @@ public class TileODesignUI extends javax.swing.JFrame {
 			}
 
 		}
-		
 
 		// Reset Connections
 		if (designState == DesignState.ADD_CONNECTION) {
@@ -936,29 +942,29 @@ public class TileODesignUI extends javax.swing.JFrame {
 			for (ConnectionUI conn : connectionButtons) {
 				if (conn.isVisible()) {
 					if ((conn.getUIY() % 2) == 0) {
-						//Tiles
-						//currentController.connectTiles(conn.getUIX(), conn.getUIY(), true);
-					}
-					else {
-						//Tiles
-						//currentController.connectTiles(conn.getUIX(), conn.getUIY(), false);
+						// Tiles
+						// currentController.connectTiles(conn.getUIX(),
+						// conn.getUIY(), true);
+					} else {
+						// Tiles
+						// currentController.connectTiles(conn.getUIX(),
+						// conn.getUIY(), false);
 					}
 				}
 				i++;
 			}
 		}
-		
-		if(designState == DesignState.CHANGE_NUMBER_OF_PLAYERS) {
+
+		if (designState == DesignState.CHANGE_NUMBER_OF_PLAYERS) {
 			currentController.changeNumberOfPlayers(Integer.valueOf(String.valueOf(nbOfPlayers.getSelectedItem())));
 		}
 
 		// Change colors for connections
-		/*for (ConnectionUI conn : connectionButtons) {
-			if (conn.getLifeState() == ConnectionUI.LifeState.NOTEXIST)
-				conn.setBackground(null);
-			else
-				conn.setBackground(new java.awt.Color(0, 0, 0));
-		}*/
+		/*
+		 * for (ConnectionUI conn : connectionButtons) { if (conn.getLifeState()
+		 * == ConnectionUI.LifeState.NOTEXIST) conn.setBackground(null); else
+		 * conn.setBackground(new java.awt.Color(0, 0, 0)); }
+		 */
 
 		if (designState == DesignState.ADD_TILE) {
 			// Add Action Tile
@@ -976,7 +982,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 		disableChanges();
 		maskButtons(ALLBTN);
 		designState = DesignState.NONE;
-		
+
 		// Unselect all buttons
 		selectPositionButton.setSelected(false);
 		addTileButton.setSelected(false);
@@ -984,47 +990,71 @@ public class TileODesignUI extends javax.swing.JFrame {
 		removeConnectionButton.setSelected(false);
 		addConnectionButton.setSelected(false);
 	}
-	
-	//Tile clicked
+
+	// Tile clicked
 	private void tileActionPerformed(java.awt.event.ActionEvent evt) {
 		TileUI tile = (TileUI) evt.getSource();
 
-		//Cannot select 2 at a time
-		if (designState == DesignState.SELECT_STARTING_POSITION ||
-				designState == DesignState.ADD_TILE && (tileType.getSelectedItem().toString().equals("Win Tile"))) {
+		// Cannot select 2 at a time
+		if (designState == DesignState.SELECT_STARTING_POSITION) {
 			tilesButtons.parallelStream().filter(s -> s.isSelected() && s != tile).forEach(s -> s.setSelected(false));
+			enableChanges();
 		}
 		
-		//TODO : Action tile - MessageBox
+		else if (designState == DesignState.ADD_TILE) {
+			//WinTile - Cannot select 2 at a time
+			if(tileType.getSelectedItem().toString().equals("Win Tile")) {
+				tilesButtons.parallelStream().filter(s -> s.isSelected() && s != tile).forEach(s -> s.setSelected(false));
+				enableChanges();
+			}
+			
+			else if(tileType.getSelectedItem().toString().equals("Action Tile")) {
+				// TODO : Action tile - MessageBox
+			}
+			
+			//Normal tile
+			else {
+				if(tile.getLifeState() == TileUI.LifeState.NOTEXIST) {
+					//Let clicking
+					enableChanges();
+				}
+			}
+		}
 		
-		//If cannot click tile
+		//Remove tile
+		else if (designState == DesignState.REMOVE_TILE) {
+			//Let clicking
+			enableChanges();
+		}
+
+		// If cannot click tile
 		else {
 			tile.setSelected(false);
 			tile.setBorderPainted(false);
 			tile.setFocusPainted(false);
+			disableChanges();
 		}
 	}
 
-	//Connection clicked
+	// Connection clicked
 	private void connectionActionPerformed(java.awt.event.ActionEvent evt) {
 		ConnectionUI conn = (ConnectionUI) evt.getSource();
-		 
+
 		if (designState == DesignState.ADD_CONNECTION) {
-			//If already exists - do nothing
+			// If already exists - do nothing
 			if (conn.getLifeState() == ConnectionUI.LifeState.EXIST) {
 				conn.setSelected(false);
 				conn.setBorderPainted(false);
 				conn.setFocusPainted(false);
 			}
-			//Enable changes
+			// Enable changes
 			else {
 				enableChanges();
 			}
-		}
-		else if (designState == DesignState.REMOVE_CONNECTION) {
+		} else if (designState == DesignState.REMOVE_CONNECTION) {
 			enableChanges();
 		}
-		//Does not allow connections to be clicked
+		// Does not allow connections to be clicked
 		else {
 			conn.setSelected(false);
 			conn.setBorderPainted(false);
@@ -1033,90 +1063,71 @@ public class TileODesignUI extends javax.swing.JFrame {
 	}
 
 	private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		//TODO : Check if game is playable to change game state
+		// TODO : Check if game is playable to change game state
 		TileOApplication.save();
 	}
 
 	private void nbOfPlayersChanged() {
-		//TODO : MessageBox - game will be reset
+		// TODO : MessageBox - game will be reset
 		String nbOfPlayersChosen = String.valueOf(nbOfPlayers.getSelectedItem());
-		if(game.numberOfPlayers() != Integer.valueOf(nbOfPlayersChosen))
+		if (game.numberOfPlayers() != Integer.valueOf(nbOfPlayersChosen))
 			enableChanges();
 		else
 			disableChanges();
 
-		//Only when apply changes
-		/*if (nbOfPlayers.getSelectedItem() == "4") { // Setting value of combo
-													// box for choosing a player
-													// to defined number of
-													// players
-			chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
-		} else if (nbOfPlayers.getSelectedItem() == "3") {
-			chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3" }));
-		} else {
-			chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2" }));
-		}*/
+		// Only when apply changes
+		/*
+		 * if (nbOfPlayers.getSelectedItem() == "4") { // Setting value of combo
+		 * // box for choosing a player // to defined number of // players
+		 * chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new
+		 * String[] { "1", "2", "3", "4" })); } else if
+		 * (nbOfPlayers.getSelectedItem() == "3") { chosenPlayer.setModel(new
+		 * javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3" }));
+		 * } else { chosenPlayer.setModel(new
+		 * javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2" })); }
+		 */
 	}
 
 	private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		//TODO : MessageBox - any unsaved changes will be lost
-		//then show available games OR create new board
-		
+		// TODO : MessageBox - any unsaved changes will be lost
+		// then show available games OR create new board
+
 		TileOApplication.load();
 	}
 
-	private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		new MainPage().setVisible(true);
-		dispose();
-	}
-
-	private void horizontalLengthActionPerformed(java.awt.event.ActionEvent evt) {
-		designState = DesignState.BOARD_SIZE;
-		
-		if(Integer.valueOf(String.valueOf(horizontalLength.getSelectedItem())) != numberOfRows)
-			enableChanges();
-		else
-			disableChanges();
-	}
-
-	private void verticalLengthActionPerformed(java.awt.event.ActionEvent evt) {
-		designState = DesignState.BOARD_SIZE;
-		
-		if(Integer.valueOf(String.valueOf(verticalLength.getSelectedItem())) != numberOfCols)
-			enableChanges();
-		else
-			disableChanges();
-	}
-	
 	private void enableChanges() {
 		applyChangesButton.setEnabled(true);
 		applyChangesButton.setSelected(false);
 	}
-	
+
 	private void disableChanges() {
 		applyChangesButton.setEnabled(false);
 		applyChangesButton.setSelected(false);
 	}
-	
+
 	private void showDisabledTiles() {
-		tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).forEach(s -> s.showUI());
+		tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST)
+				.forEach(s -> s.showUI());
 	}
 
 	private void hideDisabledTiles() {
-		tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).forEach(s -> s.hideUI());
+		tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST)
+				.forEach(s -> s.hideUI());
 	}
 
 	private void showDisabledConnections() {
-		connectionButtons.parallelStream().filter(s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST).forEach(s -> s.showUI());
+		connectionButtons.parallelStream().filter(s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST)
+				.forEach(s -> s.showUI());
 	}
 
 	private void hideDisabledConnections() {
-		connectionButtons.parallelStream().filter(s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST).forEach(s -> s.hideUI());
+		connectionButtons.parallelStream().filter(s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST)
+				.forEach(s -> s.hideUI());
 	}
 
 	//
 	private Game game;
-	
+
 	// Variables declaration - do not modify
 	private javax.swing.JToggleButton addConnectionButton;
 	private javax.swing.JToggleButton addTileButton;

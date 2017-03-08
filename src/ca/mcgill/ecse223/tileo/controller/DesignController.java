@@ -93,11 +93,7 @@ public class DesignController {
 		return (game.setWinTile(newWinTile));
 	}
 
-	public boolean createNormalTile(Tile tile) {
-
-		int x = tile.getX();
-		int y = tile.getY();
-
+	public boolean createNormalTile(int x, int y) {
 		game.addTile(new NormalTile(x, y, game));
 
 		return true;
