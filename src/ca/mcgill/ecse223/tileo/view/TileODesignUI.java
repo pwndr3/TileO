@@ -62,14 +62,15 @@ public class TileODesignUI extends javax.swing.JFrame {
 	private static final int CARDS = 256;
 	private static final int SAVEBTN = 512;
 	private static final int LOADBTN = 1024;
-	private static final int ALLBTN = 4095;
+	private static final int CHOSENPLAYER = 2048;
+	private static final int ALLBTN = 8191;
 
 	private void maskButtons(int param) {
 		verticalLength.setEnabled((param & BOARDSIZE) == BOARDSIZE);
 		horizontalLength.setEnabled((param & BOARDSIZE) == BOARDSIZE);
 		//
-		chosenPlayer.setEnabled((param & PLAYERS) == PLAYERS);
 		nbOfPlayers.setEnabled((param & PLAYERS) == PLAYERS);
+		chosenPlayer.setEnabled((param & CHOSENPLAYER) == CHOSENPLAYER);
 		//
 		selectPositionButton.setEnabled((param & STARTINGBTN) == STARTINGBTN);
 		//
