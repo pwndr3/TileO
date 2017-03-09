@@ -855,8 +855,6 @@ public class TileODesignUI extends javax.swing.JFrame {
 		 * IF BOARD SIZE HAS CHANGED
 		 */
 		case BOARD_SIZE:
-			//changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()),
-			//		Integer.valueOf(verticalLength.getSelectedItem().toString()));
 			setupBoard(true);
 			break;
 
@@ -893,7 +891,6 @@ public class TileODesignUI extends javax.swing.JFrame {
 					tileGUI.resetUI();
 					switch (playerNumber) {
 					case 1:
-						//tileGUI.setBackground(new java.awt.Color(255, 10, 10));
 						try {
 							tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/1.png"))));
 						} catch (IOException e) {
@@ -902,7 +899,6 @@ public class TileODesignUI extends javax.swing.JFrame {
 						break;
 
 					case 2:
-						//tileGUI.setBackground(new java.awt.Color(10, 10, 240));
 						try {
 							tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/2.png"))));
 						} catch (IOException e) {
@@ -911,7 +907,6 @@ public class TileODesignUI extends javax.swing.JFrame {
 						break;
 
 					case 3:
-						//tileGUI.setBackground(new java.awt.Color(10, 240, 10));
 						try {
 							tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/3.png"))));
 						} catch (IOException e) {
@@ -920,7 +915,6 @@ public class TileODesignUI extends javax.swing.JFrame {
 						break;
 
 					case 4:
-						//tileGUI.setBackground(new java.awt.Color(240, 240, 10));
 						try {
 							tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/4.png"))));
 						} catch (IOException e) {
@@ -1266,11 +1260,6 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 	private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO : Check if game is playable to change game state
-		game.setMode(Game.Mode.GAME);
-		if(TileOApplication.getTileO().addGameAt(game, 0))
-			System.out.println("TRUE");
-		else
-			System.out.println("FALSE");
 		TileOApplication.save();
 	}
 
