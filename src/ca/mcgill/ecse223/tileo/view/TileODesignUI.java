@@ -3,8 +3,6 @@ package ca.mcgill.ecse223.tileo.view;
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.*;
 import ca.mcgill.ecse223.tileo.model.*;
-import ca.mcgill.ecse223.tileo.view.*;
-
 import javax.swing.*;
 import java.util.*;
 import java.util.List;
@@ -13,8 +11,6 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class TileODesignUI extends javax.swing.JFrame {
-	private static final long serialVersionUID = -4784304605398643427L;
-
 	private DesignController currentController;
 
 	private LinkedList<TileUI> tilesButtons;
@@ -165,11 +161,10 @@ public class TileODesignUI extends javax.swing.JFrame {
 		numberOfRows = m;
 		numberOfCols = n;
 
-		// Clear
 		tilesButtons.clear();
 		connectionButtons.clear();
 		tilesPanel.removeAll();
-
+		
 		// Create grids
 		tilesPanel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -255,19 +250,39 @@ public class TileODesignUI extends javax.swing.JFrame {
 	}
 
 	// Setup new board
-	private void setupBoard() {
-		tilesButtons = new LinkedList<TileUI>();
-		connectionButtons = new LinkedList<ConnectionUI>();
+	private void setupBoard(boolean forceNewGame) {
+		numberOfRows = numberOfCols = 0;
+		
+		if(tilesButtons == null) {
+			tilesButtons = new LinkedList<TileUI>();
+		} else {
+			tilesButtons.clear();
+		}
+		
+		if(connectionButtons == null) {
+			connectionButtons = new LinkedList<ConnectionUI>();
+		} else {
+			connectionButtons.clear();
+		}
 
-		tilesPanel = new javax.swing.JPanel();
-		tilesPanel.setPreferredSize(new java.awt.Dimension(1130, 680));
+		if(tilesPanel == null) {
+			tilesPanel = new javax.swing.JPanel();
+			tilesPanel.setPreferredSize(new java.awt.Dimension(1130, 680));
+		} else {
+			tilesPanel.removeAll();
+			tilesPanel.revalidate();
+		}
 
-		changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()),
-				Integer.valueOf(verticalLength.getSelectedItem().toString()));
-
-		if (game == null) {
+		//Delete current game then create new one
+		if (game == null || forceNewGame) {
 			game = currentController.initGame(Integer.valueOf(String.valueOf(chosenPlayer.getSelectedItem())));
 		}
+		
+		changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()),
+				Integer.valueOf(verticalLength.getSelectedItem().toString()));
+		
+		repaint();
+		revalidate();
 	}
 
 	private void initComponents() {
@@ -363,8 +378,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 				maskButtons(REMOVETILEBTN);
 			} else {
 				tileType.setEnabled(true);
-				resetUI();
 				designState = DesignState.NONE;
+				resetUI();
 			}
 		});
 
@@ -386,8 +401,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 					showDisabledTiles();
 				}
 			} else {
-				resetUI();
 				designState = DesignState.NONE;
+				resetUI();
 			}
 		});
 
@@ -401,8 +416,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 				backupLists();
 				maskButtons(STARTINGBTN);
 			} else {
-				resetUI();
 				designState = DesignState.NONE;
+				resetUI();
 			}
 		});
 
@@ -419,8 +434,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 				// Change colors for connections
 				connectionButtons.parallelStream().forEach(s -> s.setBackground(null));
 			} else {
-				resetUI();
 				designState = DesignState.NONE;
+				resetUI();
 			}
 		});
 
@@ -436,8 +451,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 				showDisabledConnections();
 			} else {
-				resetUI();
 				designState = DesignState.NONE;
+				resetUI();
 			}
 		});
 
@@ -540,8 +555,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 				designState = DesignState.CHANGE_NUMBER_OF_PLAYERS;
 				nbOfPlayersChanged();
 			} else {
-				resetUI();
 				designState = DesignState.NONE;
+				resetUI();
 			}
 		});
 
@@ -575,10 +590,14 @@ public class TileODesignUI extends javax.swing.JFrame {
 		horizontalLength.addActionListener(e -> {
 			designState = DesignState.BOARD_SIZE;
 
-			if (Integer.valueOf(String.valueOf(horizontalLength.getSelectedItem())) != numberOfRows)
+			if (Integer.valueOf(String.valueOf(horizontalLength.getSelectedItem())) != numberOfRows) {
 				enableChanges();
-			else
+				maskButtons(BOARDSIZE);
+			}
+			else {
 				disableChanges();
+				maskButtons(ALLBTN);
+			}
 		});
 		horizontalLength.setSelectedIndex(8 - 2);
 
@@ -587,10 +606,14 @@ public class TileODesignUI extends javax.swing.JFrame {
 		verticalLength.addActionListener(e -> {
 			designState = DesignState.BOARD_SIZE;
 
-			if (Integer.valueOf(String.valueOf(verticalLength.getSelectedItem())) != numberOfCols)
+			if (Integer.valueOf(String.valueOf(verticalLength.getSelectedItem())) != numberOfCols) {
 				enableChanges();
-			else
+				maskButtons(BOARDSIZE);
+			}
+			else {
 				disableChanges();
+				maskButtons(ALLBTN);
+			}
 		});
 		verticalLength.setSelectedIndex(8 - 2);
 
@@ -599,7 +622,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 		setResizable(false);
 
 		// Board
-		setupBoard();
+		setupBoard(false);
+		maskButtons(ALLBTN);
 		//
 		GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
@@ -812,8 +836,9 @@ public class TileODesignUI extends javax.swing.JFrame {
 		 * IF BOARD SIZE HAS CHANGED
 		 */
 		case BOARD_SIZE:
-			changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()),
-					Integer.valueOf(verticalLength.getSelectedItem().toString()));
+			//changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()),
+			//		Integer.valueOf(verticalLength.getSelectedItem().toString()));
+			setupBoard(true);
 			break;
 
 		/*
@@ -823,43 +848,50 @@ public class TileODesignUI extends javax.swing.JFrame {
 			int playerNumber = Integer.valueOf(chosenPlayer.getSelectedItem().toString());
 
 			TileUI tileGUI = tilesButtons.parallelStream().filter(s -> s.isSelected()).findAny().orElse(null);
+			Tile startingTile = game.getTileFromXY(tileGUI.getUIX(), tileGUI.getUIY());
+
+			int oldX = -1, oldY = -1;
+			
+			//Check if player has already a tile ...
+			if(game.getPlayer(playerNumber-1).hasStartingTile()) {
+				Tile prevTile = game.getPlayer(playerNumber-1).getStartingTile();
+				oldX = prevTile.getX();
+				oldY = prevTile.getY();
+			}
 			
 			try {
-				// TODO : Check if player has already a tile, if so, replace
-				// color with null
-				
-				
-
-				Tile startingTile = game.getTileFromXY(tileGUI.getUIX(), tileGUI.getUIY());
-
-				try {
-					if (!currentController.startingPosition(startingTile, playerNumber)) {
-						// TODO : Error - couldn't set starting position
-					} else {
-						tileGUI.resetUI();
-						switch (playerNumber) {
-						case 1:
-							tileGUI.setBackground(new java.awt.Color(255, 10, 10));
-							break;
-
-						case 2:
-							tileGUI.setBackground(new java.awt.Color(10, 10, 240));
-							break;
-
-						case 3:
-							tileGUI.setBackground(new java.awt.Color(10, 240, 10));
-							break;
-
-						case 4:
-							tileGUI.setBackground(new java.awt.Color(240, 240, 10));
-							break;
+				if (!currentController.startingPosition(startingTile, playerNumber-1)) {
+					// Error - couldn't set starting position
+				} else {
+					//...if so, replace color with null
+					if(oldX != -1 && oldY != -1) {
+						for(TileUI tile : tilesButtons) {
+							if(tile.getUIX() == oldX && tile.getUIY() == oldY)
+								tile.resetUI();
 						}
 					}
-				} catch (InvalidInputException e) {
-					System.out.println(e);
+					
+					tileGUI.resetUI();
+					switch (playerNumber) {
+					case 1:
+						tileGUI.setBackground(new java.awt.Color(255, 10, 10));
+						break;
+
+					case 2:
+						tileGUI.setBackground(new java.awt.Color(10, 10, 240));
+						break;
+
+					case 3:
+						tileGUI.setBackground(new java.awt.Color(10, 240, 10));
+						break;
+
+					case 4:
+						tileGUI.setBackground(new java.awt.Color(240, 240, 10));
+						break;
+					}
 				}
-			} catch (Exception e) {
-				// TODO : tileGUI null
+			} catch (InvalidInputException e) {
+				System.out.println(e);
 			}
 
 			break;
@@ -892,7 +924,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 			} 
 			//ActionTile
 			else if(tileType.getSelectedItem().toString().equals("Action Tile")) {
-				//TODO : Popup inactivity period
+				//TODO : MessageBox - inactivity period
 				int disableTurns = 1;
 				
 				List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.isSelected() && 
@@ -1024,8 +1056,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 		 * IF NUMBER HAS CHANGED
 		 */
 		case CHANGE_NUMBER_OF_PLAYERS:
-			setupBoard();
-			game = currentController.initGame(Integer.valueOf(String.valueOf(nbOfPlayers.getSelectedItem())));
+			setupBoard(true);
 			
 			 if (nbOfPlayers.getSelectedItem() == "4") {
 				 chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" })); 
@@ -1126,8 +1157,6 @@ public class TileODesignUI extends javax.swing.JFrame {
 			}
 
 			else if (tileType.getSelectedItem().toString().equals("Action Tile")) {
-				// TODO : Action tile - MessageBox
-
 				// If tile is normal
 				if (tile.getState() == TileUI.State.NORMAL) {
 					enableChanges();
@@ -1198,10 +1227,12 @@ public class TileODesignUI extends javax.swing.JFrame {
 		String nbOfPlayersChosen = String.valueOf(nbOfPlayers.getSelectedItem());
 		if (game.numberOfPlayers() != Integer.valueOf(nbOfPlayersChosen)) {
 			enableChanges();
+			designState = DesignState.CHANGE_NUMBER_OF_PLAYERS;
 			maskButtons(PLAYERS);
 		}
 		else {
 			disableChanges();
+			designState = DesignState.NONE;
 			maskButtons(ALLBTN);
 		}
 	}

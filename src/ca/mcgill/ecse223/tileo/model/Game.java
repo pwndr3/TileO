@@ -34,6 +34,7 @@ public class Game implements Serializable {
 	}
 
 	private Mode mode;
+	public boolean hasStarted = false; //means we can still edit it
 
 	// Game Associations
 	private List<Player> players;
@@ -465,21 +466,6 @@ public class Game implements Serializable {
 		return null;
 	}
 
-	public Connection getConnectionFromXY(int x, int y) {
-		/*
-		 * for(Connection connection : getConnections()) {
-		 * if(Math.abs(connection.getTile(0).getX()-x)==1 &&
-		 * Math.abs(connection.getTile(1).getX()-x)==1 &&
-		 * connection.getTile(0).getY() == y && connection.getTile(1).getY() ==
-		 * y) return connection; if(Math.abs(connection.getTile(0).getY()-y)==1
-		 * && Math.abs(connection.getTile(1).getY()-y)==1 &&
-		 * connection.getTile(0).getX() == x && connection.getTile(1).getX() ==
-		 * x) return connection; }
-		 */
-
-		return null;
-	}
-
 	public boolean setWinTile(WinTile aNewWinTile) {
 		boolean wasSet = false;
 		winTile = aNewWinTile;
@@ -557,6 +543,8 @@ public class Game implements Serializable {
 	}
 
 	public List<Tile> rollTheDie() {
+		hasStarted = true;
+		
 		Die die = this.getDie();
 		int rolledNumber = die.roll();
 		Player currentPlayer = this.getCurrentPlayer();

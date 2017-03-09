@@ -12,9 +12,8 @@ public class DesignController {
 		game = aGame;
 	}
 
-	// **Do players start from 0 or 1, need to fix that for the for loop**
+	// Player [0..3] but gets changed right away**
 	public boolean startingPosition(Tile tile, int playerNumber) throws InvalidInputException {
-
 		// Get info about current game
 		List<Player> allPlayers = game.getPlayers();
 
@@ -29,12 +28,14 @@ public class DesignController {
 		// Get the specific player
 		Player player = allPlayers.get(playerNumber);
 		// Exceptions
-		if (tile == game.getWinTile()) {
-			throw new InvalidInputException("Cannot place a player on the win tile.");
+		if(game.hasWinTile()) {
+			if (tile == game.getWinTile()) {
+				throw new InvalidInputException("Cannot place a player on the win tile.");
+			} 
 		} else if (tile instanceof ActionTile) {
 			throw new InvalidInputException("Cannot place a player on an action tile.");
 		} else {
-			for (int i = 1; i <= game.numberOfPlayers(); i++) {
+			for (int i = 0; i < game.numberOfPlayers(); i++) {
 				Player otherPlayer = allPlayers.get(i);
 				if (otherPlayer.hasStartingTile()) {
 					if (otherPlayer.getStartingTile() == tile) { // this one too
@@ -58,21 +59,18 @@ public class DesignController {
 			try {
 				deleteTile(prevWin);
 			} catch (InvalidInputException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			// Replace the delelted with a win Tile
-			// **Check if necessary to send game**
+			// Replace the deleted with a win Tile
 			NormalTile normalTile = new NormalTile(prevX, prevY, game);
 
 			for (Connection conn : tileConnections) {
-				// normalTile.addConnection(tileConnections.get(i));
 				normalTile.addConnection(conn);
 			}
 
 		}
-		// Get the X and Y cordinates
+		// Get the X and Y coordinates
 		int winX = winTile.getX();
 		int winY = winTile.getY();
 
@@ -215,7 +213,6 @@ public class DesignController {
 	}
 	 //done  
 	public Game initGame(int numOfPlayersInGame) {
-		
 		TileOApplication.getTileO().removeGame(game);
 		
 		game = new Game(32, TileOApplication.getTileO());

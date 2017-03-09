@@ -15,11 +15,11 @@ public class Controller {
 		Game game = TileOApplication.getTileO().getCurrentGame();
 		
 		if(game.getMode() == Game.Mode.GAME) {
-			new TileOPlayUI(game).setVisible(true);
+			new TileOPlayUI().setVisible(true);
+			ui.dispose();
 		} else {
-			//TODO : error
+			//TODO : MessageBox - Not playable
 		}
-		ui.dispose();
 	}
 
 	public void design() {
@@ -42,8 +42,14 @@ public class Controller {
 			game.addPlayer(player);
 		}
 		
-		new TileODesignUI(game).setVisible(true);
-		ui.dispose();
+		if(!game.hasStarted) {
+			//Can design
+			
+			new TileODesignUI(game).setVisible(true);
+			ui.dispose();
+		} else {
+			//TODO : MessageBox : Cannot design - game has started
+		}
 	}
 
 	private MainPage ui;
