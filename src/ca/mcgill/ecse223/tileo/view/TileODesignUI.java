@@ -340,7 +340,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 		applyChangesButton.setBackground(new java.awt.Color(0, 204, 0));
 		applyChangesButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-		applyChangesButton.setForeground(new java.awt.Color(255, 255, 255));
+		applyChangesButton.setForeground(new java.awt.Color(0, 0, 0));
 		applyChangesButton.setText("Apply changes");
 		applyChangesButton.setEnabled(false);
 		applyChangesButton.addActionListener(e -> {
@@ -351,7 +351,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 		chosenPlayer.setBackground(new java.awt.Color(204, 204, 255));
 		chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2" }));
 
-		removeTileButton.setBackground(new java.awt.Color(153, 153, 255));
+		removeTileButton.setBackground(new java.awt.Color(51, 102, 255));
+		removeTileButton.setForeground(new java.awt.Color(255,255,255));
 		removeTileButton.setText("Remove Tile");
 		removeTileButton.addActionListener(e -> {
 			if (removeTileButton.isSelected()) {
@@ -370,7 +371,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 		tileType.setModel(
 				new javax.swing.DefaultComboBoxModel<>(new String[] { "Regular Tile", "Action Tile", "Win Tile" }));
 
-		addTileButton.setBackground(new java.awt.Color(153, 153, 255));
+		addTileButton.setBackground(new java.awt.Color(51, 102, 255));
+		addTileButton.setForeground(new java.awt.Color(255,255,255));
 		addTileButton.setText("Add Tile");
 		addTileButton.addActionListener(e -> {
 			if (addTileButton.isSelected()) {
@@ -389,7 +391,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 			}
 		});
 
-		selectPositionButton.setBackground(new java.awt.Color(153, 153, 255));
+		selectPositionButton.setBackground(new java.awt.Color(51, 102, 255));
+		selectPositionButton.setForeground(new java.awt.Color(255,255,255));
 		selectPositionButton.setText("Select Start Position");
 		selectPositionButton.addActionListener(e -> {
 			if (selectPositionButton.isSelected()) {
@@ -403,7 +406,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 			}
 		});
 
-		removeConnectionButton.setBackground(new java.awt.Color(153, 153, 255));
+		removeConnectionButton.setBackground(new java.awt.Color(51, 102, 255));
+		removeConnectionButton.setForeground(new java.awt.Color(255,255,255));
 		removeConnectionButton.setText("Remove Connection");
 		removeConnectionButton.addActionListener(e -> {
 			if (removeConnectionButton.isSelected()) {
@@ -420,7 +424,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 			}
 		});
 
-		addConnectionButton.setBackground(new java.awt.Color(153, 153, 255));
+		addConnectionButton.setBackground(new java.awt.Color(51, 102, 255));
+		addConnectionButton.setForeground(new java.awt.Color(255,255,255));
 		addConnectionButton.setText("Add Connection");
 		addConnectionButton.addActionListener(e -> {
 			if (addConnectionButton.isSelected()) {
@@ -518,7 +523,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 			}
 		});
 
-		saveButton.setBackground(new java.awt.Color(100, 255, 255));
+		saveButton.setBackground(new java.awt.Color(255, 204, 0));
 		saveButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
 		saveButton.setForeground(new java.awt.Color(0, 0, 0));
 		saveButton.setText("Load");
@@ -540,7 +545,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 			}
 		});
 
-		loadButton.setBackground(new java.awt.Color(100, 255, 255));
+		loadButton.setBackground(new java.awt.Color(255, 204, 0));
 		loadButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
 		loadButton.setForeground(new java.awt.Color(0, 0, 0));
 		loadButton.setText("Save");
