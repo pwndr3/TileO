@@ -518,9 +518,9 @@ public class TileODesignUI extends javax.swing.JFrame {
 			}
 		});
 
-		saveButton.setBackground(new java.awt.Color(0, 0, 255));
+		saveButton.setBackground(new java.awt.Color(100, 255, 255));
 		saveButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-		saveButton.setForeground(new java.awt.Color(255, 255, 255));
+		saveButton.setForeground(new java.awt.Color(0, 0, 0));
 		saveButton.setText("Load");
 		saveButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -540,9 +540,9 @@ public class TileODesignUI extends javax.swing.JFrame {
 			}
 		});
 
-		loadButton.setBackground(new java.awt.Color(0, 0, 255));
+		loadButton.setBackground(new java.awt.Color(100, 255, 255));
 		loadButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-		loadButton.setForeground(new java.awt.Color(255, 255, 255));
+		loadButton.setForeground(new java.awt.Color(0, 0, 0));
 		loadButton.setText("Save");
 		loadButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -819,14 +819,14 @@ public class TileODesignUI extends javax.swing.JFrame {
 			int playerNumber = Integer.valueOf(chosenPlayer.getSelectedItem().toString());
 
 			tileGUI = tilesButtons.parallelStream().filter(s -> s.isSelected()).findAny().orElse(null);
-
+			
 			try {
 				// TODO : Check if player has already a tile, if so, replace
 				// color with null
 				
 				switch (playerNumber) {
-				case 1:
-					tileGUI.setBackground(new java.awt.Color(240, 10, 10));
+				case 1:{
+					tileGUI.setBackground(new java.awt.Color(255, 10, 10));}
 					break;
 
 				case 2:
