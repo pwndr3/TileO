@@ -1148,7 +1148,6 @@ public class TileODesignUI extends javax.swing.JFrame {
 			tile.setSelected(false);
 			tile.setBorderPainted(false);
 			tile.setFocusPainted(false);
-			disableChanges();
 		}
 	}
 
