@@ -15,12 +15,14 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 
-public class TileODesignUI extends javax.swing.JFrame {
+public class TileODesignUI extends JFrame {
 	private DesignController currentController;
 
 	private LinkedList<TileUI> tilesButtons;
 	private LinkedList<ConnectionUI> connectionButtons;
 	private JPanel tilesPanel;
+	
+	private PopUpManager popupmgr;
 
 	private enum DesignState {
 		BOARD_SIZE, CHANGE_NUMBER_OF_PLAYERS, SELECT_STARTING_POSITION, ADD_TILE, REMOVE_TILE, ADD_CONNECTION, REMOVE_CONNECTION, CARDS, NONE
@@ -46,6 +48,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 		game = aGame;
 		currentController = new DesignController(game);
+		popupmgr = new PopUpManager(this);
 
 		// Init layout
 		initComponents();
@@ -1260,7 +1263,13 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 	private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO : Check if game is playable to change game state
-		TileOApplication.save();
+		//TileOApplication.save();
+		
+		/*
+		 * POPUP TESTING
+		 */
+		
+		popupmgr.showActionTile(null);
 	}
 
 	private void nbOfPlayersChanged() {
