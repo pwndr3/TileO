@@ -560,7 +560,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 		saveButton.setBackground(new java.awt.Color(255, 204, 0));
 		saveButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
 		saveButton.setForeground(new java.awt.Color(0, 0, 0));
-		saveButton.setText("Load");
+		saveButton.setText("Save");
 		saveButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				saveButtonActionPerformed(evt);
@@ -582,7 +582,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 		loadButton.setBackground(new java.awt.Color(255, 204, 0));
 		loadButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
 		loadButton.setForeground(new java.awt.Color(0, 0, 0));
-		loadButton.setText("Save");
+		loadButton.setText("Load");
 		loadButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				loadButtonActionPerformed(evt);
@@ -760,9 +760,9 @@ public class TileODesignUI extends javax.swing.JFrame {
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 								.addComponent(applyChangesButton, javax.swing.GroupLayout.Alignment.TRAILING,
 										javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
-								.addComponent(saveButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(loadButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(saveButton, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 						.addGap(26, 26, 26))
 						.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
@@ -809,7 +809,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 												.addComponent(addConnectionButton)))
 								.addGroup(layout.createSequentialGroup()
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(loadButton).addGap(13, 13, 13).addComponent(saveButton)))
+										.addComponent(saveButton).addGap(13, 13, 13).addComponent(loadButton)))
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 								.addGroup(layout.createSequentialGroup()
@@ -1266,6 +1266,11 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 	private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO : Check if game is playable to change game state
+		game.setMode(Game.Mode.GAME);
+		if(TileOApplication.getTileO().addGameAt(game, 0))
+			System.out.println("TRUE");
+		else
+			System.out.println("FALSE");
 		TileOApplication.save();
 	}
 

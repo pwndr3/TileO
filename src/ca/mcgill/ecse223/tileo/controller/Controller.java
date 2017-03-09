@@ -12,7 +12,8 @@ public class Controller {
 
 	public void play() {
 		//TODO : Choose game
-		Game game = TileOApplication.getTileO().getCurrentGame();
+		//Game game = TileOApplication.getTileO().getCurrentGame();
+		Game game = TileOApplication.getTileO().getGame(0);
 		
 		if(game.getMode() == Game.Mode.GAME) {
 			new TileOPlayUI(game).setVisible(true);
