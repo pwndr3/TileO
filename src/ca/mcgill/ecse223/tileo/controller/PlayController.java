@@ -8,8 +8,9 @@ import java.util.List;
 
 public class PlayController {
 
- /*  public void startGame(Game selectedGame) throws InvalidInputException {
-       TileOApplication.load(selectedGame);
+	public void startGame(Game selectedGame) throws InvalidInputException {
+       
+	 
            Deck deck = selectedGame.getDeck();
            List <Player> allPlayers = selectedGame.getPlayers();
 
@@ -22,9 +23,13 @@ public class PlayController {
                    throw new InvalidInputException("One or more players do not have a starting position.");
                }
            }
-           if(deck.numberOfCards()>=32){
+           
+           int numDeck = deck.numberOfCards();
+           if(deck.numberOfCards()>=numDeck){
                throw new InvalidInputException("Too many card in the deck.");
            }
+           
+           TileOApplication.getTileO().setCurrentGame(selectedGame);
 
            deck.shuffle();     //make shuffle method
            List<Tile> tiles = selectedGame.getTiles();
@@ -32,17 +37,18 @@ public class PlayController {
                Tile checkTile = tiles.get(i);
                checkTile.setHasBeenVisited(false);
            }
-           for(int j=0; j<=selectedGame.numberOfPlayers(); j++){
+           for(int j=1; j<=selectedGame.numberOfPlayers(); j++){
                Player thisPlayer = allPlayers.get(j);
                Tile startingTile = thisPlayer.getStartingTile();
                thisPlayer.setCurrentTile(startingTile);
                startingTile.setHasBeenVisited(true);
            }
-           selectedGame.setCurrentPlayer(allPlayers.get(0));
+           selectedGame.setCurrentPlayer(allPlayers.get(1));
            selectedGame.setCurrentConnectionPieces(selectedGame.getCurrentConnectionPieces());
            selectedGame.setMode(Mode.GAME);
-       }*/
-    public boolean getTopCard(){
+       }
+    
+	public boolean getTopCard(){
         //Get info about the current game
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
@@ -64,23 +70,23 @@ public class PlayController {
         return deck.setCurrentCard(nextTopCard);
     }
     
-    /*public List<Tile> rollDie () {
+    public List<Tile> rollDie () {
         //Added common "Roll The Die Method" in game class for this feature and RollTheDie Action Card.
-        Game currentGame = TileOApplication.getCurrentGame();
+        Game currentGame = TileOApplication.getTileO().getCurrentGame();
         return currentGame.rollTheDie();
-    }*/
+    }
 
     //TODO Add land method to tile class.
-   /* public void land(Tile tile) throws InvalidInputException{
-        Game currentGame = TileOApplication.getCurrentGame();
+    public void land(Tile tile) throws InvalidInputException{
+        Game currentGame = TileOApplication.getTileO().getCurrentGame();
 
         if(currentGame.indexOfTile(tile)== -1) throw new InvalidInputException("This tile does not exist in the current game.");
         tile.land();
-    }*/
+    }
     
-  /*  public List<Tile> playRollDieActionCard() throws InvalidInputException{
+    public List<Tile> playRollDieActionCard() throws InvalidInputException{
 
-            Game currentGame = TileOApplication.getCurrentGame();
+      Game currentGame = TileOApplication.getTileO().getCurrentGame();
       Deck deck = currentGame.getDeck();
       ActionCard currentCard = deck.getCurrentCard();
      
@@ -114,7 +120,7 @@ public class PlayController {
      
      Game currentGame = TileOApplication.getTileO().getCurrentGame();
   
-     //Check if connection pieces are still available and if tiles exist.
+   //Check if connection pieces are still available and if tiles exist.
   if(currentGame.getCurrentConnectionPieces() == 0)
    throw new InvalidInputException("There are no more connection pieces in the spare pile");
   
@@ -154,7 +160,7 @@ public class PlayController {
   currentGame.setMode(Mode.GAME);
     }
  
-//TODO see if number of connections must be increased after a connection is added.
+    //TODO see if number of connections must be increased after a connection is added.
     public void playRemoveConnectionActionActionCard(Connection connection) throws InvalidInputException{
      //Get info about the current game
         TileO tileo = TileOApplication.getTileO();
@@ -173,7 +179,8 @@ public class PlayController {
         currentGame.removeConnection(connection);
         
         Player currentPlayer = currentGame.getCurrentPlayer();
-  int indexOfCurrentPlayer = currentGame.indexOfPlayer(currentPlayer);
+        
+        int indexOfCurrentPlayer = currentGame.indexOfPlayer(currentPlayer);
 
   //If current player is last player, make the first player the current player.
         if(indexOfCurrentPlayer == (currentGame.numberOfPlayers() - 1)){
@@ -198,7 +205,7 @@ public class PlayController {
         currentGame.setMode(Mode.GAME);
     }
 
-   /* public void teleport(Tile tile) throws InvalidInputException {
+    public void teleport(Tile tile) throws InvalidInputException {
         //Get info about the current game
         TileO tileo = TileOApplication.getTileO();
         Game game = tileo.getCurrentGame();
@@ -222,5 +229,5 @@ public class PlayController {
             deck.setCurrentCard(deck.getCard(deck.indexOfCard(playedCard) + 1));
         
         game.setMode(Mode.GAME);
-    }*/
+    }
 }
