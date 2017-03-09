@@ -8,14 +8,14 @@ import ca.mcgill.ecse223.tileo.application.TileOApplication;
 
 public class TileOPlayUI extends javax.swing.JFrame {
 	
-	public TileOPlayUI() {
+	public TileOPlayUI(Game aGame) {
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 		} catch (Exception e) {
 			//Too bad
 		}
 		
-		//game = aGame;
+		game = aGame;
 		
 		initComponents();
 	}

@@ -3,12 +3,17 @@ package ca.mcgill.ecse223.tileo.view;
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.*;
 import ca.mcgill.ecse223.tileo.model.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 public class TileODesignUI extends javax.swing.JFrame {
 	private DesignController currentController;
@@ -86,9 +91,21 @@ public class TileODesignUI extends javax.swing.JFrame {
 		nbLoseTurnCard.setEnabled((param & CARDS) == CARDS);
 		nbConnectTilesCard.setEnabled((param & CARDS) == CARDS);
 		//
-		saveButton.setEnabled((param & SAVEBTN) == SAVEBTN);
+		if((param & SAVEBTN) == SAVEBTN) {
+			saveButton.setEnabled(true);
+			saveButton.setForeground(new java.awt.Color(0,0,0));
+		} else {
+			saveButton.setEnabled(false);
+			saveButton.setForeground(new java.awt.Color(200,200,200));
+		}
 		//
-		loadButton.setEnabled((param & LOADBTN) == LOADBTN);
+		if((param & LOADBTN) == LOADBTN) {
+			loadButton.setEnabled(true);
+			loadButton.setForeground(new java.awt.Color(0,0,0));
+		} else {
+			loadButton.setEnabled(false);
+			loadButton.setForeground(new java.awt.Color(200,200,200));
+		}
 	}
 
 	private void changeNumberOfCardsLeft() {
@@ -185,6 +202,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 							tileActionPerformed(evt);
 						}
 					});
+					tile.setMargin(new Insets(0, 0, 0, 0));
+					tile.setBorder(null);
 					tilesButtons.add(tile);
 
 					tilesPanel.add(tile, c);
@@ -275,7 +294,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 		//Delete current game then create new one
 		if (game == null || forceNewGame) {
-			game = currentController.initGame(Integer.valueOf(String.valueOf(chosenPlayer.getSelectedItem())));
+			game = currentController.initGame(Integer.valueOf(String.valueOf(nbOfPlayers.getSelectedItem())));
 		}
 		
 		changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()),
@@ -357,7 +376,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 		applyChangesButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
 		applyChangesButton.setForeground(new java.awt.Color(0, 0, 0));
 		applyChangesButton.setText("Apply changes");
-		applyChangesButton.setEnabled(false);
+		disableChanges();
 		applyChangesButton.addActionListener(e -> {
 			update();
 			designState = DesignState.NONE;
@@ -874,19 +893,39 @@ public class TileODesignUI extends javax.swing.JFrame {
 					tileGUI.resetUI();
 					switch (playerNumber) {
 					case 1:
-						tileGUI.setBackground(new java.awt.Color(255, 10, 10));
+						//tileGUI.setBackground(new java.awt.Color(255, 10, 10));
+						try {
+							tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/1.png"))));
+						} catch (IOException e) {
+							
+						}
 						break;
 
 					case 2:
-						tileGUI.setBackground(new java.awt.Color(10, 10, 240));
+						//tileGUI.setBackground(new java.awt.Color(10, 10, 240));
+						try {
+							tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/2.png"))));
+						} catch (IOException e) {
+							
+						}
 						break;
 
 					case 3:
-						tileGUI.setBackground(new java.awt.Color(10, 240, 10));
+						//tileGUI.setBackground(new java.awt.Color(10, 240, 10));
+						try {
+							tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/3.png"))));
+						} catch (IOException e) {
+							
+						}
 						break;
 
 					case 4:
-						tileGUI.setBackground(new java.awt.Color(240, 240, 10));
+						//tileGUI.setBackground(new java.awt.Color(240, 240, 10));
+						try {
+							tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/4.png"))));
+						} catch (IOException e) {
+							
+						}
 						break;
 					}
 				}
@@ -915,8 +954,13 @@ public class TileODesignUI extends javax.swing.JFrame {
 				//WinTile is selected
 				if (nextWinTileUI != null) {
 					nextWinTileUI.setState(TileUI.State.WIN);
-					nextWinTileUI.setText("W");
-					nextWinTileUI.setBackground(Color.pink);
+					//nextWinTileUI.setText("W");
+					//nextWinTileUI.setBackground(Color.pink);
+					try {
+						nextWinTileUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/win.png"))));
+					} catch (IOException e) {
+						
+					}
 					
 					Tile nextWinTile = game.getTileFromXY(nextWinTileUI.getUIX(), nextWinTileUI.getUIY());
 					currentController.createWinTile(nextWinTile);
@@ -932,8 +976,11 @@ public class TileODesignUI extends javax.swing.JFrame {
 						s.getState() == TileUI.State.NORMAL).collect(Collectors.toList());
 				
 				tiles.forEach(s -> {
-					s.setText("A");
-					s.setBackground(Color.magenta);
+					try {
+						s.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/action_tile.png"))));
+					} catch (IOException e) {
+						
+					}
 					
 					Tile tileEquivalent = game.getTileFromXY(s.getUIX(), s.getUIY());
 					
@@ -1247,11 +1294,13 @@ public class TileODesignUI extends javax.swing.JFrame {
 	private void enableChanges() {
 		applyChangesButton.setEnabled(true);
 		applyChangesButton.setSelected(false);
+		applyChangesButton.setForeground(new java.awt.Color(0,0,0));
 	}
 
 	private void disableChanges() {
 		applyChangesButton.setEnabled(false);
 		applyChangesButton.setSelected(false);
+		applyChangesButton.setForeground(new java.awt.Color(200,200,200));
 	}
 
 	private void showDisabledTiles() {

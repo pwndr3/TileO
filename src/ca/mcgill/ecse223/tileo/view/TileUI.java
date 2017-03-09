@@ -51,6 +51,7 @@ public class TileUI extends JToggleButton {
 		setText("");
 		setSelected(false);
 		setState(State.NORMAL);
+		setIcon(null);
 	}
 	
 	public void showUI() {

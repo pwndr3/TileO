@@ -15,7 +15,7 @@ public class Controller {
 		Game game = TileOApplication.getTileO().getCurrentGame();
 		
 		if(game.getMode() == Game.Mode.GAME) {
-			new TileOPlayUI().setVisible(true);
+			new TileOPlayUI(game).setVisible(true);
 			ui.dispose();
 		} else {
 			//TODO : MessageBox - Not playable

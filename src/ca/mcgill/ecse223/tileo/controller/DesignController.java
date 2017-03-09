@@ -12,7 +12,7 @@ public class DesignController {
 		game = aGame;
 	}
 
-	// Player [0..3] but gets changed right away**
+	// Player [0..3]**
 	public boolean startingPosition(Tile tile, int playerNumber) throws InvalidInputException {
 		// Get info about current game
 		List<Player> allPlayers = game.getPlayers();
@@ -221,19 +221,19 @@ public class DesignController {
 		TileOApplication.getTileO().setCurrentGame(game);
 		
 		Player.clearPlayers();
-		for (int n = 1; n <= numOfPlayersInGame; n++) {
+		for (int n = 0; n < numOfPlayersInGame; n++) {
 			Player player = new Player(n, game);
 			switch (n) {
-			case 1:
+			case 0:
 				player.setColor(Player.Color.RED);
 				break;
-			case 2:
+			case 1:
 				player.setColor(Player.Color.BLUE);
 				break;
-			case 3:
+			case 2:
 				player.setColor(Player.Color.GREEN);
 				break;
-			case 4:
+			case 3:
 				player.setColor(Player.Color.YELLOW);
 				break;
 			}
