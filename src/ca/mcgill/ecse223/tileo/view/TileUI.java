@@ -42,6 +42,17 @@ public class TileUI extends JToggleButton {
 		return currentLifeState;
 	}
 	
+	public void setLifeState(LifeState state) {
+		currentLifeState = state;
+	}
+	
+	public void resetUI() {
+		setBackground(null);
+		setText("");
+		setSelected(false);
+		setState(State.NORMAL);
+	}
+	
 	public void showUI() {
 		setVisible(true);
 	}
@@ -52,6 +63,10 @@ public class TileUI extends JToggleButton {
 	
 	public State getState() {
 		return state;
+	}
+	
+	public void setState(State st) {
+		state = st;
 	}
 	
 	//Position-related

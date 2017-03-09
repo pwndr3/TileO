@@ -215,11 +215,18 @@ public class DesignController {
 		}
 		return deck.hasCards();
 	}
-
+	 //done  
 	public void initGame(int numOfPlayersInGame) {
-
+		
+		TileOApplication.getTileO().removeGame(game);
+		
+		Game newGame = new Game(32, TileOApplication.getTileO());
+		newGame.setMode(Game.Mode.DESIGN);
+		TileOApplication.getTileO().addGame(newGame);
+		TileOApplication.getTileO().setCurrentGame(newGame);
+		
 		for (int n = 1; n <= numOfPlayersInGame; n++) {
-			Player player = new Player(n, game);
+			Player player = new Player(n, newGame);
 			switch (n) {
 			case 1:
 				player.setColor(Player.Color.RED);
