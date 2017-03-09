@@ -1058,6 +1058,12 @@ public class TileODesignUI extends javax.swing.JFrame {
 		removeTileButton.setSelected(false);
 		removeConnectionButton.setSelected(false);
 		addConnectionButton.setSelected(false);
+		
+		tilesButtons.parallelStream().filter(s -> s.isVisible()).forEach(s -> {
+			s.setSelected(false);
+			s.setFocusPainted(false);
+			s.setBorderPainted(false);
+		});
 	}
 
 	// Tile clicked
