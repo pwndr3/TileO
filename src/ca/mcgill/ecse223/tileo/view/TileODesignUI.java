@@ -904,7 +904,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 			}
 			//NormalTile
 			else {
-				List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.isSelected() && s.getLifeState() == TileUI.LifeState.NOTEXIST).collect(Collectors.toList());
+				List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> !s.isSelected() && s.getLifeState() == TileUI.LifeState.NOTEXIST).collect(Collectors.toList());
 				tiles.forEach(s -> {
 					s.setLifeState(TileUI.LifeState.EXIST);
 					s.resetUI();
@@ -914,9 +914,11 @@ public class TileODesignUI extends javax.swing.JFrame {
 					
 					//Show nearest connections
 					connectionButtons.parallelStream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
-							(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> t.setState(ConnectionUI.State.SHOW));
+							(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> {
+								t.setState(ConnectionUI.State.SHOW);
+								t.setLifeState(ConnectionUI.LifeState.EXIST);
+							});		
 				});
-				
 				
 			}
 			break;
@@ -937,7 +939,10 @@ public class TileODesignUI extends javax.swing.JFrame {
 				
 				//Hide nearest connections
 				connectionButtons.parallelStream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
-						(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> t.setState(ConnectionUI.State.HIDE));
+						(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> {
+							t.setState(ConnectionUI.State.HIDE);
+							t.setLifeState(ConnectionUI.LifeState.NOTEXIST);
+						});
 				
 				try {
 					currentController.deleteTile(tileEquivalent);
@@ -983,7 +988,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 		 * IF REMOVING A CONNECTION
 		 */
 		case REMOVE_CONNECTION:
-			connectionButtons.parallelStream().filter(s -> s.isSelected() && s.isVisible() && s.getLifeState() == ConnectionUI.LifeState.EXIST
+			connectionButtons.parallelStream().filter(s -> !s.isSelected() && s.isVisible() && s.getLifeState() == ConnectionUI.LifeState.EXIST
 				&& s.getState() == ConnectionUI.State.SHOW).forEach(s -> {
 					s.setLifeState(ConnectionUI.LifeState.NOTEXIST);
 					
@@ -1013,8 +1018,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 		 * IF NUMBER HAS CHANGED
 		 */
 		case CHANGE_NUMBER_OF_PLAYERS:
-			currentController.changeNumberOfPlayers(Integer.valueOf(String.valueOf(nbOfPlayers.getSelectedItem())));
 			setupBoard();
+			game = currentController.initGame(Integer.valueOf(String.valueOf(nbOfPlayers.getSelectedItem())));
 			
 			 if (nbOfPlayers.getSelectedItem() == "4") {
 				 chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" })); 
@@ -1027,6 +1032,11 @@ public class TileODesignUI extends javax.swing.JFrame {
 			 else { 
 				 chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2" })); 
 			 }
+			 break;
+			 
+		/*
+		 * IF CARDS HAVE CHANGED
+		 */
 		case CARDS:
 			try {
 				currentController.createDeck(cardsCounts[0], cardsCounts[1], cardsCounts[2], cardsCounts[3], cardsCounts[4]);
@@ -1064,6 +1074,9 @@ public class TileODesignUI extends javax.swing.JFrame {
 			s.setFocusPainted(false);
 			s.setBorderPainted(false);
 		});
+		
+		revalidate();
+		repaint();
 	}
 
 	// Tile clicked
@@ -1198,12 +1211,18 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 	private void showDisabledTiles() {
 		tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST)
-				.forEach(s -> s.showUI());
+				.forEach(s -> {
+					s.showUI();
+					s.setSelected(true);
+					});
 	}
 
 	private void hideDisabledTiles() {
 		tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST)
-				.forEach(s -> s.hideUI());
+				.forEach(s -> {
+					s.hideUI();
+					s.setSelected(false);
+					});
 	}
 
 	private void showDisabledConnections() {

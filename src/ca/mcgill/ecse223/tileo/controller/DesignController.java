@@ -223,6 +223,7 @@ public class DesignController {
 		TileOApplication.getTileO().addGame(game);
 		TileOApplication.getTileO().setCurrentGame(game);
 		
+		Player.clearPlayers();
 		for (int n = 1; n <= numOfPlayersInGame; n++) {
 			Player player = new Player(n, game);
 			switch (n) {
@@ -243,14 +244,6 @@ public class DesignController {
 		}
 		
 		return game;
-	}
-
-	public void changeNumberOfPlayers(int numOfPlayers) {
-		if (!(numOfPlayers == game.numberOfPlayers())) {
-			// if different, you will reset the same completely
-			return;
-		}
-
 	}
 
 	//

@@ -86,7 +86,7 @@ public class TileUI extends JToggleButton {
 	
 	//Backup/restore UI state
 	public void saveUIState() {
-		previousUIState = currentUIState = (isVisible() ? 1 : 0) << 1 + (isSelected() ? 1 : 0);
+		previousUIState = currentUIState = (isVisible() ? 1 : 0);
 	}
 	
 	public int getUIState() {
@@ -100,8 +100,7 @@ public class TileUI extends JToggleButton {
 	
 	private void applyUIState() {
 		//TODO : Color
-		setVisible((currentUIState >> 1 & 0x1) == 1);
-		setSelected((currentUIState & 0x1) == 1);
+		setVisible((currentUIState & 0x1) == 1);
 	}
 	//
 	private State state;

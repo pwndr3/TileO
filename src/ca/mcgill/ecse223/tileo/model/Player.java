@@ -217,6 +217,10 @@ public class Player implements Serializable
      + outputString;
   }
   
+  public static void clearPlayers() {
+	  playersByNumber.clear();
+  }
+  
    public List<Tile> getPossibleMoves (int aRolledNumber){
   List<Tile> possibleMoves = currentTile.getNeighbours(aRolledNumber);
   return possibleMoves;
