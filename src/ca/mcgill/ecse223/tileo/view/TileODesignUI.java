@@ -820,43 +820,43 @@ public class TileODesignUI extends javax.swing.JFrame {
 		 * IF STARTING POSITION OF PLAYER
 		 */
 		case SELECT_STARTING_POSITION:
-			TileUI tileGUI = null;
 			int playerNumber = Integer.valueOf(chosenPlayer.getSelectedItem().toString());
 
-			tileGUI = tilesButtons.parallelStream().filter(s -> s.isSelected()).findAny().orElse(null);
+			TileUI tileGUI = tilesButtons.parallelStream().filter(s -> s.isSelected()).findAny().orElse(null);
 			
 			try {
 				// TODO : Check if player has already a tile, if so, replace
 				// color with null
 				
-				switch (playerNumber) {
-				case 1:{
-					tileGUI.setBackground(new java.awt.Color(255, 10, 10));}
-					break;
-
-				case 2:
-					tileGUI.setBackground(new java.awt.Color(10, 10, 240));
-					break;
-
-				case 3:
-					tileGUI.setBackground(new java.awt.Color(10, 240, 10));
-					break;
-
-				case 4:
-					tileGUI.setBackground(new java.awt.Color(240, 240, 10));
-					break;
-				}
-
-				tileGUI.resetUI();
+				
 
 				Tile startingTile = game.getTileFromXY(tileGUI.getUIX(), tileGUI.getUIY());
 
 				try {
 					if (!currentController.startingPosition(startingTile, playerNumber)) {
 						// TODO : Error - couldn't set starting position
+					} else {
+						tileGUI.resetUI();
+						switch (playerNumber) {
+						case 1:
+							tileGUI.setBackground(new java.awt.Color(255, 10, 10));
+							break;
+
+						case 2:
+							tileGUI.setBackground(new java.awt.Color(10, 10, 240));
+							break;
+
+						case 3:
+							tileGUI.setBackground(new java.awt.Color(10, 240, 10));
+							break;
+
+						case 4:
+							tileGUI.setBackground(new java.awt.Color(240, 240, 10));
+							break;
+						}
 					}
 				} catch (InvalidInputException e) {
-
+					System.out.println(e);
 				}
 			} catch (Exception e) {
 				// TODO : tileGUI null
@@ -1049,6 +1049,11 @@ public class TileODesignUI extends javax.swing.JFrame {
 			} catch (InvalidInputException e) {
 				// More than 32
 			}
+			break;
+			
+		case NONE:
+			break;
+		default:
 			break;
 		}
 
