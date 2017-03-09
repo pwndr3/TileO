@@ -1186,10 +1186,14 @@ public class TileODesignUI extends javax.swing.JFrame {
 	private void nbOfPlayersChanged() {
 		// TODO : MessageBox - game will be reset
 		String nbOfPlayersChosen = String.valueOf(nbOfPlayers.getSelectedItem());
-		if (game.numberOfPlayers() != Integer.valueOf(nbOfPlayersChosen))
+		if (game.numberOfPlayers() != Integer.valueOf(nbOfPlayersChosen)) {
 			enableChanges();
-		else
+			maskButtons(PLAYERS);
+		}
+		else {
 			disableChanges();
+			maskButtons(ALLBTN);
+		}
 	}
 
 	private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {

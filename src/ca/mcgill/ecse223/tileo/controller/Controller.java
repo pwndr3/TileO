@@ -31,6 +31,15 @@ public class Controller {
 			game.setMode(Game.Mode.DESIGN);
 			TileOApplication.getTileO().addGame(game);
 			TileOApplication.getTileO().setCurrentGame(game);
+			
+			//Create 2 players
+			Player.clearPlayers();
+			Player player = new Player(1, game);
+			player.setColor(Player.Color.RED);
+			game.addPlayer(player);
+			player = new Player(2, game);
+			player.setColor(Player.Color.BLUE);
+			game.addPlayer(player);
 		}
 		
 		new TileODesignUI(game).setVisible(true);
