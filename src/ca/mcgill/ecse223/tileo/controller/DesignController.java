@@ -180,18 +180,16 @@ public class DesignController {
 
 	}
 
-	public boolean createDeck(int connectTiles, int loseTurn, int removeConnection, int rollDie, int teleport)
+	public boolean createDeck(int rollDie, int removeConnection, int teleport, int loseTurn, int connectTiles)
 			throws InvalidInputException {
-		// Get info about current game
-		// TileO tileo = TileOApplication.getTileO();
-		// Game game = tileo.getCurrentGame();
-		Deck deck = new Deck(game);
-		// clear any previous cards added
-		// deck.clearDeck();
 		// Exception if there are too many cards added
 		if (connectTiles + loseTurn + removeConnection + rollDie + teleport > 32) {
 			throw new InvalidInputException("Cannot have more than 32 cards in a deck.");
 		}
+		
+		Deck deck = game.getDeck();
+		deck.clearDeck();
+		
 		// add cards to the deck
 		for (int i = 0; i <= connectTiles; i++) {
 			ConnectTilesActionCard card = new ConnectTilesActionCard("Connect two tiles", deck);
@@ -216,17 +214,17 @@ public class DesignController {
 		return deck.hasCards();
 	}
 	 //done  
-	public void initGame(int numOfPlayersInGame) {
+	public Game initGame(int numOfPlayersInGame) {
 		
 		TileOApplication.getTileO().removeGame(game);
 		
-		Game newGame = new Game(32, TileOApplication.getTileO());
-		newGame.setMode(Game.Mode.DESIGN);
-		TileOApplication.getTileO().addGame(newGame);
-		TileOApplication.getTileO().setCurrentGame(newGame);
+		game = new Game(32, TileOApplication.getTileO());
+		game.setMode(Game.Mode.DESIGN);
+		TileOApplication.getTileO().addGame(game);
+		TileOApplication.getTileO().setCurrentGame(game);
 		
 		for (int n = 1; n <= numOfPlayersInGame; n++) {
-			Player player = new Player(n, newGame);
+			Player player = new Player(n, game);
 			switch (n) {
 			case 1:
 				player.setColor(Player.Color.RED);
@@ -243,6 +241,8 @@ public class DesignController {
 			}
 			game.addPlayer(player);
 		}
+		
+		return game;
 	}
 
 	public void changeNumberOfPlayers(int numOfPlayers) {

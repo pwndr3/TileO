@@ -193,6 +193,14 @@ public class Deck implements Serializable
     ActionCard topCard = cards.get(0);
     setCurrentCard(topCard);
   }
+  public void clearDeck() {
+	  while (cards.size() > 0)
+	    {
+	      ActionCard aCard = cards.get(cards.size() - 1);
+	      aCard.delete();
+	      cards.remove(aCard);
+	    }
+  }
   public void delete()
   {
     while (cards.size() > 0)

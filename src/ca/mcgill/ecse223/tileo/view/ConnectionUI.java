@@ -2,12 +2,14 @@ package ca.mcgill.ecse223.tileo.view;
 
 import javax.swing.*;
 
+import ca.mcgill.ecse223.tileo.view.TileUI.LifeState;
 import ca.mcgill.ecse223.tileo.view.TileUI.State;
 
 public class ConnectionUI extends JToggleButton {
 	private static final long serialVersionUID = 2470222051170835904L;
 
 	public enum LifeState { EXIST, NOTEXIST }
+	public enum State { SHOW, HIDE }
 	public enum Type { HORIZONTAL, VERTICAL }
 	
 	public ConnectionUI(Type aType) {
@@ -15,7 +17,8 @@ public class ConnectionUI extends JToggleButton {
 		setSelected(false);
 		
 		setVisible(false);
-		currentState = LifeState.NOTEXIST;
+		currentLifeState = LifeState.NOTEXIST;
+		currentState = State.SHOW;
 		type = aType;
 		
 		saveUIState();
@@ -24,7 +27,8 @@ public class ConnectionUI extends JToggleButton {
 	public ConnectionUI(Type aType, int aX, int aY) {
 		setPreferredSize(new java.awt.Dimension(10, 10));
 		
-		currentState = LifeState.NOTEXIST;
+		currentLifeState = LifeState.NOTEXIST;
+		currentState = State.SHOW;
 		type = aType;
 		
 		x = aX;
@@ -32,7 +36,19 @@ public class ConnectionUI extends JToggleButton {
 	}
 	
 	public LifeState getLifeState() {
+		return currentLifeState;
+	}
+	
+	public void setLifeState(LifeState state) {
+		currentLifeState = state;
+	}
+	
+	public State getState() {
 		return currentState;
+	}
+	
+	public void setState(State state) {
+		currentState = state;
 	}
 	
 	public void showUI() {
@@ -65,6 +81,11 @@ public class ConnectionUI extends JToggleButton {
 		return y;
 	}
 	
+	//
+	public Type getType() {
+		return type;
+	}
+	
 	//Backup/restore UI state
 	public void saveUIState() {
 		previousUIState = currentUIState = ((getBackground() == (new java.awt.Color(0, 0, 0)) ? 1 : 0) << 1) | (isSelected() ? 1 : 0);
@@ -91,7 +112,8 @@ public class ConnectionUI extends JToggleButton {
 	}
 	//
 	private Type type;
-	private LifeState currentState;
+	private LifeState currentLifeState;
+	private State currentState;
 	
 	private int currentUIState;
 	private int previousUIState;

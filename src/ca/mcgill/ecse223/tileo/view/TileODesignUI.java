@@ -22,7 +22,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 	private JPanel tilesPanel;
 
 	private enum DesignState {
-		BOARD_SIZE, CHANGE_NUMBER_OF_PLAYERS, SELECT_STARTING_POSITION, ADD_TILE, REMOVE_TILE, ADD_CONNECTION, REMOVE_CONNECTION, NONE
+		BOARD_SIZE, CHANGE_NUMBER_OF_PLAYERS, SELECT_STARTING_POSITION, ADD_TILE, REMOVE_TILE, ADD_CONNECTION, REMOVE_CONNECTION, CARDS, NONE
 	}
 
 	private DesignState designState = DesignState.NONE;
@@ -95,21 +95,40 @@ public class TileODesignUI extends javax.swing.JFrame {
 	}
 
 	private void changeNumberOfCardsLeft() {
-		// Forbid negative numbers
-		if ((Integer.valueOf(nbRollDieCard.getText()) < 0) || (Integer.valueOf(nbRemoveConnectionCard.getText()) < 0)
-				|| (Integer.valueOf(nbTeleportCard.getText()) < 0) || (Integer.valueOf(nbLoseTurnCard.getText()) < 0)
-				|| (Integer.valueOf(nbConnectTilesCard.getText()) < 0)) {
-
+		// Forbid negative numbers			
+		try {
 			if (Integer.valueOf(nbRollDieCard.getText()) < 0)
 				nbRollDieCard.setText(String.valueOf(cardsCounts[0]));
-			else if (Integer.valueOf(nbRemoveConnectionCard.getText()) < 0)
+		} catch(NumberFormatException e) {
+			nbRollDieCard.setText(String.valueOf(cardsCounts[0]));
+		}
+		
+		try {
+			if (Integer.valueOf(nbRemoveConnectionCard.getText()) < 0)
 				nbRemoveConnectionCard.setText(String.valueOf(cardsCounts[1]));
-			else if (Integer.valueOf(nbTeleportCard.getText()) < 0)
+		} catch(NumberFormatException e) {
+			nbRemoveConnectionCard.setText(String.valueOf(cardsCounts[1]));
+		}
+		
+		try {
+			if (Integer.valueOf(nbTeleportCard.getText()) < 0)
 				nbTeleportCard.setText(String.valueOf(cardsCounts[2]));
-			else if (Integer.valueOf(nbLoseTurnCard.getText()) < 0)
+		} catch(NumberFormatException e) {
+			nbTeleportCard.setText(String.valueOf(cardsCounts[2]));
+		}
+		
+		try {
+			if (Integer.valueOf(nbLoseTurnCard.getText()) < 0)
 				nbLoseTurnCard.setText(String.valueOf(cardsCounts[3]));
-			else if (Integer.valueOf(nbConnectTilesCard.getText()) < 0)
+		} catch(NumberFormatException e) {
+			nbLoseTurnCard.setText(String.valueOf(cardsCounts[3]));
+		}
+		
+		try {
+			if (Integer.valueOf(nbConnectTilesCard.getText()) < 0)
 				nbConnectTilesCard.setText(String.valueOf(cardsCounts[4]));
+		} catch(NumberFormatException e) {
+			nbConnectTilesCard.setText(String.valueOf(cardsCounts[4]));
 		}
 
 		cardsCounts[0] = Integer.valueOf(nbRollDieCard.getText());
@@ -133,6 +152,8 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 			cardsLeft.setText(String.valueOf(nbOfCardsLeft));
 		}
+		
+		designState = DesignState.CARDS;
 	}
 
 	private void changeBoardSize(int m, int n) {
@@ -244,11 +265,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 				Integer.valueOf(verticalLength.getSelectedItem().toString()));
 
 		if (game == null) {
-			/*
-			 * Recreate game
-			 * 
-			 * with players and new board size
-			 */
+			game = currentController.initGame(Integer.valueOf(String.valueOf(chosenPlayer.getSelectedItem())));
 		}
 	}
 
@@ -784,8 +801,6 @@ public class TileODesignUI extends javax.swing.JFrame {
 	}// </editor-fold>
 
 	private void update() {
-		// TODO : Rewrite according to classes
-
 		switch (designState) {
 		/*
 		 * IF BOARD SIZE HAS CHANGED
@@ -805,7 +820,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 			tileGUI = tilesButtons.parallelStream().filter(s -> s.isSelected()).findAny().orElse(null);
 
 			try {
-				// Check if player has already a tile, if so, replace
+				// TODO : Check if player has already a tile, if so, replace
 				// color with null
 				
 				switch (playerNumber) {
@@ -838,7 +853,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 
 				}
 			} catch (Exception e) {
-				// tileGUI null
+				// TODO : tileGUI null
 			}
 
 			break;
@@ -871,7 +886,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 			} 
 			//ActionTile
 			else if(tileType.getSelectedItem().toString().equals("Action Tile")) {
-				//Popup inactivity period
+				//TODO : Popup inactivity period
 				int disableTurns = 1;
 				
 				List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.isSelected() && 
@@ -893,7 +908,16 @@ public class TileODesignUI extends javax.swing.JFrame {
 				tiles.forEach(s -> {
 					s.setLifeState(TileUI.LifeState.EXIST);
 					s.resetUI();
+					
+					int connX = s.getUIX()*2;
+					int connY = s.getUIY()*2;
+					
+					//Show nearest connections
+					connectionButtons.parallelStream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
+							(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> t.setState(ConnectionUI.State.SHOW));
 				});
+				
+				
 			}
 			break;
 
@@ -908,6 +932,13 @@ public class TileODesignUI extends javax.swing.JFrame {
 				
 				Tile tileEquivalent = game.getTileFromXY(s.getUIX(), s.getUIY());
 				
+				int connX = s.getUIX()*2;
+				int connY = s.getUIY()*2;
+				
+				//Hide nearest connections
+				connectionButtons.parallelStream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
+						(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> t.setState(ConnectionUI.State.HIDE));
+				
 				try {
 					currentController.deleteTile(tileEquivalent);
 				} catch (InvalidInputException e) {
@@ -920,87 +951,103 @@ public class TileODesignUI extends javax.swing.JFrame {
 		 * IF ADDING A CONNECTION
 		 */
 		case ADD_CONNECTION:
+			connectionButtons.parallelStream()
+				.filter(s -> s.isSelected() && s.isVisible() && s.getLifeState() == ConnectionUI.LifeState.NOTEXIST
+				&& s.getState() == ConnectionUI.State.SHOW)
+				.forEach(s -> {
+					s.setLifeState(ConnectionUI.LifeState.EXIST);
+					
+					if(s.getType() == ConnectionUI.Type.HORIZONTAL) {
+						Tile tile1 = game.getTileFromXY((s.getUIX()-1)/2, s.getUIY()/2);
+						Tile tile2 = game.getTileFromXY((s.getUIX()+1)/2, s.getUIY()/2);
+						
+						try {
+							currentController.connectTiles(tile1, tile2);
+						} catch (InvalidInputException e) {
+							// Already connection
+						}
+					} else if(s.getType() == ConnectionUI.Type.VERTICAL) {
+						Tile tile1 = game.getTileFromXY(s.getUIX()/2, (s.getUIY()-1)/2);
+						Tile tile2 = game.getTileFromXY(s.getUIX()/2, (s.getUIY()+1)/2);
+						
+						try {
+							currentController.connectTiles(tile1, tile2);
+						} catch (InvalidInputException e) {
+							// Already connection
+						}
+					}
+				});
 			break;
 
 		/*
 		 * IF REMOVING A CONNECTION
 		 */
 		case REMOVE_CONNECTION:
+			connectionButtons.parallelStream().filter(s -> s.isSelected() && s.isVisible() && s.getLifeState() == ConnectionUI.LifeState.EXIST
+				&& s.getState() == ConnectionUI.State.SHOW).forEach(s -> {
+					s.setLifeState(ConnectionUI.LifeState.NOTEXIST);
+					
+					if(s.getType() == ConnectionUI.Type.HORIZONTAL) {
+						Tile tile1 = game.getTileFromXY((s.getUIX()-1)/2, s.getUIY()/2);
+						Tile tile2 = game.getTileFromXY((s.getUIX()+1)/2, s.getUIY()/2);
+						
+						try {
+							currentController.removeConnection(tile1, tile2);
+						} catch (InvalidInputException e) {
+							// Already connection
+						}
+					} else if(s.getType() == ConnectionUI.Type.VERTICAL) {
+						Tile tile1 = game.getTileFromXY(s.getUIX()/2, (s.getUIY()-1)/2);
+						Tile tile2 = game.getTileFromXY(s.getUIX()/2, (s.getUIY()+1)/2);
+						
+						try {
+							currentController.removeConnection(tile1, tile2);
+						} catch (InvalidInputException e) {
+							// Already connection
+						}
+					}	
+				});
 			break;
 
 		/*
 		 * IF NUMBER HAS CHANGED
 		 */
 		case CHANGE_NUMBER_OF_PLAYERS:
-			break;
-		}
-		
-		hideDisabledTiles();
-		hideDisabledConnections();
-
-		// Remove Tiles
-		if (designState == DesignState.REMOVE_TILE) {
-			for (JToggleButton button : tilesButtons) {
-				if (button.isSelected()) {
-					button.setVisible(false);
-					button.setText("");
-					button.setBackground(null);
-					// Tile
-					// currentController.deleteTile((i / numberOfRows) * 2, (i %
-					// numberOfRows) * 2);
-				}
-			}
-		}
-
-		// Remove Connections
-		if (designState == DesignState.REMOVE_CONNECTION) {
-			int i = 0;
-			for (ConnectionUI button : connectionButtons) {
-				if (button.isSelected()) {
-					button.setVisible(false);
-
-					// Tile 1 and 2
-					// currentController.removeConnection(button.getUIX(),
-					// button.getUIY());
-				}
-				i++;
-			}
-
-		}
-
-		// Reset Connections
-		if (designState == DesignState.ADD_CONNECTION) {
-			hideDisabledConnections();
-
-			int i = 0;
-			for (ConnectionUI conn : connectionButtons) {
-				if (conn.isVisible()) {
-					if ((conn.getUIY() % 2) == 0) {
-						// Tiles
-						// currentController.connectTiles(conn.getUIX(),
-						// conn.getUIY(), true);
-					} else {
-						// Tiles
-						// currentController.connectTiles(conn.getUIX(),
-						// conn.getUIY(), false);
-					}
-				}
-				i++;
-			}
-		}
-
-		if (designState == DesignState.CHANGE_NUMBER_OF_PLAYERS) {
 			currentController.changeNumberOfPlayers(Integer.valueOf(String.valueOf(nbOfPlayers.getSelectedItem())));
+			setupBoard();
+			
+			 if (nbOfPlayers.getSelectedItem() == "4") {
+				 chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" })); 
+			 } 
+			 
+			 else if (nbOfPlayers.getSelectedItem() == "3") { 
+				 chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3" }));
+			 } 
+			 
+			 else { 
+				 chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2" })); 
+			 }
+		case CARDS:
+			try {
+				currentController.createDeck(cardsCounts[0], cardsCounts[1], cardsCounts[2], cardsCounts[3], cardsCounts[4]);
+			} catch (InvalidInputException e) {
+				// More than 32
+			}
+			break;
 		}
 
 		// Change colors for connections
-		/*
-		 * for (ConnectionUI conn : connectionButtons) { if (conn.getLifeState()
-		 * == ConnectionUI.LifeState.NOTEXIST) conn.setBackground(null); else
-		 * conn.setBackground(new java.awt.Color(0, 0, 0)); }
-		 */
+		connectionButtons.parallelStream().forEach(s -> {
+			if (s.getLifeState() == ConnectionUI.LifeState.NOTEXIST) 
+				s.setBackground(null); 
+			else
+				s.setBackground(new java.awt.Color(0, 0, 0));
+		});
 
 		// Reset states
+		hideDisabledTiles();
+		hideDisabledConnections();
+		
 		disableChanges();
 		maskButtons(ALLBTN);
 		designState = DesignState.NONE;
@@ -1124,18 +1171,6 @@ public class TileODesignUI extends javax.swing.JFrame {
 			enableChanges();
 		else
 			disableChanges();
-
-		// Only when apply changes
-		/*
-		 * if (nbOfPlayers.getSelectedItem() == "4") { // Setting value of combo
-		 * // box for choosing a player // to defined number of // players
-		 * chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new
-		 * String[] { "1", "2", "3", "4" })); } else if
-		 * (nbOfPlayers.getSelectedItem() == "3") { chosenPlayer.setModel(new
-		 * javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3" }));
-		 * } else { chosenPlayer.setModel(new
-		 * javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2" })); }
-		 */
 	}
 
 	private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1166,7 +1201,7 @@ public class TileODesignUI extends javax.swing.JFrame {
 	}
 
 	private void showDisabledConnections() {
-		connectionButtons.parallelStream().filter(s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST)
+		connectionButtons.parallelStream().filter(s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST && s.getState() == ConnectionUI.State.SHOW)
 				.forEach(s -> s.showUI());
 	}
 
