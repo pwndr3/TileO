@@ -215,7 +215,7 @@ public class DesignController {
 		}
 		return deck.hasCards();
 	}
-
+	//done
 	public void initGame(int numOfPlayersInGame) {
 		
 		TileOApplication.getTileO().removeGame(game);
