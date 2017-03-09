@@ -218,12 +218,15 @@ public class DesignController {
 
 	public void initGame(int numOfPlayersInGame) {
 		
-		Game tempGame = TileOApplication.getTileO().getCurrentGame();
+		TileOApplication.getTileO().removeGame(game);
 		
-		Game game = new Game(tempGame.getCurrentConnectionPieces(), TileOApplication.getTileO());
+		Game newGame = new Game(32, TileOApplication.getTileO());
+		newGame.setMode(Game.Mode.DESIGN);
+		TileOApplication.getTileO().addGame(newGame);
+		TileOApplication.getTileO().setCurrentGame(newGame);
 		
 		for (int n = 1; n <= numOfPlayersInGame; n++) {
-			Player player = new Player(n, game);
+			Player player = new Player(n, newGame);
 			switch (n) {
 			case 1:
 				player.setColor(Player.Color.RED);
@@ -240,8 +243,6 @@ public class DesignController {
 			}
 			game.addPlayer(player);
 		}
-		TileOApplication.getTileO().addGame(game);
-
 	}
 
 	public void changeNumberOfPlayers(int numOfPlayers) {
