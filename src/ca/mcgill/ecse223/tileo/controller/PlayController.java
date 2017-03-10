@@ -215,8 +215,8 @@ public class PlayController {
 
     public void teleport(Tile tile) throws InvalidInputException {
         //Get info about the current game
-        TileO tileo = TileOApplication.getTileO();
-        Game game = tileo.getCurrentGame();
+        //TileO tileo = TileOApplication.getTileO();
+       // Game game = tileo.getCurrentGame();
         Deck deck = game.getDeck();
         //Exception
         if(!(deck.getCurrentCard() instanceof TeleportActionCard)){
