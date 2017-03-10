@@ -1,10 +1,19 @@
 package ca.mcgill.ecse223.tileo.view;
 
+import java.awt.FlowLayout;
 import java.awt.Image;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 import ca.mcgill.ecse223.tileo.model.*;
 import ca.mcgill.ecse223.tileo.view.popup.*;
@@ -35,6 +44,49 @@ public class PopUpManager {
 				null,
 				options,
 				options[1]);
+	}
+	
+	private class JTextFieldLimit extends PlainDocument {
+		  private int limit;
+
+		  JTextFieldLimit(int limit) {
+		   super();
+		   this.limit = limit;
+		   }
+
+		  public void insertString( int offset, String  str, AttributeSet attr ) throws BadLocationException {
+		    if (str == null) return;
+
+		    if ((getLength() + str.length()) <= limit) {
+		      super.insertString(offset, str, attr);
+		    }
+		  }
+		}
+	
+	public String askSaveName(String existingName) {
+		JPanel panel = new JPanel();
+		JTextField text = new JTextField(25);
+		text.setSize(new java.awt.Dimension(200,25));
+		text.setPreferredSize(new java.awt.Dimension(200,25));
+		text.setDocument(new JTextFieldLimit(25));
+		if(existingName == null) {
+			Random rn = new Random();
+			existingName = "Game";
+			
+			for(int i = 0; i < 5; i++) {
+				existingName += rn.nextInt(10);
+			}
+		}
+		
+		text.setText(existingName);
+		panel.setLayout(new FlowLayout());
+		panel.add(text);
+		
+		if(JOptionPane.showConfirmDialog(parentWindow, panel, "Enter game name : ", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION) {
+			return text.getText();
+		}
+		
+		return null;
 	}
 	
 	public void showActionTile(ActionCard card) {

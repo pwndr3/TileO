@@ -34,6 +34,7 @@ public class Game implements Serializable {
 	}
 
 	private Mode mode;
+	private String gameName = null;
 	public boolean hasStarted = false; //means we can still edit it
 
 	// Game Associations
@@ -86,6 +87,14 @@ public class Game implements Serializable {
 	// ------------------------
 	// INTERFACE
 	// ------------------------
+	
+	public String getGameName() {
+		return gameName;
+	}
+	
+	public void setGameName(String name){
+		gameName = name;
+	}
 
 	public boolean setCurrentConnectionPieces(int aCurrentConnectionPieces) {
 		boolean wasSet = false;

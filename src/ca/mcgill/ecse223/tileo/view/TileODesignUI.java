@@ -1284,13 +1284,13 @@ public class TileODesignUI extends JFrame {
 
 	private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO : Check if game is playable to change game state
-		//TileOApplication.save();
-		
-		/*
-		 * POPUP TESTING
-		 */
-		
-		popupmgr.showActionTile(game.getDeck().getCard(0));
+		String newName = popupmgr.askSaveName(game.getGameName());
+			
+		if(newName != null) {
+			game.setGameName(newName);
+			TileOApplication.save();
+			popupmgr.acknowledgeMessage("Game saved.");
+		}
 	}
 
 	private void nbOfPlayersChanged() {
