@@ -552,7 +552,8 @@ public class Game implements Serializable {
 	}
 
 	public List<Tile> rollTheDie() {
-		hasStarted = true;
+		if(!hasStarted)
+			hasStarted = true;
 		
 		Die die = this.getDie();
 		int rolledNumber = die.roll();

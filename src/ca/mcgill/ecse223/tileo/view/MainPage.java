@@ -2,12 +2,14 @@ package ca.mcgill.ecse223.tileo.view;
 
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.Controller;
-
 import java.util.ArrayList;
-
 import javax.swing.*;
 
 public class MainPage extends javax.swing.JFrame {
+
+    /**
+     * Creates new form MainPage
+     */
     public MainPage() {
     	controller = new Controller(this);
 		
@@ -21,176 +23,209 @@ public class MainPage extends javax.swing.JFrame {
         initComponents();
         
         TileOApplication.load();
+        TileOApplication.getTileO().getGames().parallelStream().filter(s -> !s.hasStarted).forEach(s -> designModel.addElement(s.getGameName()));
+        TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted).forEach(s -> playModel.addElement(s.getGameName()));
         
-        
-        //ArrayList<String> test = new ArrayList<String>();
-        //test.add("jasd");
-        //test.add("klsjda");
-        
-        TileOApplication.getTileO().getGames().parallelStream().forEach(s -> model.addElement(s.getGameName()));
-        //test.parallelStream().forEach(s -> model.addElement(s));
+        if(designModel.getSize() == 0)
+        	designModel.addElement("No designable game");
+        if(playModel.getSize() == 0)
+        	playModel.addElement("No playable game");
     }
-    private void initComponents() {
-
-        jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        model = new DefaultListModel<>();
-        jList1 = new javax.swing.JList<String>(model);
-        jLabel2 = new javax.swing.JLabel();
+    
+    private void updateLists() {
+    	designModel.removeAllElements();
+    	playModel.removeAllElements();
+    	
+    	TileOApplication.getTileO().getGames().parallelStream().filter(s -> !s.hasStarted).forEach(s -> designModel.addElement(s.getGameName()));
+        TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted).forEach(s -> playModel.addElement(s.getGameName()));
         
+        if(designModel.getSize() == 0)
+        	designModel.addElement("No designable game");
+        if(playModel.getSize() == 0)
+        	playModel.addElement("No playable game");
+    }
+
+    private void initComponents() {
+    	ImageIcon backgroundImage = new javax.swing.ImageIcon(getClass().getResource("/icons/tileomainpage.jpg"));
+    	
+    	designModel = new DefaultComboBoxModel<>();
+    	playModel = new DefaultComboBoxModel<>();
+        jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList<>();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        loadGameToDesignComboBox = new javax.swing.JComboBox<>();
+        loadGameToPlayComboBox = new javax.swing.JComboBox<>();
+        deleteDesignButton = new javax.swing.JButton();
+        loadDesignButton = new javax.swing.JButton();
+        loadPlayButton = new javax.swing.JButton();
+        deletePlayButton = new javax.swing.JButton();
+        designNewGameButton = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setBackground(new java.awt.Color(102, 153, 255));
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setBackground(new java.awt.Color(102, 153, 255));
-        jLabel1.setFont(new java.awt.Font("Marker Felt", 1, 48)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setLabelFor(jLabel1);
-        jLabel1.setText("Tile-O");
-        jLabel1.setAlignmentY(0.0F);
+        jPanel1.setLayout(null);
 
-        jList1.setBorder(javax.swing.BorderFactory.createMatteBorder(3, 3, 3, 3, new java.awt.Color(0, 0, 0)));
-        jList1.setFont(new java.awt.Font("Marker Felt", 0, 18)); // NOI18N
-        jScrollPane1.setViewportView(jList1);
+        jLabel3.setFont(new java.awt.Font("Songti SC", 1, 36)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Design");
+        jPanel1.add(jLabel3);
+        jLabel3.setBounds(180, 190, 120, 40);
 
-        jLabel2.setBackground(new java.awt.Color(102, 153, 255));
-        jLabel2.setFont(new java.awt.Font("Marker Felt", 0, 24)); // NOI18N
-        jLabel2.setText(" Play Mode");
+        jLabel1.setFont(new java.awt.Font("Songti SC", 1, 36)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Play");
+        jPanel1.add(jLabel1);
+        jLabel1.setBounds(700, 190, 120, 40);
 
-        jLabel3.setBackground(new java.awt.Color(102, 153, 255));
-        jLabel3.setFont(new java.awt.Font("Marker Felt", 0, 24)); // NOI18N
-        jLabel3.setText("Design Game");
+        loadGameToDesignComboBox.setBackground(new java.awt.Color(197, 242, 250));
+        loadGameToDesignComboBox.setModel(designModel);
+        jPanel1.add(loadGameToDesignComboBox);
+        loadGameToDesignComboBox.setBounds(140, 240, 180, 27);
 
-        jList2.setBorder(javax.swing.BorderFactory.createMatteBorder(3, 3, 3, 3, new java.awt.Color(0, 0, 0)));
-        jList2.setFont(new java.awt.Font("Marker Felt", 0, 24)); // NOI18N
-        jScrollPane3.setViewportView(jList2);
+        loadGameToPlayComboBox.setBackground(new java.awt.Color(197, 242, 250));
+        loadGameToPlayComboBox.setModel(playModel);
+        loadGameToPlayComboBox.setToolTipText("");
+        jPanel1.add(loadGameToPlayComboBox);
+        loadGameToPlayComboBox.setBounds(650, 240, 180, 27);
 
-        jButton1.setBackground(new java.awt.Color(102, 255, 102));
-        jButton1.setFont(new java.awt.Font("Marker Felt", 0, 24)); // NOI18N
-        jButton1.setText("Design ");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        deleteDesignButton.setBackground(new java.awt.Color(197, 242, 250));
+        deleteDesignButton.setText("Delete");
+        jPanel1.add(deleteDesignButton);
+        deleteDesignButton.setBounds(230, 290, 90, 29);
+        deleteDesignButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                controller.design();
+                deleteDesignButtonActionPerformed(evt);
             }
         });
 
-        jButton2.setBackground(new java.awt.Color(51, 255, 51));
-        jButton2.setFont(new java.awt.Font("Marker Felt", 0, 24)); // NOI18N
-        jButton2.setText("Play!");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        loadDesignButton.setBackground(new java.awt.Color(197, 242, 250));
+        loadDesignButton.setText("Load");
+        loadDesignButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                controller.play();
+                loadDesignButtonActionPerformed(evt);
             }
         });
+        jPanel1.add(loadDesignButton);
+        loadDesignButton.setBounds(140, 290, 90, 29);
 
-        jButton3.setBackground(new java.awt.Color(255, 0, 0));
-        jButton3.setFont(new java.awt.Font("Marker Felt", 0, 24)); // NOI18N
-        jButton3.setText("Delete Game");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        loadPlayButton.setBackground(new java.awt.Color(197, 242, 250));
+        loadPlayButton.setText("Load");
+        loadPlayButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                loadPlayButtonActionPerformed(evt);
             }
         });
+        jPanel1.add(loadPlayButton);
+        loadPlayButton.setBounds(650, 290, 90, 29);
+
+        deletePlayButton.setBackground(new java.awt.Color(197, 242, 250));
+        deletePlayButton.setText("Delete");
+        deletePlayButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deletePlayButtonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(deletePlayButton);
+        deletePlayButton.setBounds(740, 290, 90, 29);
+
+        designNewGameButton.setBackground(new java.awt.Color(255, 207, 0));
+        designNewGameButton.setFont(new java.awt.Font("Songti SC", 1, 36)); // NOI18N
+        designNewGameButton.setForeground(new java.awt.Color(51, 51, 51));
+        designNewGameButton.setText("Design New Game");
+        designNewGameButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                designNewGameButtonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(designNewGameButton);
+        designNewGameButton.setBounds(330, 520, 310, 60);
+
+        jLabel2.setIcon(backgroundImage); // NOI18N
+        jLabel2.setText("jLabel2");
+        jPanel1.add(jLabel2);
+        jLabel2.setBounds(0, -10, 980, 670);
+
+        jLabel4.setText("jLabel4");
+        jPanel1.add(jLabel4);
+        jLabel4.setBounds(460, 260, 45, 16);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(52, 52, 52)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(75, 75, 75)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(53, 53, 53)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(77, 77, 77)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(jLabel2)))
-                .addGap(66, 66, 66))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(71, 71, 71)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(158, 158, 158)
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(85, 85, 85))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 980, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(118, 118, 118)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel2)))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(60, 60, 60)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
-                        .addComponent(jButton3)
-                        .addGap(52, 52, 52))))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 654, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void loadDesignButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	if(TileOApplication.getTileO().getGames().parallelStream().filter(s -> !s.hasStarted).count() > 0) {
+    		controller.design(String.valueOf(loadGameToDesignComboBox.getSelectedItem()));
+    	} else {
+    		new PopUpManager(this).acknowledgeMessage("No game selected, cannot design");
+    	}
+    }
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void loadPlayButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	if(TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted).count() > 0) {
+    		controller.play(String.valueOf(loadGameToPlayComboBox.getSelectedItem()));
+    	} else {
+    		new PopUpManager(this).acknowledgeMessage("No game selected, cannot play");
+    	}
+    }
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void deleteDesignButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	if(TileOApplication.getTileO().getGames().parallelStream().filter(s -> !s.hasStarted).count() > 0) {
+        	if(new PopUpManager(this).askYesOrNo("Are you sure you want to delete the game?") == 0) {
+        		TileOApplication.getTileO().removeGame(TileOApplication.getTileO().getGameByName(String.valueOf(loadGameToDesignComboBox.getSelectedItem())));
+        		new PopUpManager(this).acknowledgeMessage("Game deleted");
+        		updateLists();
+        	}
+    	} else {
+    		new PopUpManager(this).acknowledgeMessage("No game selected to delete");
+    	}
+    }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private void deletePlayButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	if(TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted).count() > 0) {
+        	if(new PopUpManager(this).askYesOrNo("Are you sure you want to delete the game?") == 0) {
+        		TileOApplication.getTileO().removeGame(TileOApplication.getTileO().getGameByName(String.valueOf(loadGameToDesignComboBox.getSelectedItem())));
+        		new PopUpManager(this).acknowledgeMessage("Game deleted");
+        		updateLists();
+        	}
+    	} else {
+    		new PopUpManager(this).acknowledgeMessage("No game selected to delete");
+    	}
+    }
+
+    private void designNewGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	controller.design(null);
+    }
+
+    private javax.swing.JButton deleteDesignButton;
+    private javax.swing.JButton deletePlayButton;
+    private javax.swing.JButton designNewGameButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JList<String> jList1;
-    private javax.swing.JList<String> jList2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane3;
-    DefaultListModel<String> model;
-    
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton loadDesignButton;
+    private javax.swing.JComboBox<String> loadGameToDesignComboBox;
+    private javax.swing.JComboBox<String> loadGameToPlayComboBox;
+    private javax.swing.JButton loadPlayButton;
+    DefaultComboBoxModel<String> designModel;
+    DefaultComboBoxModel<String> playModel;
     private Controller controller;
-    // End of variables declaration//GEN-END:variables
 }
+
 

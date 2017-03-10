@@ -22,7 +22,7 @@ import ca.mcgill.ecse223.tileo.view.popup.*;
  * General pop up creator
  */
 public class PopUpManager {
-	PopUpManager(JFrame window) {
+	public PopUpManager(JFrame window) {
 		parentWindow = window;
 	}
 	
@@ -83,7 +83,13 @@ public class PopUpManager {
 		panel.add(text);
 		
 		if(JOptionPane.showConfirmDialog(parentWindow, panel, "Enter game name : ", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE) == JOptionPane.OK_OPTION) {
-			return text.getText();
+			String fieldText = text.getText().trim();
+			
+			if(fieldText.equals(""))
+				return "";
+				
+			
+			return fieldText;
 		}
 		
 		return null;

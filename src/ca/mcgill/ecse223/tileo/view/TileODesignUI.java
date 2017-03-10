@@ -1284,7 +1284,8 @@ public class TileODesignUI extends JFrame {
 
 	private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// TODO : Check if game is playable to change game state
-		String newName = popupmgr.askSaveName(game.getGameName());
+		String newName = null;
+		while((newName = popupmgr.askSaveName(game.getGameName())) == "");
 			
 		if(newName != null) {
 			game.setGameName(newName);

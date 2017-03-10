@@ -10,22 +10,28 @@ public class Controller {
 		ui = theUI;
 	}
 
-	public void play() {
-		//TODO : Choose game
-		//Game game = TileOApplication.getTileO().getCurrentGame();
-		Game game = TileOApplication.getTileO().getGame(0);
+	public void play(String gameName) {
+		Game game = null;
 		
-		if(game.getMode() == Game.Mode.GAME) {
+		if(gameName != null)
+			game = TileOApplication.getTileO().getGameByName(gameName);
+		
+		else if(game.getMode() == Game.Mode.GAME) {
 			new TileOPlayUI(game).setVisible(true);
 			ui.dispose();
-		} else {
-			//TODO : MessageBox - Not playable
+		} 
+		
+		else {
+			new PopUpManager(ui).acknowledgeMessage("Cannot play, game is not yet playable.");
 		}
 	}
 
-	public void design() {
-		//TODO : Choose game
-		Game game = TileOApplication.getTileO().getCurrentGame();
+	public void design(String gameName) {
+		//Game game = TileOApplication.getTileO().getGameByName(gameName);
+		Game game = null;
+		
+		if(gameName != null)
+			game = TileOApplication.getTileO().getGameByName(gameName);
 		
 		if(game == null) {
 			game = new Game(32, TileOApplication.getTileO());
@@ -49,7 +55,7 @@ public class Controller {
 			new TileODesignUI(game).setVisible(true);
 			ui.dispose();
 		} else {
-			//TODO : MessageBox : Cannot design - game has started
+			new PopUpManager(ui).acknowledgeMessage("Cannot design, game has already begun.");
 		}
 	}
 
