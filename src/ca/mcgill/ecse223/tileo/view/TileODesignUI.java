@@ -194,8 +194,8 @@ public class TileODesignUI extends JFrame {
 		for (int row = 0; row < m + (m - 1); row++) {
 			for (int col = 0; col < n + (n - 1); col++) {
 				c.fill = GridBagConstraints.BOTH;
-				c.gridx = row; // row
-				c.gridy = col; // column
+				c.gridx = col;
+				c.gridy = row; 
 
 				// Tile
 				if (row % 2 == 0 && col % 2 == 0) {
@@ -217,23 +217,8 @@ public class TileODesignUI extends JFrame {
 					currentController.createNormalTile(row / 2, col / 2);
 				}
 
-				// Horizontal connection
-				else if (row % 2 == 1 && col % 2 == 0) {
-					ConnectionUI conn = new ConnectionUI(ConnectionUI.Type.HORIZONTAL);
-					conn.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(java.awt.event.ActionEvent evt) {
-							connectionActionPerformed(evt);
-						}
-					});
-					connectionButtons.add(conn);
-
-					c.fill = GridBagConstraints.HORIZONTAL;
-					tilesPanel.add(conn, c);
-					conn.setPosition(row, col);
-				}
-
 				// Vertical connection
-				else if (row % 2 == 0 && col % 2 == 1) {
+				else if (row % 2 == 1 && col % 2 == 0) {
 					ConnectionUI conn = new ConnectionUI(ConnectionUI.Type.VERTICAL);
 					conn.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -243,6 +228,21 @@ public class TileODesignUI extends JFrame {
 					connectionButtons.add(conn);
 
 					c.fill = GridBagConstraints.VERTICAL;
+					tilesPanel.add(conn, c);
+					conn.setPosition(row, col);
+				}
+
+				// Horizontal connection
+				else if (row % 2 == 0 && col % 2 == 1) {
+					ConnectionUI conn = new ConnectionUI(ConnectionUI.Type.HORIZONTAL);
+					conn.addActionListener(new java.awt.event.ActionListener() {
+						public void actionPerformed(java.awt.event.ActionEvent evt) {
+							connectionActionPerformed(evt);
+						}
+					});
+					connectionButtons.add(conn);
+
+					c.fill = GridBagConstraints.HORIZONTAL;
 					tilesPanel.add(conn, c);
 					conn.setPosition(row, col);
 				}
@@ -386,8 +386,8 @@ public class TileODesignUI extends JFrame {
 		for (int row = 0; row < numberOfRows + (numberOfRows - 1); row++) {
 			for (int col = 0; col < numberOfCols + (numberOfCols - 1); col++) {
 				c.fill = GridBagConstraints.BOTH;
-				c.gridx = row; // row
-				c.gridy = col; // column
+				c.gridx = col; // column
+				c.gridy = row; // row
 
 				// Tile
 				if (row % 2 == 0 && col % 2 == 0) {
@@ -418,34 +418,32 @@ public class TileODesignUI extends JFrame {
 					tile.setPosition(row / 2, col / 2);
 				}
 
-				// Horizontal connection
-				else if (row % 2 == 1 && col % 2 == 0) {
-					ConnectionUI conn = new ConnectionUI(ConnectionUI.Type.HORIZONTAL);
-					conn.addActionListener(new java.awt.event.ActionListener() {
-						public void actionPerformed(java.awt.event.ActionEvent evt) {
-							connectionActionPerformed(evt);
-						}
-					});
-					conn.setState(ConnectionUI.State.HIDE);
-					connectionButtons.add(conn);
-
-					c.fill = GridBagConstraints.HORIZONTAL;
-					tilesPanel.add(conn, c);
-					conn.setPosition(row, col);
-				}
-
 				// Vertical connection
-				else if (row % 2 == 0 && col % 2 == 1) {
+				else if (row % 2 == 1 && col % 2 == 0) {
 					ConnectionUI conn = new ConnectionUI(ConnectionUI.Type.VERTICAL);
 					conn.addActionListener(new java.awt.event.ActionListener() {
 						public void actionPerformed(java.awt.event.ActionEvent evt) {
 							connectionActionPerformed(evt);
 						}
 					});
-					conn.setState(ConnectionUI.State.HIDE);
 					connectionButtons.add(conn);
 
 					c.fill = GridBagConstraints.VERTICAL;
+					tilesPanel.add(conn, c);
+					conn.setPosition(row, col);
+				}
+
+				// Horizontal connection
+				else if (row % 2 == 0 && col % 2 == 1) {
+					ConnectionUI conn = new ConnectionUI(ConnectionUI.Type.HORIZONTAL);
+					conn.addActionListener(new java.awt.event.ActionListener() {
+						public void actionPerformed(java.awt.event.ActionEvent evt) {
+							connectionActionPerformed(evt);
+						}
+					});
+					connectionButtons.add(conn);
+
+					c.fill = GridBagConstraints.HORIZONTAL;
 					tilesPanel.add(conn, c);
 					conn.setPosition(row, col);
 				}
@@ -478,15 +476,16 @@ public class TileODesignUI extends JFrame {
 			Tile tile1 = s.getTile(0);
 			Tile tile2 = s.getTile(1);
 			
-			connectionButtons.parallelStream().filter(t -> t.getLifeState() == ConnectionUI.LifeState.EXIST).forEach(t -> {
+			connectionButtons.parallelStream().filter(t -> t.getState() == ConnectionUI.State.SHOW).forEach(t -> {
 				//Horizontal
 				if(tile1.getX() == tile2.getX()) {
-					if(t.getUIX()/2 == tile1.getX()*2) {
-						if(Math.abs(t.getUIY()-tile1.getY()*2) == 1) {
+					if(t.getUIX() == tile1.getX()*2) {
+						int farRight = (tile1.getY() > tile2.getY()) ? tile1.getY()*2 : tile2.getY()*2;
+						
+						if((farRight - t.getUIY()) == 1) {
 							t.setState(ConnectionUI.State.SHOW);
-						}
-						else if(Math.abs(t.getUIY()-tile2.getY()*2) == 1) {
-							t.setState(ConnectionUI.State.SHOW);
+							t.setLifeState(ConnectionUI.LifeState.EXIST);
+							t.setVisible(true);
 						}
 					}
 				}
@@ -494,11 +493,12 @@ public class TileODesignUI extends JFrame {
 				//Vertical
 				if(tile1.getY() == tile2.getY()) {
 					if(t.getUIY() == tile1.getY()*2) {
-						if(Math.abs(t.getUIX()-tile1.getX()*2) == 1) {
+						int bottom = (tile1.getX() > tile2.getX()) ? tile1.getX()*2 : tile2.getX()*2;
+						
+						if((bottom - t.getUIX()) == 1) {
 							t.setState(ConnectionUI.State.SHOW);
-						}
-						else if(Math.abs(t.getUIX()-tile2.getX()*2) == 1) {
-							t.setState(ConnectionUI.State.SHOW);
+							t.setLifeState(ConnectionUI.LifeState.EXIST);
+							t.setVisible(true);
 						}
 					}
 				}
@@ -1301,8 +1301,8 @@ public class TileODesignUI extends JFrame {
 					s.setLifeState(ConnectionUI.LifeState.EXIST);
 					
 					if(s.getType() == ConnectionUI.Type.HORIZONTAL) {
-						Tile tile1 = game.getTileFromXY((s.getUIX()-1)/2, s.getUIY()/2);
-						Tile tile2 = game.getTileFromXY((s.getUIX()+1)/2, s.getUIY()/2);
+						Tile tile1 = game.getTileFromXY(s.getUIX()/2, (s.getUIY()-1)/2);
+						Tile tile2 = game.getTileFromXY(s.getUIX()/2, (s.getUIY()+1)/2);
 						
 						try {
 							currentController.connectTiles(tile1, tile2);
@@ -1310,8 +1310,8 @@ public class TileODesignUI extends JFrame {
 							// Already connection
 						}
 					} else if(s.getType() == ConnectionUI.Type.VERTICAL) {
-						Tile tile1 = game.getTileFromXY(s.getUIX()/2, (s.getUIY()-1)/2);
-						Tile tile2 = game.getTileFromXY(s.getUIX()/2, (s.getUIY()+1)/2);
+						Tile tile1 = game.getTileFromXY((s.getUIX()-1)/2, s.getUIY()/2);
+						Tile tile2 = game.getTileFromXY((s.getUIX()+1)/2, s.getUIY()/2);
 						
 						try {
 							currentController.connectTiles(tile1, tile2);
@@ -1331,8 +1331,8 @@ public class TileODesignUI extends JFrame {
 					s.setLifeState(ConnectionUI.LifeState.NOTEXIST);
 					
 					if(s.getType() == ConnectionUI.Type.HORIZONTAL) {
-						Tile tile1 = game.getTileFromXY((s.getUIX()-1)/2, s.getUIY()/2);
-						Tile tile2 = game.getTileFromXY((s.getUIX()+1)/2, s.getUIY()/2);
+						Tile tile1 = game.getTileFromXY(s.getUIX()/2, (s.getUIY()-1)/2);
+						Tile tile2 = game.getTileFromXY(s.getUIX()/2, (s.getUIY()+1)/2);
 						
 						try {
 							currentController.removeConnection(tile1, tile2);
@@ -1340,8 +1340,8 @@ public class TileODesignUI extends JFrame {
 							// Already connection
 						}
 					} else if(s.getType() == ConnectionUI.Type.VERTICAL) {
-						Tile tile1 = game.getTileFromXY(s.getUIX()/2, (s.getUIY()-1)/2);
-						Tile tile2 = game.getTileFromXY(s.getUIX()/2, (s.getUIY()+1)/2);
+						Tile tile1 = game.getTileFromXY((s.getUIX()-1)/2, s.getUIY()/2);
+						Tile tile2 = game.getTileFromXY((s.getUIX()+1)/2, s.getUIY()/2);
 						
 						try {
 							currentController.removeConnection(tile1, tile2);
