@@ -6,6 +6,8 @@ import ca.mcgill.ecse223.tileo.model.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import java.util.*;
 import java.util.List;
@@ -161,9 +163,12 @@ public class TileODesignUI extends JFrame {
 			if (nbOfCardsLeft < 0) {
 				cardsLeft.setForeground(new java.awt.Color(255, 0, 0));
 				disableChanges();
+				maskButtons(ALLBTN);
+				//TODO : Ask game cards to see if it has changed
 			} else {
 				cardsLeft.setForeground(new java.awt.Color(0, 0, 0));
 				enableChanges();
+				maskButtons(CARDS);
 			}
 
 			cardsLeft.setText(String.valueOf(nbOfCardsLeft));
@@ -289,6 +294,7 @@ public class TileODesignUI extends JFrame {
 		if(tilesPanel == null) {
 			tilesPanel = new javax.swing.JPanel();
 			tilesPanel.setPreferredSize(new java.awt.Dimension(1130, 680));
+			//TODO : MouseClick changeNumberOfCards
 		} else {
 			tilesPanel.removeAll();
 			tilesPanel.revalidate();
@@ -426,6 +432,20 @@ public class TileODesignUI extends JFrame {
 				resetUI();
 			}
 		});
+		
+		addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+            	System.out.println("Aaskj");
+            	if(designState == DesignState.CARDS)
+            		changeNumberOfCardsLeft();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                
+            }
+        });
 
 		selectPositionButton.setBackground(new java.awt.Color(51, 102, 255));
 		selectPositionButton.setForeground(new java.awt.Color(255,255,255));
@@ -493,6 +513,7 @@ public class TileODesignUI extends JFrame {
 		nbRollDieCard.addActionListener(e -> {
 			changeNumberOfCardsLeft();
 		});
+		
 		nbRollDieCard.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) {
 
@@ -608,10 +629,12 @@ public class TileODesignUI extends JFrame {
 
 		horizontalLength.setModel(new javax.swing.DefaultComboBoxModel<>(
 				new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }));
+		horizontalLength.setSelectedIndex(8 - 2);
 		horizontalLength.addActionListener(e -> {
 			designState = DesignState.BOARD_SIZE;
 
 			if (Integer.valueOf(String.valueOf(horizontalLength.getSelectedItem())) != numberOfRows) {
+				popupmgr.acknowledgeMessage("If you apply changes, the whole board will be reset.");
 				enableChanges();
 				maskButtons(BOARDSIZE);
 			}
@@ -620,14 +643,16 @@ public class TileODesignUI extends JFrame {
 				maskButtons(ALLBTN);
 			}
 		});
-		horizontalLength.setSelectedIndex(8 - 2);
+		
 
 		verticalLength.setModel(new javax.swing.DefaultComboBoxModel<>(
 				new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }));
+		verticalLength.setSelectedIndex(8 - 2);
 		verticalLength.addActionListener(e -> {
 			designState = DesignState.BOARD_SIZE;
 
 			if (Integer.valueOf(String.valueOf(verticalLength.getSelectedItem())) != numberOfCols) {
+				popupmgr.acknowledgeMessage("If you apply changes, the whole board will be reset.");
 				enableChanges();
 				maskButtons(BOARDSIZE);
 			}
@@ -635,8 +660,7 @@ public class TileODesignUI extends JFrame {
 				disableChanges();
 				maskButtons(ALLBTN);
 			}
-		});
-		verticalLength.setSelectedIndex(8 - 2);
+		});	
 
 		// Window
 
@@ -950,8 +974,6 @@ public class TileODesignUI extends JFrame {
 				//WinTile is selected
 				if (nextWinTileUI != null) {
 					nextWinTileUI.setState(TileUI.State.WIN);
-					//nextWinTileUI.setText("W");
-					//nextWinTileUI.setBackground(Color.pink);
 					try {
 						nextWinTileUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/win.png"))));
 					} catch (IOException e) {
@@ -964,7 +986,6 @@ public class TileODesignUI extends JFrame {
 			} 
 			//ActionTile
 			else if(tileType.getSelectedItem().toString().equals("Action Tile")) {
-				//TODO : MessageBox - inactivity period
 				int disableTurns = popupmgr.askInactivityPeriod();
 				
 				List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.isSelected() && 
@@ -1273,7 +1294,8 @@ public class TileODesignUI extends JFrame {
 	}
 
 	private void nbOfPlayersChanged() {
-		// TODO : MessageBox - game will be reset
+		popupmgr.acknowledgeMessage("If you apply changes, the whole board will be reset.");
+		
 		String nbOfPlayersChosen = String.valueOf(nbOfPlayers.getSelectedItem());
 		if (game.numberOfPlayers() != Integer.valueOf(nbOfPlayersChosen)) {
 			enableChanges();
@@ -1288,10 +1310,11 @@ public class TileODesignUI extends JFrame {
 	}
 
 	private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO : MessageBox - any unsaved changes will be lost
-		// then show available games OR create new board
-
-		TileOApplication.load();
+		// TODO : then show available games OR create new board
+	
+		if(popupmgr.askYesOrNo("Any unsaved changes will be lost. Continue?") == 0) {
+			TileOApplication.load();
+		}
 	}
 
 	private void enableChanges() {

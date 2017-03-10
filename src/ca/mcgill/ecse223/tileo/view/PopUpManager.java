@@ -4,6 +4,7 @@ import java.awt.Image;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import ca.mcgill.ecse223.tileo.model.*;
 import ca.mcgill.ecse223.tileo.view.popup.*;
@@ -16,9 +17,24 @@ public class PopUpManager {
 		parentWindow = window;
 	}
 	
+	public void acknowledgeMessage(String message) {
+		JOptionPane.showMessageDialog(parentWindow,message);
+	}
+	
 	public int askInactivityPeriod() {
 		TurnsUnactive window = new TurnsUnactive(parentWindow);
 		return window.ask();
+	}
+	
+	public int askYesOrNo(String message) {
+		Object[] options = {"Yes",
+                "No"};
+		return JOptionPane.showOptionDialog(parentWindow,message,"Are you sure?", 
+				JOptionPane.YES_NO_OPTION, 
+				JOptionPane.QUESTION_MESSAGE, 
+				null,
+				options,
+				options[1]);
 	}
 	
 	public void showActionTile(ActionCard card) {
