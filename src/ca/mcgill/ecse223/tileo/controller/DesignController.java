@@ -213,7 +213,8 @@ public class DesignController {
 	}
 	 //done  
 	public Game initGame(int numOfPlayersInGame) {
-		TileOApplication.getTileO().removeGame(game);
+		if(game != null)
+			TileOApplication.getTileO().removeGame(game);
 		
 		game = new Game(32, TileOApplication.getTileO());
 		game.setMode(Game.Mode.DESIGN);

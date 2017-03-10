@@ -1,8 +1,13 @@
 package ca.mcgill.ecse223.tileo.view;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import ca.mcgill.ecse223.tileo.model.*;
@@ -32,7 +37,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
     LinkedList<TileUI> tilesButtons;
     LinkedList<ConnectionUI> connectionButtons;
 	
-	private void setupBoard() {
+	private void setupBoardFromGame() {
 		//Setup variables
 		tilesButtons = new LinkedList<TileUI>();
 		connectionButtons = new LinkedList<ConnectionUI>();
@@ -48,8 +53,8 @@ public class TileOPlayUI extends javax.swing.JFrame {
 				maxCol = tile.getY();
 		}
 		
-		numberOfRows = maxRow;
-		numberOfCols = maxCol;
+		numberOfRows = ++maxRow;
+		numberOfCols = ++maxCol;
 		
 		// Create grids
 		tilesPanel.setLayout(new GridBagLayout());
@@ -128,8 +133,100 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			}
 		}
 		
-		repaint();
-		revalidate();
+		//Remove connections
+		List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).collect(Collectors.toList());
+			tiles.forEach(s -> {
+			int connX = s.getUIX()*2;
+			int connY = s.getUIY()*2;
+			
+			//Hide nearest connections
+			connectionButtons.parallelStream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
+					(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> {
+						t.setState(ConnectionUI.State.HIDE);
+						t.setLifeState(ConnectionUI.LifeState.NOTEXIST);
+					});
+		});
+			
+		//Set connections
+		game.getConnections().parallelStream().forEach(s -> {
+			Tile tile1 = s.getTile(0);
+			Tile tile2 = s.getTile(1);
+			
+			connectionButtons.parallelStream().filter(t -> t.getLifeState() == ConnectionUI.LifeState.EXIST).forEach(t -> {
+				//Horizontal
+				if(tile1.getX() == tile2.getX()) {
+					if(t.getUIX()/2 == tile1.getX()*2) {
+						if(Math.abs(t.getUIY()-tile1.getY()*2) == 1) {
+							t.setState(ConnectionUI.State.SHOW);
+						}
+						else if(Math.abs(t.getUIY()-tile2.getY()*2) == 1) {
+							t.setState(ConnectionUI.State.SHOW);
+						}
+					}
+				}
+			
+				//Vertical
+				if(tile1.getY() == tile2.getY()) {
+					if(t.getUIY() == tile1.getY()*2) {
+						if(Math.abs(t.getUIX()-tile1.getX()*2) == 1) {
+							t.setState(ConnectionUI.State.SHOW);
+						}
+						else if(Math.abs(t.getUIX()-tile2.getX()*2) == 1) {
+							t.setState(ConnectionUI.State.SHOW);
+						}
+					}
+				}
+			});
+		});
+			
+		//Starting positions
+		for(int i = 0; i < game.numberOfPlayers(); i++) {
+			if(!game.getPlayer(i).hasStartingTile())
+				continue;
+			
+			Tile tile = game.getPlayer(i).getStartingTile();
+			
+			TileUI tileGUI = tilesButtons.parallelStream().filter(s -> s.getUIX()==tile.getX() && s.getUIY()==tile.getY()).findAny().orElse(null);
+			if(tileGUI != null) {
+				tileGUI.resetUI();
+				try {
+					tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/"+(i+1)+".png"))));
+				} catch (IOException e) {
+					
+				}
+			}
+		}
+		
+		//Action & win tiles
+		for(Tile tile : game.getTiles()) {
+			if(tile instanceof ActionTile) {
+				TileUI tileGUI = tilesButtons.parallelStream().filter(s -> s.getUIX()==tile.getX() && s.getUIY()==tile.getY()).findAny().orElse(null);
+				tileGUI.resetUI();
+				try {
+					tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/action_tile.png"))));
+				} catch (IOException e) {
+					
+				}
+				
+			} else if(tile instanceof WinTile) {
+				TileUI tileGUI = tilesButtons.parallelStream().filter(s -> s.getUIX()==tile.getX() && s.getUIY()==tile.getY()).findAny().orElse(null);
+				tileGUI.resetUI();
+				try {
+					tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/win.png"))));
+				} catch (IOException e) {
+					
+				}
+			}
+ 		}
+		
+		//Hide disabled tiles
+		tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST)
+		.forEach(s -> {
+			s.hideUI();
+			s.setSelected(false);
+			});
+		
+		update();
 	}
 	
     private void initComponents() {
@@ -162,7 +259,6 @@ public class TileOPlayUI extends javax.swing.JFrame {
         pickCardButton.setForeground(new java.awt.Color(255, 255, 255));
         pickCardButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cards.png"))); // NOI18N
         pickCardButton.setText("Pick a Card");
-        pickCardButton.setToolTipText("");
         pickCardButton.setMaximumSize(new java.awt.Dimension(100, 100));
         pickCardButton.setMinimumSize(new java.awt.Dimension(100, 100));
         pickCardButton.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -178,7 +274,6 @@ public class TileOPlayUI extends javax.swing.JFrame {
         rollDieButton.setForeground(new java.awt.Color(255, 255, 255));
         rollDieButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/dice.png"))); // NOI18N
         rollDieButton.setText("Roll Die");
-        rollDieButton.setToolTipText("");
         rollDieButton.setMaximumSize(new java.awt.Dimension(100, 100));
         rollDieButton.setMinimumSize(new java.awt.Dimension(100, 100));
         rollDieButton.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -210,7 +305,6 @@ public class TileOPlayUI extends javax.swing.JFrame {
         removeConnectionButton.setForeground(new java.awt.Color(255, 255, 255));
         removeConnectionButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/minus.png"))); // NOI18N
         removeConnectionButton.setText("Remove Connection");
-        removeConnectionButton.setToolTipText("");
         removeConnectionButton.setMaximumSize(new java.awt.Dimension(100, 100));
         removeConnectionButton.setMinimumSize(new java.awt.Dimension(100, 100));
         removeConnectionButton.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -226,7 +320,6 @@ public class TileOPlayUI extends javax.swing.JFrame {
         teleportButton.setForeground(new java.awt.Color(255, 255, 255));
         teleportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/teleport.png"))); // NOI18N
         teleportButton.setText("     Teleport        ");
-        teleportButton.setToolTipText("");
         teleportButton.setMaximumSize(new java.awt.Dimension(100, 100));
         teleportButton.setMinimumSize(new java.awt.Dimension(100, 100));
         teleportButton.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -243,8 +336,8 @@ public class TileOPlayUI extends javax.swing.JFrame {
         jProgressBar1.setBackground(new java.awt.Color(255, 204, 0));
         jProgressBar1.setFont(new java.awt.Font("Malayalam MN", 1, 24)); // NOI18N
         jProgressBar1.setMaximum(32);
-        jProgressBar1.setToolTipText("19");
-        jProgressBar1.setValue(19);
+        jProgressBar1.setToolTipText("32");
+        jProgressBar1.setValue(32);
         jProgressBar1.setBorderPainted(false);
         jProgressBar1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jProgressBar1.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
@@ -256,7 +349,6 @@ public class TileOPlayUI extends javax.swing.JFrame {
         saveButton.setBackground(new java.awt.Color(255, 204, 0));
         saveButton.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
         saveButton.setText("Save");
-        saveButton.setToolTipText("");
         saveButton.setMaximumSize(new java.awt.Dimension(100, 100));
         saveButton.setMinimumSize(new java.awt.Dimension(100, 100));
         saveButton.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -270,7 +362,6 @@ public class TileOPlayUI extends javax.swing.JFrame {
         loadButton.setBackground(new java.awt.Color(255, 204, 0));
         loadButton.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
         loadButton.setText("Load");
-        loadButton.setToolTipText("");
         loadButton.setMaximumSize(new java.awt.Dimension(100, 100));
         loadButton.setMinimumSize(new java.awt.Dimension(100, 100));
         loadButton.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -284,9 +375,15 @@ public class TileOPlayUI extends javax.swing.JFrame {
         jButton1.setBackground(new java.awt.Color(255, 0, 0));
         jButton1.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
         jButton1.setText("Back");
+        jButton1.addActionListener(e -> {
+			if(new PopUpManager(this).askYesOrNo("Any unsaved changes will be lost. Continue?") == 0) {
+				new MainPage().setVisible(true);
+				dispose();
+			}
+		});
         
         //
-        setupBoard();
+        setupBoardFromGame();
         //
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -356,15 +453,50 @@ public class TileOPlayUI extends javax.swing.JFrame {
                 .addContainerGap(78, Short.MAX_VALUE))
         );
 
-        teleportButton.getAccessibleContext().setAccessibleName("     Teleport      ");
-
+        setUndecorated(true);
+        
         pack();
+        
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
+        
+        setLocationRelativeTo(null);
+        setLocation(new Double(width/2).intValue()-getWidth()/2, new Double(height/2).intValue()-getHeight()/2);
     }
     
     private void update() {
-    	
+    	// Change colors for connections
+		connectionButtons.parallelStream().forEach(s -> {
+			if (s.getLifeState() == ConnectionUI.LifeState.NOTEXIST) 
+				s.setBackground(null); 
+			else
+				s.setBackground(new java.awt.Color(0, 0, 0));
+		});
+
+		// Reset states
+		hideDisabledConnections();
+		
+		tilesButtons.parallelStream().filter(s -> s.isVisible()).forEach(s -> {
+			s.setSelected(false);
+			s.setFocusPainted(false);
+			s.setBorderPainted(false);
+		});
+		
+		repaint();
+		revalidate();
     }
-    
+
+	private void showDisabledConnections() {
+		connectionButtons.parallelStream().filter(s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST && s.getState() == ConnectionUI.State.SHOW)
+				.forEach(s -> s.showUI());
+	}
+
+	private void hideDisabledConnections() {
+		connectionButtons.parallelStream().filter(s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST)
+				.forEach(s -> s.hideUI());
+	}
+	
     private void tileActionPerformed(java.awt.event.ActionEvent evt) {
     	
     }

@@ -13,42 +13,34 @@ public class PlayController {
 	}
 	
 	public void startGame(Game selectedGame) throws InvalidInputException {
-       
-	 
            Deck deck = selectedGame.getDeck();
            List <Player> allPlayers = selectedGame.getPlayers();
 
-           if(!(selectedGame.hasWinTile())){
+           if(!selectedGame.hasWinTile()){
                throw new InvalidInputException("No win tile in the game");
            }
-           for(int k=0; k<selectedGame.numberOfPlayers(); k++){
+           for(int k=0; k < selectedGame.numberOfPlayers(); k++){
                Player player = allPlayers.get(k);
-               if(!(player.hasStartingTile())){
+               if(!player.hasStartingTile()){
                    throw new InvalidInputException("One or more players do not have a starting position.");
                }
            }
            
-           int numDeck = deck.numberOfCards();
-           if(deck.numberOfCards()>=numDeck){
-               throw new InvalidInputException("Too many card in the deck.");
-           }
-           
            TileOApplication.getTileO().setCurrentGame(selectedGame);
 
-           deck.shuffle();     //make shuffle method
+           deck.shuffle(); //shuffle deck
            List<Tile> tiles = selectedGame.getTiles();
            for(int i=0; i<tiles.size(); i++){
                Tile checkTile = tiles.get(i);
                checkTile.setHasBeenVisited(false);
            }
-           for(int j=1; j<=selectedGame.numberOfPlayers(); j++){
+           for(int j=0; j<selectedGame.numberOfPlayers(); j++){
                Player thisPlayer = allPlayers.get(j);
                Tile startingTile = thisPlayer.getStartingTile();
                thisPlayer.setCurrentTile(startingTile);
                startingTile.setHasBeenVisited(true);
            }
-           selectedGame.setCurrentPlayer(allPlayers.get(1));
-           selectedGame.setCurrentConnectionPieces(selectedGame.getCurrentConnectionPieces());
+           selectedGame.setCurrentPlayer(allPlayers.get(0));
            selectedGame.setMode(Mode.GAME);
        }
     

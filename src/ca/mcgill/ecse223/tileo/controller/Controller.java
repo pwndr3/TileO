@@ -16,7 +16,7 @@ public class Controller {
 		if(gameName != null)
 			game = TileOApplication.getTileO().getGameByName(gameName);
 		
-		else if(game.getMode() == Game.Mode.GAME) {
+		if(game.getMode() == Game.Mode.GAME) {
 			new TileOPlayUI(game).setVisible(true);
 			ui.dispose();
 		} 
@@ -27,29 +27,17 @@ public class Controller {
 	}
 
 	public void design(String gameName) {
-		//Game game = TileOApplication.getTileO().getGameByName(gameName);
 		Game game = null;
 		
 		if(gameName != null)
 			game = TileOApplication.getTileO().getGameByName(gameName);
 		
 		if(game == null) {
-			game = new Game(32, TileOApplication.getTileO());
-			game.setMode(Game.Mode.DESIGN);
-			TileOApplication.getTileO().addGame(game);
-			TileOApplication.getTileO().setCurrentGame(game);
-			
-			//Create 2 players
-			Player.clearPlayers();
-			Player player = new Player(1, game);
-			player.setColor(Player.Color.RED);
-			game.addPlayer(player);
-			player = new Player(2, game);
-			player.setColor(Player.Color.BLUE);
-			game.addPlayer(player);
+			new TileODesignUI(null).setVisible(true);
+			ui.dispose();
 		}
 		
-		if(!game.hasStarted) {
+		else if(!game.hasStarted) {
 			//Can design
 			
 			new TileODesignUI(game).setVisible(true);

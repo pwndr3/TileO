@@ -2,6 +2,12 @@ package ca.mcgill.ecse223.tileo.view;
 
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.Controller;
+import ca.mcgill.ecse223.tileo.model.Game;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -23,8 +29,15 @@ public class MainPage extends javax.swing.JFrame {
         initComponents();
         
         TileOApplication.load();
-        TileOApplication.getTileO().getGames().parallelStream().filter(s -> !s.hasStarted).forEach(s -> designModel.addElement(s.getGameName()));
-        TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted).forEach(s -> playModel.addElement(s.getGameName()));
+        
+        designableGames = TileOApplication.getTileO().getGames().parallelStream().filter(s -> !s.hasStarted).collect(Collectors.toList());
+        playableGames = TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted || s.getMode() == Game.Mode.GAME).collect(Collectors.toList());
+        
+        for(Game game : designableGames)
+        	designModel.addElement(game.getGameName());
+        	
+        for(Game game : playableGames)
+        	playModel.addElement(game.getGameName());
         
         if(designModel.getSize() == 0)
         	designModel.addElement("No designable game");
@@ -36,8 +49,14 @@ public class MainPage extends javax.swing.JFrame {
     	designModel.removeAllElements();
     	playModel.removeAllElements();
     	
-    	TileOApplication.getTileO().getGames().parallelStream().filter(s -> !s.hasStarted).forEach(s -> designModel.addElement(s.getGameName()));
-        TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted).forEach(s -> playModel.addElement(s.getGameName()));
+    	designableGames = TileOApplication.getTileO().getGames().parallelStream().filter(s -> !s.hasStarted).collect(Collectors.toList());
+        playableGames = TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted || s.getMode() == Game.Mode.GAME).collect(Collectors.toList());
+        
+        for(Game game : designableGames)
+        	designModel.addElement(game.getGameName());
+        	
+        for(Game game : playableGames)
+        	playModel.addElement(game.getGameName());
         
         if(designModel.getSize() == 0)
         	designModel.addElement("No designable game");
@@ -163,12 +182,20 @@ public class MainPage extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 654, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
+        
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
+        
+        //setUndecorated(true);
+        setLocationRelativeTo(null);
+        setLocation(new Double(width/2).intValue()-980/2, new Double(height/2).intValue()-654/2);
 
         pack();
     }
 
     private void loadDesignButtonActionPerformed(java.awt.event.ActionEvent evt) {
-    	if(TileOApplication.getTileO().getGames().parallelStream().filter(s -> !s.hasStarted).count() > 0) {
+    	if(!designableGames.isEmpty()) {
     		controller.design(String.valueOf(loadGameToDesignComboBox.getSelectedItem()));
     	} else {
     		new PopUpManager(this).acknowledgeMessage("No game selected, cannot design");
@@ -176,7 +203,7 @@ public class MainPage extends javax.swing.JFrame {
     }
 
     private void loadPlayButtonActionPerformed(java.awt.event.ActionEvent evt) {
-    	if(TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted).count() > 0) {
+    	if(!playableGames.isEmpty()) {
     		controller.play(String.valueOf(loadGameToPlayComboBox.getSelectedItem()));
     	} else {
     		new PopUpManager(this).acknowledgeMessage("No game selected, cannot play");
@@ -184,11 +211,15 @@ public class MainPage extends javax.swing.JFrame {
     }
 
     private void deleteDesignButtonActionPerformed(java.awt.event.ActionEvent evt) {
-    	if(TileOApplication.getTileO().getGames().parallelStream().filter(s -> !s.hasStarted).count() > 0) {
+    	if(!designableGames.isEmpty()) {
         	if(new PopUpManager(this).askYesOrNo("Are you sure you want to delete the game?") == 0) {
-        		TileOApplication.getTileO().removeGame(TileOApplication.getTileO().getGameByName(String.valueOf(loadGameToDesignComboBox.getSelectedItem())));
-        		new PopUpManager(this).acknowledgeMessage("Game deleted");
-        		updateLists();
+        		if(TileOApplication.getTileO().removeGame(TileOApplication.getTileO().getGameByName(String.valueOf(loadGameToDesignComboBox.getSelectedItem())))) {
+        			new PopUpManager(this).acknowledgeMessage("Game deleted");
+        			updateLists();
+        		}
+        		else
+        			new PopUpManager(this).errorMessage("Game not deleted");
+        		
         	}
     	} else {
     		new PopUpManager(this).acknowledgeMessage("No game selected to delete");
@@ -196,11 +227,14 @@ public class MainPage extends javax.swing.JFrame {
     }
 
     private void deletePlayButtonActionPerformed(java.awt.event.ActionEvent evt) {
-    	if(TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted).count() > 0) {
+    	if(TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted || s.getMode() == Game.Mode.GAME).count() > 0) {
         	if(new PopUpManager(this).askYesOrNo("Are you sure you want to delete the game?") == 0) {
-        		TileOApplication.getTileO().removeGame(TileOApplication.getTileO().getGameByName(String.valueOf(loadGameToDesignComboBox.getSelectedItem())));
-        		new PopUpManager(this).acknowledgeMessage("Game deleted");
-        		updateLists();
+        		if(TileOApplication.getTileO().removeGame(TileOApplication.getTileO().getGameByName(String.valueOf(loadGameToDesignComboBox.getSelectedItem())))) {
+	        		new PopUpManager(this).acknowledgeMessage("Game deleted");
+	        		updateLists();
+        		}
+        		else
+        			new PopUpManager(this).errorMessage("Game not deleted");
         	}
     	} else {
     		new PopUpManager(this).acknowledgeMessage("No game selected to delete");
@@ -226,6 +260,9 @@ public class MainPage extends javax.swing.JFrame {
     DefaultComboBoxModel<String> designModel;
     DefaultComboBoxModel<String> playModel;
     private Controller controller;
+    
+    private List<Game> designableGames;
+    private List<Game> playableGames;
 }
 
 

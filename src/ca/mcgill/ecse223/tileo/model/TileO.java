@@ -100,15 +100,13 @@ public class TileO implements Serializable {
 	}
 
 	public boolean removeGame(Game aGame) {
-		/*boolean wasRemoved = false;
+		boolean wasRemoved = false;
 		// Unable to remove aGame, as it must always have a tileO
-		if (!this.equals(aGame.getTileO())) {*/
+		if (this.equals(aGame.getTileO())) {
 			games.remove(aGame);
-			/*System.out.println("Deleting");
 			wasRemoved = true;
 		}
-		return wasRemoved;*/
-			return true;
+		return wasRemoved;
 	}
 
 	public boolean addGameAt(Game aGame, int index) {

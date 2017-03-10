@@ -327,10 +327,6 @@ public class Game implements Serializable {
 		return 0;
 	}
 
-	/*
-	 * public Tile addTile(int aX, int aY) { return new Tile(aX, aY, this); }
-	 */
-
 	public boolean addTile(Tile aTile) {
 		boolean wasAdded = false;
 		if (tiles.contains(aTile)) {
