@@ -6,7 +6,6 @@ import ca.mcgill.ecse223.tileo.model.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 
 import java.util.*;
 import java.util.List;
@@ -966,7 +965,7 @@ public class TileODesignUI extends JFrame {
 			//ActionTile
 			else if(tileType.getSelectedItem().toString().equals("Action Tile")) {
 				//TODO : MessageBox - inactivity period
-				int disableTurns = 1;
+				int disableTurns = popupmgr.askInactivityPeriod();
 				
 				List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.isSelected() && 
 						s.getLifeState() == TileUI.LifeState.EXIST &&
@@ -1120,6 +1119,7 @@ public class TileODesignUI extends JFrame {
 		 */
 		case CARDS:
 			try {
+				//rollDie, removeConnection, teleport, loseTurn, connectTiles
 				currentController.createDeck(cardsCounts[0], cardsCounts[1], cardsCounts[2], cardsCounts[3], cardsCounts[4]);
 			} catch (InvalidInputException e) {
 				// More than 32
@@ -1269,7 +1269,7 @@ public class TileODesignUI extends JFrame {
 		 * POPUP TESTING
 		 */
 		
-		popupmgr.showActionTile(null);
+		popupmgr.showActionTile(game.getDeck().getCard(0));
 	}
 
 	private void nbOfPlayersChanged() {

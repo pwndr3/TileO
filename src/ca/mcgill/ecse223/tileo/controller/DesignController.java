@@ -189,23 +189,23 @@ public class DesignController {
 		deck.clearDeck();
 		
 		// add cards to the deck
-		for (int i = 0; i <= connectTiles; i++) {
+		for (int i = 0; i < connectTiles; i++) {
 			ConnectTilesActionCard card = new ConnectTilesActionCard("Connect two tiles", deck);
 			deck.addCard(card);
 		}
-		for (int j = 0; j <= loseTurn; j++) {
+		for (int j = 0; j < loseTurn; j++) {
 			LoseTurnActionCard card = new LoseTurnActionCard("You lose a turn", deck);
 			deck.addCard(card);
 		}
-		for (int k = 0; k <= removeConnection; k++) {
+		for (int k = 0; k < removeConnection; k++) {
 			RemoveConnectionActionCard card = new RemoveConnectionActionCard("Remove Connection", deck);
 			deck.addCard(card);
 		}
-		for (int x = 0; x <= rollDie; x++) {
+		for (int x = 0; x < rollDie; x++) {
 			RollDieActionCard card = new RollDieActionCard("Roll die again", deck);
 			deck.addCard(card);
 		}
-		for (int y = 0; y <= teleport; y++) {
+		for (int y = 0; y < teleport; y++) {
 			TeleportActionCard card = new TeleportActionCard("Teleport anywhere on the board", deck);
 			deck.addCard(card);
 		}

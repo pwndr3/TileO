@@ -1,5 +1,8 @@
 package ca.mcgill.ecse223.tileo.view;
 
+import java.awt.Image;
+
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import ca.mcgill.ecse223.tileo.model.*;
@@ -13,16 +16,48 @@ public class PopUpManager {
 		parentWindow = window;
 	}
 	
+	public int askInactivityPeriod() {
+		
+		return 0;
+	}
+	
 	public void showActionTile(ActionCard card) {
-		ActionCardPopUp popup = new ActionCardPopUp(parentWindow, "");
+		Image img = null;
 		
 		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
+			//Roll die again
+			if(card instanceof RollDieActionCard) {
+				img = ImageIO.read(getClass().getResource("/icons/dice.png"));
+			}
+			
+			//Add connection
+			if(card instanceof ConnectTilesActionCard) {
+				img = ImageIO.read(getClass().getResource("/icons/plus.png"));
+			}
+			
+			//Remove connection
+			if(card instanceof RemoveConnectionActionCard) {
+				img = ImageIO.read(getClass().getResource("/icons/minus.png"));
+			}
+			
+			//Teleport
+			if(card instanceof TeleportActionCard) {
+				img = ImageIO.read(getClass().getResource("/icons/teleport.png"));
+			}
+			
+			//Lose turn
+			if(card instanceof LoseTurnActionCard) {
+				img = ImageIO.read(getClass().getResource("/icons/loseTurn.png"));
+			}
+			
+			if(img != null) {
+				new ActionCardPopUp(parentWindow, card.getInstructions(), img);
+			} else {
+				//Couldn't get image
+			}
+		} catch(Exception e) {
 			
 		}
-		
-		popup.dispose();
 	}
 	
 	JFrame parentWindow;
