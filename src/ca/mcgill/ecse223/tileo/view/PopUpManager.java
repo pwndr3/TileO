@@ -17,8 +17,8 @@ public class PopUpManager {
 	}
 	
 	public int askInactivityPeriod() {
-		
-		return 0;
+		TurnsUnactive window = new TurnsUnactive(parentWindow);
+		return window.ask();
 	}
 	
 	public void showActionTile(ActionCard card) {

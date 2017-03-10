@@ -45,7 +45,7 @@ public class ActionCardPopUp extends JDialog {
         Button.getAccessibleContext().setAccessibleName("Button");
         Button.setText("<html><div style=\"text-align:center; \">"+message+"</div></html>");
 
-        ActionTilePicture.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/popup/actionTile.png"))); // NOI18N
+        ActionTilePicture.setIcon(new javax.swing.ImageIcon("/icons/popup/actionTile.png")); // NOI18N
         ActionTilePicture.setText("jLabel3");
         getContentPane().add(ActionTilePicture);
         ActionTilePicture.setBounds(0, 0, 300, 400);
@@ -55,9 +55,6 @@ public class ActionCardPopUp extends JDialog {
         setAlwaysOnTop(true);
         setUndecorated(true);
         setLocationRelativeTo(window);
-
-        
-        
 
         setVisible(true);
         pack();
