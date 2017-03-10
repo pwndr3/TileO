@@ -1285,7 +1285,7 @@ public class TileODesignUI extends JFrame {
 				try {
 					currentController.deleteTile(tileEquivalent);
 				} catch (InvalidInputException e) {
-					//No tile to delete
+					e.printStackTrace();
 				}
 			});
 			break;

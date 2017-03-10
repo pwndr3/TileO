@@ -102,6 +102,10 @@ public class DesignController {
 		if (tile == null) {
 			throw new InvalidInputException("There is no tile to delete");
 		}
+		
+		if(tile instanceof WinTile) {
+			game.setWinTile(null);
+		}
 
 		int x = tile.getX();
 		int y = tile.getY();
