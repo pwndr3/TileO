@@ -12,7 +12,7 @@ public class DesignController {
 		game = aGame;
 	}
 
-	// Player [0..3]**
+	// Player [0..3]*
 	public boolean startingPosition(Tile tile, int playerNumber) throws InvalidInputException {
 		// Get info about current game
 		List<Player> allPlayers = game.getPlayers();
