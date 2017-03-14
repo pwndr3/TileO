@@ -176,10 +176,14 @@ public class Deck implements Serializable
     wasSet = true;
     return wasSet;
   }
-  public void shuffle(){
+  public void shuffle() throws Exception {
     Collections.shuffle(cards);
-    ActionCard topCard = cards.get(0);
-    setCurrentCard(topCard);
+    try {
+    	ActionCard topCard = cards.get(0);
+    	setCurrentCard(topCard);
+    } catch (Exception e) {
+    	throw new Exception("Empty deck");
+    }
   }
   public void clearDeck() {
 	  while (cards.size() > 0)

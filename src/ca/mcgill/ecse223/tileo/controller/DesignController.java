@@ -247,6 +247,27 @@ public class DesignController {
 		
 		return game;
 	}
+	
+	public void saveGame(String gameName) {
+		boolean modeGame = true;
+		
+		game.setGameName(gameName);
+		
+		if(!game.hasWinTile())
+			modeGame = false;
+		
+		for(Player player : game.getPlayers()) {
+			if(!player.hasStartingTile())
+				modeGame = false;
+		}
+		
+		if(modeGame)
+			game.setMode(Game.Mode.GAME);
+		else
+			game.setMode(Game.Mode.DESIGN);
+		
+		TileOApplication.save();
+	}
 
 	//
 	private Game game;

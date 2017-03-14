@@ -1,14 +1,12 @@
 package ca.mcgill.ecse223.tileo.view;
 
 import java.awt.FlowLayout;
+
 import java.awt.Image;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
@@ -128,6 +126,41 @@ public class PopUpManager {
 			
 			if(img != null) {
 				new ActionCardPopUp(parentWindow, card.getInstructions(), img);
+			} else {
+				//Couldn't get image
+			}
+		} catch(Exception e) {
+			
+		}
+	}
+	
+	public void rollDie(int number) {
+		String img = null;
+		
+		try {
+			switch(number) {
+			case 1:
+				img = getClass().getResource("/icons/dice/1.gif").toString();
+				break;
+			case 2:
+				img = getClass().getResource("/icons/dice/2.gif").toString();
+				break;
+			case 3:
+				img = getClass().getResource("/icons/dice/3.gif").toString();
+				break;
+			case 4:
+				img = getClass().getResource("/icons/dice/4.gif").toString();
+				break;
+			case 5:
+				img = getClass().getResource("/icons/dice/5.gif").toString();
+				break;
+			case 6:
+				img = getClass().getResource("/icons/dice/6.gif").toString();
+				break;
+			}
+			
+			if(img != null) {
+				new RollDiePopUp(parentWindow, img);
 			} else {
 				//Couldn't get image
 			}

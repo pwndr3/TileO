@@ -833,7 +833,12 @@ public class TileODesignUI extends JFrame {
 		backButton.setForeground(new java.awt.Color(255, 255, 255));
 		backButton.setText("Back");
 		backButton.addActionListener(e -> {
-			if(new PopUpManager(this).askYesOrNo("Any unsaved changes will be lost. Continue?") == 0) {
+			if(designState != DesignState.NONE) {
+				if(new PopUpManager(this).askYesOrNo("Any unsaved changes will be lost. Continue?") == 0) {
+				new MainPage().setVisible(true);
+				dispose();
+				}
+			} else {
 				new MainPage().setVisible(true);
 				dispose();
 			}
@@ -860,7 +865,6 @@ public class TileODesignUI extends JFrame {
 		//
 		nbOfPlayers.addActionListener(e -> {
 			if (Integer.valueOf(String.valueOf(nbOfPlayers.getSelectedItem())) != game.numberOfPlayers()) {
-				designState = DesignState.CHANGE_NUMBER_OF_PLAYERS;
 				nbOfPlayersChanged();
 			} else {
 				designState = DesignState.NONE;
@@ -868,11 +872,11 @@ public class TileODesignUI extends JFrame {
 			}
 		});
 		horizontalLength.addActionListener(e -> {
-			designState = DesignState.BOARD_SIZE;
-
 			if (Integer.valueOf(String.valueOf(horizontalLength.getSelectedItem())) != numberOfRows) {
-				new PopUpManager(this).acknowledgeMessage("If you apply changes, the whole board will be reset.");
+				if(designState == DesignState.NONE)
+					new PopUpManager(this).acknowledgeMessage("If you apply changes, the whole board will be reset.");
 				enableChanges();
+				designState = DesignState.BOARD_SIZE;
 				maskButtons(BOARDSIZE);
 			}
 			else {
@@ -881,11 +885,11 @@ public class TileODesignUI extends JFrame {
 			}
 		});
 		verticalLength.addActionListener(e -> {
-			designState = DesignState.BOARD_SIZE;
-
 			if (Integer.valueOf(String.valueOf(verticalLength.getSelectedItem())) != numberOfCols) {
-				new PopUpManager(this).acknowledgeMessage("If you apply changes, the whole board will be reset.");
+				if(designState == DesignState.NONE)
+					new PopUpManager(this).acknowledgeMessage("If you apply changes, the whole board will be reset.");
 				enableChanges();
+				designState = DesignState.BOARD_SIZE;
 				maskButtons(BOARDSIZE);
 			}
 			else {
@@ -1524,15 +1528,14 @@ public class TileODesignUI extends JFrame {
 		while((newName = new PopUpManager(this).askSaveName(game.getGameName())) == "");
 			
 		if(newName != null) {
-			game.setGameName(newName);
-			game.setMode(Game.Mode.GAME);
-			TileOApplication.save();
+			currentController.saveGame(newName);
 			new PopUpManager(this).acknowledgeMessage("Game saved.");
 		}
 	}
 
 	private void nbOfPlayersChanged() {
-		new PopUpManager(this).acknowledgeMessage("If you apply changes, the whole board will be reset.");
+		if(designState == DesignState.NONE)
+			new PopUpManager(this).acknowledgeMessage("If you apply changes, the whole board will be reset.");
 		
 		String nbOfPlayersChosen = String.valueOf(nbOfPlayers.getSelectedItem());
 		if (game.numberOfPlayers() != Integer.valueOf(nbOfPlayersChosen)) {
@@ -1542,7 +1545,6 @@ public class TileODesignUI extends JFrame {
 		}
 		else {
 			disableChanges();
-			designState = DesignState.NONE;
 			maskButtons(ALLBTN);
 		}
 	}
@@ -1565,6 +1567,7 @@ public class TileODesignUI extends JFrame {
 		applyChangesButton.setEnabled(false);
 		applyChangesButton.setSelected(false);
 		applyChangesButton.setForeground(new java.awt.Color(200,200,200));
+		designState = DesignState.NONE;
 	}
 
 	private void showDisabledTiles() {

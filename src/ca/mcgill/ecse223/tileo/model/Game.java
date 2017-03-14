@@ -547,15 +547,12 @@ public class Game implements Serializable {
 				+ outputString;
 	}
 
-	public List<Tile> rollTheDie() {
+	public int rollDie() {
 		if(!hasStarted)
 			hasStarted = true;
 		
-		Die die = this.getDie();
-		int rolledNumber = die.roll();
-		Player currentPlayer = this.getCurrentPlayer();
-		List<Tile> possibleMoves = currentPlayer.getPossibleMoves(rolledNumber);
-		return possibleMoves;
+		Die die = getDie();
+		return getDie().roll();
 	}
 
 	public void placeConnection(Tile tile1, Tile tile2) {

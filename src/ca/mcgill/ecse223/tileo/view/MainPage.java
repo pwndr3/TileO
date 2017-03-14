@@ -2,7 +2,9 @@ package ca.mcgill.ecse223.tileo.view;
 
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.Controller;
+import ca.mcgill.ecse223.tileo.model.ConnectTilesActionCard;
 import ca.mcgill.ecse223.tileo.model.Game;
+import ca.mcgill.ecse223.tileo.view.popup.ActionCardPopUp;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +45,8 @@ public class MainPage extends javax.swing.JFrame {
         	designModel.addElement("No designable game");
         if(playModel.getSize() == 0)
         	playModel.addElement("No playable game");
+        
+        //new ActionCardPopUp(this, "yoyoy", null).setVisible(true);
     }
     
     private void updateLists() {
@@ -162,11 +166,11 @@ public class MainPage extends javax.swing.JFrame {
         designNewGameButton.setBounds(330, 520, 310, 60);
 
         jLabel2.setIcon(backgroundImage); // NOI18N
-        jLabel2.setText("jLabel2");
+        jLabel2.setText("");
         jPanel1.add(jLabel2);
         jLabel2.setBounds(0, -10, 980, 670);
 
-        jLabel4.setText("jLabel4");
+        jLabel4.setText("");
         jPanel1.add(jLabel4);
         jLabel4.setBounds(460, 260, 45, 16);
 
@@ -216,6 +220,7 @@ public class MainPage extends javax.swing.JFrame {
         		if(TileOApplication.getTileO().removeGame(TileOApplication.getTileO().getGameByName(String.valueOf(loadGameToDesignComboBox.getSelectedItem())))) {
         			new PopUpManager(this).acknowledgeMessage("Game deleted");
         			updateLists();
+        			TileOApplication.save();
         		}
         		else
         			new PopUpManager(this).errorMessage("Game not deleted");
@@ -232,6 +237,7 @@ public class MainPage extends javax.swing.JFrame {
         		if(TileOApplication.getTileO().removeGame(TileOApplication.getTileO().getGameByName(String.valueOf(loadGameToDesignComboBox.getSelectedItem())))) {
 	        		new PopUpManager(this).acknowledgeMessage("Game deleted");
 	        		updateLists();
+	        		TileOApplication.save();
         		}
         		else
         			new PopUpManager(this).errorMessage("Game not deleted");
