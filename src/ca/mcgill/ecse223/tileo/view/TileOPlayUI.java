@@ -2,6 +2,7 @@ package ca.mcgill.ecse223.tileo.view;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -215,12 +216,9 @@ public class TileOPlayUI extends javax.swing.JFrame {
 					.filter(s -> s.getUIX() == tile.getX() && s.getUIY() == tile.getY()).findAny().orElse(null);
 			if (tileGUI != null) {
 				tileGUI.resetUI();
-				try {
-					tileGUI.setIcon(
-							new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/" + (i + 1) + ".png"))));
-				} catch (IOException e) {
-
-				}
+				
+				tileGUI.setPlayerIcon(String.valueOf(i+1));
+				tileGUI.setVisited(true);
 			}
 		}
 
@@ -525,23 +523,40 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			s.resetUI();
 		});
 		
-		// TODO : Show visited tiles
+		//Set visited
+		tilesButtons.parallelStream().forEach(s -> {
+			if(s.isVisited())
+				s.setBackground(Color.decode("#ffc4c4"));
+			else
+				s.setBackground(null);
+		});
 		
-		//Change player position
+		//Set player icons
+		HashMap<Integer, String> playerArray = new HashMap<Integer, String>();
+		
 		for (int i = 0; i < game.numberOfPlayers(); i++) {
 			Tile tile = game.getPlayer(i).getCurrentTile();
-
-			TileUI tileGUI = tilesButtons.parallelStream()
-					.filter(s -> s.getUIX() == tile.getX() && s.getUIY() == tile.getY()).findAny().orElse(null);
-			if (tileGUI != null) {
-				try {
-					tileGUI.setIcon(
-							new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/" + (i + 1) + ".png"))));
-				} catch (IOException e) {
-
-				}
-			}
+			Integer index = game.getTiles().indexOf(tile);
+			
+			if(playerArray.containsKey(index))
+				playerArray.replace(index, playerArray.get(index)+String.valueOf(i+1));
+			else
+				playerArray.put(index, String.valueOf(i+1));
 		}
+		
+		for(HashMap.Entry<Integer, String> entry : playerArray.entrySet()) {
+			Integer index = entry.getKey();
+			
+			Tile tile = game.getTiles().get(index);
+			
+			getTileUIByXY(tile.getX(), tile.getY()).setPlayerIcon(entry.getValue());
+		}
+		
+		tilesButtons.parallelStream().filter(s -> s.isVisible()).forEach(s -> {
+			s.setSelected(false);
+			s.setFocusPainted(false);
+			s.setBorderPainted(false);
+		});
 
 		playState = PlayState.ROLL;
 		maskButtons(ROLLDIE);
@@ -685,15 +700,18 @@ public class TileOPlayUI extends javax.swing.JFrame {
 				tile.land();
 				update();
 				maskButtons(PICKCARD);
+				tileUI.setVisited(true);
 			}
 			
 			else if(tile instanceof WinTile) {
 				//TODO : Win game
+				tileUI.setVisited(true);
 			}
 			
 			else {
 				tile.land();
 				currentController.nextTurn();
+				tileUI.setVisited(true);
 			}
 			
 			break;

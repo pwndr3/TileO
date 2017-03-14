@@ -1,14 +1,18 @@
 package ca.mcgill.ecse223.tileo.view;
 
+import java.awt.Color;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class TileUI extends JToggleButton {
 	private static final long serialVersionUID = -6618880778915250080L;
 
-	public enum State { NORMAL, WIN, ACTION, PLAYER1, PLAYER2, PLAYER3, PLAYER4, VISITED }
+	public enum State { NORMAL, WIN, ACTION }
 	public enum LifeState { EXIST, NOTEXIST }
 	
-	public TileUI() {
+	public TileUI() { 
 		setFont(new java.awt.Font("Lucida Grande", 0, 8));
 		setPreferredSize(new java.awt.Dimension(35, 35));
 		
@@ -44,6 +48,22 @@ public class TileUI extends JToggleButton {
 	
 	public void setLifeState(LifeState state) {
 		currentLifeState = state;
+	}
+	
+	public boolean isVisited() {
+		return visited;
+	}
+	
+	public void setVisited(boolean v) {
+		visited = v;
+	}
+	
+	public void setPlayerIcon(String mask) {
+		try {
+			setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/"+mask+".png"))));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void resetUI() {
@@ -106,6 +126,8 @@ public class TileUI extends JToggleButton {
 	//
 	private State state;
 	private LifeState currentLifeState;
+	
+	private boolean visited;
 	
 	private int currentUIState;
 	private int previousUIState;

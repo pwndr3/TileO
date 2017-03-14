@@ -97,7 +97,8 @@ public class PlayController {
 	public void playAddConnectionActionCard(Tile tile1, Tile tile2) {
 		game.placeConnection(tile1, tile2);
 		
-		game.setCurrentConnectionPieces(game.getCurrentConnectionPieces()-1);
+		if(game.getCurrentConnectionPieces() > 0)
+			game.setCurrentConnectionPieces(game.getCurrentConnectionPieces()-1);
 	}
 
 	public void playRemoveConnectionActionCard(Tile tile1, Tile tile2) {
@@ -109,7 +110,10 @@ public class PlayController {
 				for (Tile tile : tiles) {
 					if (tile == tile2) {
 						game.removeConnection(conn);
-						game.setCurrentConnectionPieces(game.getCurrentConnectionPieces()+1);
+						
+						if(game.getCurrentConnectionPieces() < 32)
+							game.setCurrentConnectionPieces(game.getCurrentConnectionPieces()+1);
+						
 						return;
 					}
 				}

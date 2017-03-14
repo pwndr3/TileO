@@ -57,6 +57,7 @@ public class ConnectionUI extends JToggleButton {
 	
 	public void hideUI() {
 		setVisible(false);
+		setSelected(false);
 	}
 	
 	//Position-related
