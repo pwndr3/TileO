@@ -56,6 +56,15 @@ public class TileO implements Serializable {
 		int index = games.indexOf(aGame);
 		return index;
 	}
+	
+	public Game getGameByName(String gameName) {
+		for(Game game : games) {
+			if(game.getGameName().equals(gameName))
+				return game;
+		}
+		
+		return null;
+	}
 
 	public Game getCurrentGame() {
 		return currentGame;
@@ -93,7 +102,7 @@ public class TileO implements Serializable {
 	public boolean removeGame(Game aGame) {
 		boolean wasRemoved = false;
 		// Unable to remove aGame, as it must always have a tileO
-		if (!this.equals(aGame.getTileO())) {
+		if (this.equals(aGame.getTileO())) {
 			games.remove(aGame);
 			wasRemoved = true;
 		}

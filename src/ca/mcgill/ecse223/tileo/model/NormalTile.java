@@ -36,16 +36,14 @@ public class NormalTile extends Tile implements Serializable
         Game currentGame = TileOApplication.getTileO().getCurrentGame();
         Player currentPlayer = currentGame.getCurrentPlayer();
         currentPlayer.setCurrentTile(this);
-        if(currentGame.indexOfPlayer(currentPlayer) == (currentGame.numberOfPlayers() - 1)) {
-            currentGame.setCurrentPlayer(currentGame.getPlayer(0));}
-        else {
-            currentGame.setCurrentPlayer(currentGame.getPlayer(currentGame.indexOfPlayer(currentPlayer) + 1));
-
-        }
         
-        this.setHasBeenVisited(true);
-
-        currentGame.setMode(Mode.GAME);
+        if(currentGame.indexOfPlayer(currentPlayer) == (currentGame.numberOfPlayers() - 1))
+            currentGame.setCurrentPlayer(currentGame.getPlayer(0));
+        else
+            currentGame.setCurrentPlayer(currentGame.getPlayer(currentGame.indexOfPlayer(currentPlayer) + 1));
+        
+        setHasBeenVisited(true);
+        currentGame.setMode(Game.Mode.GAME);
     }
 
 

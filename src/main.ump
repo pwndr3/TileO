@@ -1,5 +1,7 @@
 namespace ca.mcgill.ecse223.tileo.model;
-
+use.stateDiagram-ActionTile.ump;
+use.stateDiagram-Player.ump;
+use.stateDiagram-PlayController.ump;
 class TileO {
   1 <@>- * Game games;
   1 -> 0..1 Game currentGame;

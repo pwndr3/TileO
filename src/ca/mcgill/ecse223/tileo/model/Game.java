@@ -326,10 +326,6 @@ public class Game implements Serializable {
 		return 0;
 	}
 
-	/*
-	 * public Tile addTile(int aX, int aY) { return new Tile(aX, aY, this); }
-	 */
-
 	public boolean addTile(Tile aTile) {
 		boolean wasAdded = false;
 		if (tiles.contains(aTile)) {
@@ -550,14 +546,12 @@ public class Game implements Serializable {
 				+ outputString;
 	}
 
-	public List<Tile> rollTheDie() {
-		hasStarted = true;
+	public int rollDie() {
+		if(!hasStarted)
+			hasStarted = true;
 		
-		Die die = this.getDie();
-		int rolledNumber = die.roll();
-		Player currentPlayer = this.getCurrentPlayer();
-		List<Tile> possibleMoves = currentPlayer.getPossibleMoves(rolledNumber);
-		return possibleMoves;
+		Die die = getDie();
+		return getDie().roll();
 	}
 
 	public void placeConnection(Tile tile1, Tile tile2) {

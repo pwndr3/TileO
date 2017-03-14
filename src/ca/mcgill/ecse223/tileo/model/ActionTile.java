@@ -38,15 +38,18 @@ public class ActionTile extends Tile implements Serializable
   //------------------------
 
   public void land(){
-    TileO tileo = TileOApplication.getTileO();
-    Game currentGame= tileo.getCurrentGame();
+    Game currentGame= TileOApplication.getTileO().getCurrentGame();
     Player currentPlayer = currentGame.getCurrentPlayer();
     currentPlayer.setCurrentTile(this);
 
-    currentGame.setCurrentPlayer(currentGame.getPlayer(currentGame.indexOfPlayer(currentPlayer)+1));
-    this.setHasBeenVisited(true);
-    Deck deck = currentGame.getDeck();
-    ActionCard currentCard = deck.getCurrentCard();
+    if(currentGame.indexOfPlayer(currentPlayer) == (currentGame.numberOfPlayers() - 1))
+        currentGame.setCurrentPlayer(currentGame.getPlayer(0));
+    else
+        currentGame.setCurrentPlayer(currentGame.getPlayer(currentGame.indexOfPlayer(currentPlayer) + 1));
+    
+    setHasBeenVisited(true);
+    
+    ActionCard currentCard = currentGame.getDeck().getCurrentCard();
     currentGame.setMode(currentCard.getActionCardGameMode());
   }
 

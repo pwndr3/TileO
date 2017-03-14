@@ -12,7 +12,7 @@ public class DesignController {
 		game = aGame;
 	}
 
-	// Player [0..3]**
+	// Player [0..3]*
 	public boolean startingPosition(Tile tile, int playerNumber) throws InvalidInputException {
 		// Get info about current game
 		List<Player> allPlayers = game.getPlayers();
@@ -101,6 +101,10 @@ public class DesignController {
 		// delete the tile
 		if (tile == null) {
 			throw new InvalidInputException("There is no tile to delete");
+		}
+		
+		if(tile instanceof WinTile) {
+			game.setWinTile(null);
 		}
 
 		int x = tile.getX();
@@ -213,7 +217,8 @@ public class DesignController {
 	}
 	 //done  
 	public Game initGame(int numOfPlayersInGame) {
-		TileOApplication.getTileO().removeGame(game);
+		if(game != null)
+			TileOApplication.getTileO().removeGame(game);
 		
 		game = new Game(32, TileOApplication.getTileO());
 		game.setMode(Game.Mode.DESIGN);
@@ -241,6 +246,27 @@ public class DesignController {
 		}
 		
 		return game;
+	}
+	
+	public void saveGame(String gameName) {
+		boolean modeGame = true;
+		
+		game.setGameName(gameName);
+		
+		if(!game.hasWinTile())
+			modeGame = false;
+		
+		for(Player player : game.getPlayers()) {
+			if(!player.hasStartingTile())
+				modeGame = false;
+		}
+		
+		if(modeGame)
+			game.setMode(Game.Mode.GAME);
+		else
+			game.setMode(Game.Mode.DESIGN);
+		
+		TileOApplication.save();
 	}
 
 	//

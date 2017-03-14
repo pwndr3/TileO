@@ -122,7 +122,8 @@ public class TurnsUnactive extends JDialog {
         Container.add(Button2);
         Button2.setBounds(110, 160, 80, 35);
 
-        PictureBackground.setIcon(new javax.swing.ImageIcon("/icons/popup/inactivityPeriod.png")); // NOI18N
+        String p = getClass().getResource("/icons/popup/inactivityPeriod.png").toString();
+        PictureBackground.setText("<html><img src=\""+p+"\"></html>");
         Container.add(PictureBackground);
         PictureBackground.setBounds(0, 0, 300, 400);
 
@@ -144,6 +145,9 @@ public class TurnsUnactive extends JDialog {
         setModal(true);
         
         setLocationRelativeTo(parentWindow);
+        setResizable(false);
+        setAlwaysOnTop(true);
+        setUndecorated(true);
         
         setVisible(true);
         pack();
