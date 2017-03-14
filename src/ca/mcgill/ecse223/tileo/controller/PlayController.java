@@ -80,79 +80,52 @@ public class PlayController {
 		return possibleMoves;
 	}
 
-	// TODO Add land method to tile class.
 	public void land(Tile tile) throws InvalidInputException {
 		if (game.indexOfTile(tile) == -1)
 			throw new InvalidInputException("This tile does not exist in the current game.");
+		
 		tile.land();
 	}
 
-	public List<Tile> playRollDieActionCard() throws InvalidInputException {
-		Deck deck = game.getDeck();
-		ActionCard currentCard = deck.getCurrentCard();
-
-		if (!(currentCard instanceof RollDieActionCard))
-			throw new InvalidInputException("The current card is not a Roll Die Action Card");
-		
-		currentCard = (RollDieActionCard) deck.getCurrentCard();
-
+	public List<Tile> playRollDieActionCard() {
 		// Roll The Die method returns possible tiles for player to move to.
 		List<Tile> tiles = rollDie();
 		
 		return tiles;
 	}
 
-	// TODO See if number of connections in spare pile need to be altered.
-	// PlaceConnection is a new method in game class whose code is shared by add
-	// connection in design mode.
-	public void playAddConnectionActionCard(Tile tile1, Tile tile2) throws InvalidInputException {
-
-		// Game currentGame = TileOApplication.getTileO().getCurrentGame();
-
-		// Check if connection pieces are still available and if tiles exist.
-		if (game.getCurrentConnectionPieces() == 0)
-			throw new InvalidInputException("There are no more connection pieces in the spare pile");
-
-		Deck deck = game.getDeck();
-		ActionCard currentCard = deck.getCurrentCard();
-
-		// Check if action card is a Connect Tiles Action Card.
-		if (!(currentCard instanceof ConnectTilesActionCard))
-			throw new InvalidInputException("The current card is not a Connect Tiles Action Card");
-
+	public void playAddConnectionActionCard(Tile tile1, Tile tile2) {
 		game.placeConnection(tile1, tile2);
-
-		Player currentPlayer = game.getCurrentPlayer();
-		int indexOfCurrentPlayer = game.indexOfPlayer(currentPlayer);
-
-		// If current player is last player, make next player the first player.
-		if (indexOfCurrentPlayer == (game.numberOfPlayers() - 1))
-			game.setCurrentPlayer(game.getPlayer(0));
-
-		// Make it next player's turn.
-		else
-			game.setCurrentPlayer(game.getPlayer(indexOfCurrentPlayer + 1));
+		
+		game.setCurrentConnectionPieces(game.getCurrentConnectionPieces()-1);
 	}
 
-	// TODO see if number of connections must be increased after a connection is
-	// added.
-	public void playRemoveConnectionActionActionCard(Connection connection) throws InvalidInputException {
-		// Get info about the current game
-		Deck deck = game.getDeck();
-		ActionCard currentCard = deck.getCurrentCard();
+	public void playRemoveConnectionActionCard(Tile tile1, Tile tile2) {
+		List<Connection> conns = tile1.getConnections();
 
-		// Check if action card is a Remove Connection Action Card.
-		if (!(currentCard instanceof RemoveConnectionActionCard))
-			throw new InvalidInputException("The current card is not a Remove Connection Action Card");
-		
-		currentCard = (RemoveConnectionActionCard) deck.getCurrentCard();
+		for (Connection conn : conns) {
+			List<Tile> tiles = conn.getTiles();
+			{
+				for (Tile tile : tiles) {
+					if (tile == tile2) {
+						game.removeConnection(conn);
+						game.setCurrentConnectionPieces(game.getCurrentConnectionPieces()+1);
+						return;
+					}
+				}
+			}
+		}
+	}
 
-		// This function removes the connection.
-		game.removeConnection(connection);
+	public void playTeleportActionCard(Tile tile) {
+		TeleportActionCard playedCard = (TeleportActionCard) game.getDeck().getCurrentCard();
 
-		Player currentPlayer = game.getCurrentPlayer();
-
-		int indexOfCurrentPlayer = game.indexOfPlayer(currentPlayer);
+		// Play the card
+		playedCard.play(tile);
+	}
+	
+	public void nextTurn() {
+		int indexOfCurrentPlayer = game.indexOfPlayer(game.getCurrentPlayer());
 
 		// If current player is last player, make the first player the current
 		// player.
@@ -163,22 +136,8 @@ public class PlayController {
 		else {
 			game.setCurrentPlayer(game.getPlayer(indexOfCurrentPlayer + 1));
 		}
-	}
-
-	public void teleport(Tile tile) throws InvalidInputException {
-		// Get info about the current game
-		TileO tileo = TileOApplication.getTileO();
-		Game game = tileo.getCurrentGame();
-		Deck deck = game.getDeck();
-		// Exception
-		if (!(deck.getCurrentCard() instanceof TeleportActionCard)) {
-			throw new InvalidInputException("Action card is not a teleport action card");
-		}
-
-		TeleportActionCard playedCard = (TeleportActionCard) deck.getCurrentCard();
-
-		// Play the card
-		playedCard.play(tile);
+		
+		ui.update();
 	}
 
 	private Game game;

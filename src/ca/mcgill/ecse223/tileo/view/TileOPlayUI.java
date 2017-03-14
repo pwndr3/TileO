@@ -17,61 +17,68 @@ import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import ca.mcgill.ecse223.tileo.model.*;
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
+import ca.mcgill.ecse223.tileo.controller.InvalidInputException;
 import ca.mcgill.ecse223.tileo.controller.PlayController;
 
 public class TileOPlayUI extends javax.swing.JFrame {
-	
+
+	enum PlayState {
+		NONE, ROLL, PICK, ADD, REMOVE, TELEPORT
+	};
+
+	private PlayState playState = PlayState.NONE;
+
 	public TileOPlayUI(Game aGame) {
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 		} catch (Exception e) {
-			//Too bad
+			// Too bad
 		}
-		
+
 		game = aGame;
 		currentController = new PlayController(this, game);
-		
+
 		initComponents();
-		
-		if(!game.hasStarted) {
+
+		if (!game.hasStarted) {
 			try {
 				currentController.startGame();
 			} catch (Exception e) {
 				new PopUpManager(this).acknowledgeMessage(e.getMessage());
 			}
 		}
-		
+
 		setupBoardFromGame();
 	}
 
 	private Game game;
-	
+
 	private int numberOfRows;
 	private int numberOfCols;
-	
-    private JPanel tilesPanel;
-    LinkedList<TileUI> tilesButtons;
-    LinkedList<ConnectionUI> connectionButtons;
-	
+
+	private JPanel tilesPanel;
+	LinkedList<TileUI> tilesButtons;
+	LinkedList<ConnectionUI> connectionButtons;
+
 	private void setupBoardFromGame() {
-		//Setup variables
+		// Setup variables
 		tilesButtons = new LinkedList<TileUI>();
 		connectionButtons = new LinkedList<ConnectionUI>();
-		
+
 		// Find number of rows and columns
 		int maxRow = 0;
 		int maxCol = 0;
-		
-		for(Tile tile : game.getTiles()) {
-			if(tile.getX() > maxRow)
+
+		for (Tile tile : game.getTiles()) {
+			if (tile.getX() > maxRow)
 				maxRow = tile.getX();
-			if(tile.getY() > maxCol)
+			if (tile.getY() > maxCol)
 				maxCol = tile.getY();
 		}
-		
+
 		numberOfRows = ++maxRow;
 		numberOfCols = ++maxCol;
-		
+
 		// Create grids
 		tilesPanel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -87,12 +94,11 @@ public class TileOPlayUI extends javax.swing.JFrame {
 				if (row % 2 == 0 && col % 2 == 0) {
 					// UI
 					TileUI tile = new TileUI();
-					
+
 					tile.setMargin(new Insets(0, 0, 0, 0));
 					tile.setBorder(null);
 
-					
-					if(game.getTileFromXY(row/2, col/2) != null) {
+					if (game.getTileFromXY(row / 2, col / 2) != null) {
 						tile.setLifeState(TileUI.LifeState.EXIST);
 						tile.addActionListener(new java.awt.event.ActionListener() {
 							public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -102,7 +108,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 					} else {
 						tile.setLifeState(TileUI.LifeState.NOTEXIST);
 					}
-					
+
 					tilesButtons.add(tile);
 
 					tilesPanel.add(tile, c);
@@ -117,7 +123,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 							connectionActionPerformed(evt);
 						}
 					});
-					
+
 					connectionButtons.add(conn);
 
 					c.fill = GridBagConstraints.VERTICAL;
@@ -148,46 +154,47 @@ public class TileOPlayUI extends javax.swing.JFrame {
 				}
 			}
 		}
-		
-		//Remove connections
-		List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).collect(Collectors.toList());
-			tiles.forEach(s -> {
-			int connX = s.getUIX()*2;
-			int connY = s.getUIY()*2;
-			
-			//Hide nearest connections
-			connectionButtons.parallelStream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
-					(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> {
+
+		// Remove connections
+		List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST)
+				.collect(Collectors.toList());
+		tiles.forEach(s -> {
+			int connX = s.getUIX() * 2;
+			int connY = s.getUIY() * 2;
+
+			// Hide nearest connections
+			connectionButtons.parallelStream().filter(t -> (t.getUIX() == connX && Math.abs(t.getUIY() - connY) == 1)
+					|| (t.getUIY() == connY && Math.abs(t.getUIX() - connX) == 1)).forEach(t -> {
 						t.setState(ConnectionUI.State.HIDE);
 						t.setLifeState(ConnectionUI.LifeState.NOTEXIST);
 					});
 		});
-			
-		//Set connections
+
+		// Set connections
 		game.getConnections().parallelStream().forEach(s -> {
 			Tile tile1 = s.getTile(0);
 			Tile tile2 = s.getTile(1);
-			
+
 			connectionButtons.parallelStream().filter(t -> t.getState() == ConnectionUI.State.SHOW).forEach(t -> {
-				//Horizontal
-				if(tile1.getX() == tile2.getX()) {
-					if(t.getUIX() == tile1.getX()*2) {
-						int farRight = (tile1.getY() > tile2.getY()) ? tile1.getY()*2 : tile2.getY()*2;
-						
-						if((farRight - t.getUIY()) == 1) {
+				// Horizontal
+				if (tile1.getX() == tile2.getX()) {
+					if (t.getUIX() == tile1.getX() * 2) {
+						int farRight = (tile1.getY() > tile2.getY()) ? tile1.getY() * 2 : tile2.getY() * 2;
+
+						if ((farRight - t.getUIY()) == 1) {
 							t.setState(ConnectionUI.State.SHOW);
 							t.setLifeState(ConnectionUI.LifeState.EXIST);
 							t.setVisible(true);
 						}
 					}
 				}
-			
-				//Vertical
-				if(tile1.getY() == tile2.getY()) {
-					if(t.getUIY() == tile1.getY()*2) {
-						int bottom = (tile1.getX() > tile2.getX()) ? tile1.getX()*2 : tile2.getX()*2;
-						
-						if((bottom - t.getUIX()) == 1) {
+
+				// Vertical
+				if (tile1.getY() == tile2.getY()) {
+					if (t.getUIY() == tile1.getY() * 2) {
+						int bottom = (tile1.getX() > tile2.getX()) ? tile1.getX() * 2 : tile2.getX() * 2;
+
+						if ((bottom - t.getUIX()) == 1) {
 							t.setState(ConnectionUI.State.SHOW);
 							t.setLifeState(ConnectionUI.LifeState.EXIST);
 							t.setVisible(true);
@@ -196,41 +203,42 @@ public class TileOPlayUI extends javax.swing.JFrame {
 				}
 			});
 		});
-			
-		//Starting positions
-		for(int i = 0; i < game.numberOfPlayers(); i++) {
-			if(!game.getPlayer(i).hasStartingTile())
+
+		// Starting positions
+		for (int i = 0; i < game.numberOfPlayers(); i++) {
+			if (!game.getPlayer(i).hasStartingTile())
 				continue;
-			
+
 			Tile tile = game.getPlayer(i).getStartingTile();
-			
-			TileUI tileGUI = tilesButtons.parallelStream().filter(s -> s.getUIX()==tile.getX() && s.getUIY()==tile.getY()).findAny().orElse(null);
-			if(tileGUI != null) {
+
+			TileUI tileGUI = tilesButtons.parallelStream()
+					.filter(s -> s.getUIX() == tile.getX() && s.getUIY() == tile.getY()).findAny().orElse(null);
+			if (tileGUI != null) {
 				tileGUI.resetUI();
 				try {
-					tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/"+(i+1)+".png"))));
+					tileGUI.setIcon(
+							new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/" + (i + 1) + ".png"))));
 				} catch (IOException e) {
-					
+
 				}
 			}
 		}
-		
-		//Hide disabled tiles
-		tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST)
-		.forEach(s -> {
+
+		// Hide disabled tiles
+		tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).forEach(s -> {
 			s.hideUI();
 			s.setSelected(false);
-			});
-		
+		});
+
 		update();
 	}
-	
+
 	private int PICKCARD = 1;
 	private int ROLLDIE = 2;
 	private int ADDCONN = 4;
 	private int REMOVECONN = 8;
 	private int TELEPORT = 16;
-	
+
 	private void maskButtons(int mask) {
 		pickCardButton.setEnabled((mask & PICKCARD) == PICKCARD);
 		rollDieButton.setEnabled((mask & ROLLDIE) == ROLLDIE);
@@ -238,345 +246,425 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		removeConnectionButton.setEnabled((mask & REMOVECONN) == REMOVECONN);
 		teleportButton.setEnabled((mask & TELEPORT) == TELEPORT);
 	}
-	
-    private void initComponents() {
-        playerTurnLabel = new javax.swing.JLabel();
-        playerColor = new javax.swing.JLabel();
-        pickCardButton = new javax.swing.JButton();
-        rollDieButton = new javax.swing.JButton();
-        addConnectionButton = new javax.swing.JButton();
-        removeConnectionButton = new javax.swing.JButton();
-        teleportButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jProgressBar1 = new JProgressBar();
-        tilesPanel = new javax.swing.JPanel();
-        tilesPanel.setPreferredSize(new java.awt.Dimension(1130, 680));
-        saveButton = new javax.swing.JButton();
-        loadButton = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+	private void initComponents() {
+		playerTurnLabel = new javax.swing.JLabel();
+		playerColor = new javax.swing.JLabel();
+		pickCardButton = new javax.swing.JButton();
+		rollDieButton = new javax.swing.JButton();
+		addConnectionButton = new javax.swing.JButton();
+		removeConnectionButton = new javax.swing.JButton();
+		teleportButton = new javax.swing.JButton();
+		jLabel1 = new javax.swing.JLabel();
+		jProgressBar1 = new JProgressBar();
+		tilesPanel = new javax.swing.JPanel();
+		tilesPanel.setPreferredSize(new java.awt.Dimension(1130, 680));
+		saveButton = new javax.swing.JButton();
+		loadButton = new javax.swing.JButton();
+		jButton1 = new javax.swing.JButton();
 
-        playerTurnLabel.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
-        playerTurnLabel.setText("Player Turn:");
+		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        playerColor.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
-        playerColor.setForeground(new java.awt.Color(240, 10, 10));
-        playerColor.setText("RED");
+		playerTurnLabel.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
+		playerTurnLabel.setText("Player Turn:");
 
-        pickCardButton.setBackground(new java.awt.Color(51, 102, 255));
-        pickCardButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        pickCardButton.setForeground(new java.awt.Color(255, 255, 255));
-        pickCardButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cards.png"))); // NOI18N
-        pickCardButton.setText("Pick a Card");
-        pickCardButton.setMaximumSize(new java.awt.Dimension(100, 100));
-        pickCardButton.setMinimumSize(new java.awt.Dimension(100, 100));
-        pickCardButton.setPreferredSize(new java.awt.Dimension(50, 50));
-        pickCardButton.setSize(new java.awt.Dimension(50, 25));
-        pickCardButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pickCardButtonActionPerformed(evt);
-            }
-        });
+		playerColor.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
+		playerColor.setForeground(new java.awt.Color(240, 10, 10));
+		playerColor.setText("RED");
 
-        rollDieButton.setBackground(new java.awt.Color(51, 102, 255));
-        rollDieButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        rollDieButton.setForeground(new java.awt.Color(255, 255, 255));
-        rollDieButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/dice.png"))); // NOI18N
-        rollDieButton.setText("Roll Die");
-        rollDieButton.setMaximumSize(new java.awt.Dimension(100, 100));
-        rollDieButton.setMinimumSize(new java.awt.Dimension(100, 100));
-        rollDieButton.setPreferredSize(new java.awt.Dimension(50, 50));
-        rollDieButton.setSize(new java.awt.Dimension(50, 25));
-        rollDieButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rollDieButtonActionPerformed(evt);
-            }
-        });
+		pickCardButton.setBackground(new java.awt.Color(51, 102, 255));
+		pickCardButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+		pickCardButton.setForeground(new java.awt.Color(255, 255, 255));
+		pickCardButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cards.png"))); // NOI18N
+		pickCardButton.setText("Pick a Card");
+		pickCardButton.setMaximumSize(new java.awt.Dimension(100, 100));
+		pickCardButton.setMinimumSize(new java.awt.Dimension(100, 100));
+		pickCardButton.setPreferredSize(new java.awt.Dimension(50, 50));
+		pickCardButton.setSize(new java.awt.Dimension(50, 25));
+		pickCardButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				pickCardButtonActionPerformed(evt);
+			}
+		});
 
-        addConnectionButton.setBackground(new java.awt.Color(51, 102, 255));
-        addConnectionButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        addConnectionButton.setForeground(new java.awt.Color(255, 255, 255));
-        addConnectionButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/plus.png"))); // NOI18N
-        addConnectionButton.setText("   Add  Connection  ");
-        addConnectionButton.setToolTipText("");
-        addConnectionButton.setMaximumSize(new java.awt.Dimension(100, 100));
-        addConnectionButton.setMinimumSize(new java.awt.Dimension(100, 100));
-        addConnectionButton.setPreferredSize(new java.awt.Dimension(50, 50));
-        addConnectionButton.setSize(new java.awt.Dimension(50, 25));
-        addConnectionButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addConnectionButtonActionPerformed(evt);
-            }
-        });
+		rollDieButton.setBackground(new java.awt.Color(51, 102, 255));
+		rollDieButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+		rollDieButton.setForeground(new java.awt.Color(255, 255, 255));
+		rollDieButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/dice.png"))); // NOI18N
+		rollDieButton.setText("Roll Die");
+		rollDieButton.setMaximumSize(new java.awt.Dimension(100, 100));
+		rollDieButton.setMinimumSize(new java.awt.Dimension(100, 100));
+		rollDieButton.setPreferredSize(new java.awt.Dimension(50, 50));
+		rollDieButton.setSize(new java.awt.Dimension(50, 25));
+		rollDieButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				rollDieButtonActionPerformed(evt);
+			}
+		});
 
-        removeConnectionButton.setBackground(new java.awt.Color(51, 102, 255));
-        removeConnectionButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        removeConnectionButton.setForeground(new java.awt.Color(255, 255, 255));
-        removeConnectionButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/minus.png"))); // NOI18N
-        removeConnectionButton.setText("Remove Connection");
-        removeConnectionButton.setMaximumSize(new java.awt.Dimension(100, 100));
-        removeConnectionButton.setMinimumSize(new java.awt.Dimension(100, 100));
-        removeConnectionButton.setPreferredSize(new java.awt.Dimension(50, 50));
-        removeConnectionButton.setSize(new java.awt.Dimension(50, 25));
-        removeConnectionButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeConnectionButtonActionPerformed(evt);
-            }
-        });
+		addConnectionButton.setBackground(new java.awt.Color(51, 102, 255));
+		addConnectionButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+		addConnectionButton.setForeground(new java.awt.Color(255, 255, 255));
+		addConnectionButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/plus.png"))); // NOI18N
+		addConnectionButton.setText("   Add  Connection  ");
+		addConnectionButton.setToolTipText("");
+		addConnectionButton.setMaximumSize(new java.awt.Dimension(100, 100));
+		addConnectionButton.setMinimumSize(new java.awt.Dimension(100, 100));
+		addConnectionButton.setPreferredSize(new java.awt.Dimension(50, 50));
+		addConnectionButton.setSize(new java.awt.Dimension(50, 25));
+		addConnectionButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				addConnectionButtonActionPerformed(evt);
+			}
+		});
 
-        teleportButton.setBackground(new java.awt.Color(51, 102, 255));
-        teleportButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        teleportButton.setForeground(new java.awt.Color(255, 255, 255));
-        teleportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/teleport.png"))); // NOI18N
-        teleportButton.setText("     Teleport        ");
-        teleportButton.setMaximumSize(new java.awt.Dimension(100, 100));
-        teleportButton.setMinimumSize(new java.awt.Dimension(100, 100));
-        teleportButton.setPreferredSize(new java.awt.Dimension(50, 50));
-        teleportButton.setSize(new java.awt.Dimension(50, 25));
-        teleportButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                teleportButtonActionPerformed(evt);
-            }
-        });
+		removeConnectionButton.setBackground(new java.awt.Color(51, 102, 255));
+		removeConnectionButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+		removeConnectionButton.setForeground(new java.awt.Color(255, 255, 255));
+		removeConnectionButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/minus.png"))); // NOI18N
+		removeConnectionButton.setText("Remove Connection");
+		removeConnectionButton.setMaximumSize(new java.awt.Dimension(100, 100));
+		removeConnectionButton.setMinimumSize(new java.awt.Dimension(100, 100));
+		removeConnectionButton.setPreferredSize(new java.awt.Dimension(50, 50));
+		removeConnectionButton.setSize(new java.awt.Dimension(50, 25));
+		removeConnectionButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				removeConnectionButtonActionPerformed(evt);
+			}
+		});
 
-        jLabel1.setFont(new java.awt.Font("Malayalam MN", 1, 20)); // NOI18N
-        jLabel1.setText("Connection Pieces Left");
+		teleportButton.setBackground(new java.awt.Color(51, 102, 255));
+		teleportButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
+		teleportButton.setForeground(new java.awt.Color(255, 255, 255));
+		teleportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/teleport.png"))); // NOI18N
+		teleportButton.setText("     Teleport        ");
+		teleportButton.setMaximumSize(new java.awt.Dimension(100, 100));
+		teleportButton.setMinimumSize(new java.awt.Dimension(100, 100));
+		teleportButton.setPreferredSize(new java.awt.Dimension(50, 50));
+		teleportButton.setSize(new java.awt.Dimension(50, 25));
+		teleportButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				teleportButtonActionPerformed(evt);
+			}
+		});
 
-        jProgressBar1.setForeground(new java.awt.Color(255, 255, 255));
-        jProgressBar1.setBackground(new java.awt.Color(255, 204, 0));
-        jProgressBar1.setFont(new java.awt.Font("Malayalam MN", 1, 24)); // NOI18N
-        jProgressBar1.setMaximum(32);
-        jProgressBar1.setValue(game.getCurrentConnectionPieces());
-        jProgressBar1.setBorderPainted(false);
-        jProgressBar1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jProgressBar1.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
-        jProgressBar1.setString(String.valueOf(jProgressBar1.getValue()));
-        jProgressBar1.setStringPainted(true);
+		jLabel1.setFont(new java.awt.Font("Malayalam MN", 1, 20)); // NOI18N
+		jLabel1.setText("Connection Pieces Left");
 
-        
+		jProgressBar1.setForeground(new java.awt.Color(255, 255, 255));
+		jProgressBar1.setBackground(new java.awt.Color(255, 204, 0));
+		jProgressBar1.setFont(new java.awt.Font("Malayalam MN", 1, 24)); // NOI18N
+		jProgressBar1.setMaximum(32);
+		jProgressBar1.setValue(game.getCurrentConnectionPieces());
+		jProgressBar1.setBorderPainted(false);
+		jProgressBar1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+		jProgressBar1.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
+		jProgressBar1.setString(String.valueOf(jProgressBar1.getValue()));
+		jProgressBar1.setStringPainted(true);
 
-        saveButton.setBackground(new java.awt.Color(255, 204, 0));
-        saveButton.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
-        saveButton.setText("Save");
-        saveButton.setMaximumSize(new java.awt.Dimension(100, 100));
-        saveButton.setMinimumSize(new java.awt.Dimension(100, 100));
-        saveButton.setPreferredSize(new java.awt.Dimension(50, 50));
-        saveButton.setSize(new java.awt.Dimension(50, 25));
-        saveButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveButtonActionPerformed(evt);
-            }
-        });
+		saveButton.setBackground(new java.awt.Color(255, 204, 0));
+		saveButton.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+		saveButton.setText("Save");
+		saveButton.setMaximumSize(new java.awt.Dimension(100, 100));
+		saveButton.setMinimumSize(new java.awt.Dimension(100, 100));
+		saveButton.setPreferredSize(new java.awt.Dimension(50, 50));
+		saveButton.setSize(new java.awt.Dimension(50, 25));
+		saveButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				saveButtonActionPerformed(evt);
+			}
+		});
 
-        loadButton.setBackground(new java.awt.Color(255, 204, 0));
-        loadButton.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
-        loadButton.setText("Load");
-        loadButton.setMaximumSize(new java.awt.Dimension(100, 100));
-        loadButton.setMinimumSize(new java.awt.Dimension(100, 100));
-        loadButton.setPreferredSize(new java.awt.Dimension(50, 50));
-        loadButton.setSize(new java.awt.Dimension(50, 25));
-        loadButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadButtonActionPerformed(evt);
-            }
-        });
+		loadButton.setBackground(new java.awt.Color(255, 204, 0));
+		loadButton.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+		loadButton.setText("Load");
+		loadButton.setMaximumSize(new java.awt.Dimension(100, 100));
+		loadButton.setMinimumSize(new java.awt.Dimension(100, 100));
+		loadButton.setPreferredSize(new java.awt.Dimension(50, 50));
+		loadButton.setSize(new java.awt.Dimension(50, 25));
+		loadButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				loadButtonActionPerformed(evt);
+			}
+		});
 
-        jButton1.setBackground(new java.awt.Color(255, 0, 0));
-        jButton1.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
-        jButton1.setText("Back");
-        jButton1.addActionListener(e -> {
-			if(new PopUpManager(this).askYesOrNo("Any unsaved changes will be lost. Continue?") == 0) {
+		jButton1.setBackground(new java.awt.Color(255, 0, 0));
+		jButton1.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
+		jButton1.setText("Back");
+		jButton1.addActionListener(e -> {
+			if (new PopUpManager(this).askYesOrNo("Any unsaved changes will be lost. Continue?") == 0) {
 				new MainPage().setVisible(true);
 				dispose();
 			}
 		});
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jButton1)
-                        .addGap(474, 474, 474)
-                        .addComponent(playerTurnLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(playerColor))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(tilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(rollDieButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(pickCardButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(addConnectionButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(removeConnectionButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(teleportButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addComponent(saveButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(loadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(playerTurnLabel)
-                            .addComponent(playerColor)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jButton1)))
-                .addGap(74, 74, 74)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(rollDieButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pickCardButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addConnectionButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(removeConnectionButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(teleportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(52, 52, 52)
-                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(loadButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(tilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(78, Short.MAX_VALUE))
-        );
+		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+		getContentPane().setLayout(layout);
+		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
+						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+								.addGroup(layout.createSequentialGroup().addGap(24, 24, 24).addComponent(jButton1)
+										.addGap(474, 474, 474).addComponent(playerTurnLabel)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+										.addComponent(playerColor))
+								.addGroup(layout.createSequentialGroup().addContainerGap()
+										.addComponent(tilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+												javax.swing.GroupLayout.DEFAULT_SIZE,
+												javax.swing.GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+										.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+												.addGroup(layout
+														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+														.addGroup(layout
+																.createParallelGroup(
+																		javax.swing.GroupLayout.Alignment.LEADING,
+																		false)
+																.addComponent(jLabel1,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		Short.MAX_VALUE)
+																.addComponent(rollDieButton,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		Short.MAX_VALUE)
+																.addComponent(pickCardButton,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		Short.MAX_VALUE)
+																.addComponent(addConnectionButton,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		Short.MAX_VALUE)
+																.addComponent(removeConnectionButton,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		Short.MAX_VALUE)
+																.addComponent(teleportButton,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		Short.MAX_VALUE)
+																.addComponent(jProgressBar1,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		javax.swing.GroupLayout.DEFAULT_SIZE,
+																		Short.MAX_VALUE))
+														.addComponent(saveButton,
+																javax.swing.GroupLayout.Alignment.TRAILING,
+																javax.swing.GroupLayout.PREFERRED_SIZE, 236,
+																javax.swing.GroupLayout.PREFERRED_SIZE))
+												.addComponent(loadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 236,
+														javax.swing.GroupLayout.PREFERRED_SIZE))))
+						.addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
+						.addGroup(layout
+								.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
+										.createSequentialGroup().addContainerGap().addGroup(layout
+												.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+												.addComponent(playerTurnLabel).addComponent(playerColor)))
+								.addGroup(layout.createSequentialGroup().addGap(21, 21, 21).addComponent(jButton1)))
+						.addGap(74, 74, 74)
+						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
+								.createSequentialGroup().addComponent(jLabel1)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 33,
+										javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addGap(27, 27, 27)
+								.addComponent(rollDieButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(pickCardButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(addConnectionButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(removeConnectionButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(teleportButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addGap(52, 52, 52)
+								.addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+								.addComponent(loadButton, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+								.addComponent(tilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+						.addContainerGap(78, Short.MAX_VALUE)));
 
-        setUndecorated(true);
-        
-        pack();
-        
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        double width = screenSize.getWidth();
-        double height = screenSize.getHeight();
-        
-        setLocationRelativeTo(null);
-        setLocation(new Double(width/2).intValue()-getWidth()/2, new Double(height/2).intValue()-getHeight()/2);
-    }
-    
-    private void update() {
-    	// Change colors for connections
+		setUndecorated(true);
+
+		pack();
+
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double width = screenSize.getWidth();
+		double height = screenSize.getHeight();
+
+		setLocationRelativeTo(null);
+		setLocation(new Double(width / 2).intValue() - getWidth() / 2,
+				new Double(height / 2).intValue() - getHeight() / 2);
+	}
+
+	public void update() {
+		// Change colors for connections
 		connectionButtons.parallelStream().forEach(s -> {
-			if (s.getLifeState() == ConnectionUI.LifeState.NOTEXIST) 
-				s.setBackground(null); 
+			if (s.getLifeState() == ConnectionUI.LifeState.NOTEXIST)
+				s.setBackground(null);
 			else
 				s.setBackground(new java.awt.Color(0, 0, 0));
 		});
 
 		// Reset states
 		hideDisabledConnections();
-		
+
 		tilesButtons.parallelStream().filter(s -> s.isVisible()).forEach(s -> {
 			s.setSelected(false);
 			s.setFocusPainted(false);
 			s.setBorderPainted(false);
+			s.resetUI();
 		});
 		
 		// TODO : Show visited tiles
 		
-		// TODO : Change player position
-		
+		//Change player position
+		for (int i = 0; i < game.numberOfPlayers(); i++) {
+			Tile tile = game.getPlayer(i).getCurrentTile();
+
+			TileUI tileGUI = tilesButtons.parallelStream()
+					.filter(s -> s.getUIX() == tile.getX() && s.getUIY() == tile.getY()).findAny().orElse(null);
+			if (tileGUI != null) {
+				try {
+					tileGUI.setIcon(
+							new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/" + (i + 1) + ".png"))));
+				} catch (IOException e) {
+
+				}
+			}
+		}
+
+		playState = PlayState.ROLL;
 		maskButtons(ROLLDIE);
-		
+
 		updateConnectionPieces();
 		updatePlayerNameAndColor();
-		
+
 		repaint();
 		revalidate();
-    }
-    
-    private void updatePlayerNameAndColor() {
-    	switch(game.getCurrentPlayer().getNumber()) {
-    	case 0:
-    		playerColor.setForeground(new java.awt.Color(240, 10, 10));
-    		break;
-    	case 1:
-    		playerColor.setForeground(new java.awt.Color(10, 10, 240));
-    		break;
-    	case 2:
-    		playerColor.setForeground(new java.awt.Color(10, 240, 10));
-    		break;
-    	case 3:
-    		playerColor.setForeground(new java.awt.Color(240, 240, 10));
-    		break;
-    	}
-    }
-    
-    private void updateConnectionPieces() {
-    	Color color = null;
-    	int n = game.getCurrentConnectionPieces();
-    	
-    	if(n == 0)		color = Color.decode("#E50005");
-    	if(n == 1)		color = Color.decode("#E30900");
-    	if(n == 2)		color = Color.decode("#E21900");
-    	if(n == 3)		color = Color.decode("#E12800");
-    	if(n == 4)		color = Color.decode("#E03700");
-    	if(n == 5)		color = Color.decode("#DF4600");
-    	if(n == 6)		color = Color.decode("#DD5500");
-    	if(n == 7)		color = Color.decode("#DC6400");
-    	if(n == 8)		color = Color.decode("#DB7200");
-    	if(n == 9)		color = Color.decode("#DA8000");
-    	if(n == 10)		color = Color.decode("#D98F00");
-    	if(n == 11)		color = Color.decode("#D79D00");
-    	if(n == 12)		color = Color.decode("#D6AB00");
-    	if(n == 13)		color = Color.decode("#D5B800");
-    	if(n == 14)		color = Color.decode("#D4C600");
-    	if(n == 15)		color = Color.decode("#D2D300");
-    	if(n == 16)		color = Color.decode("#C3D200");
-    	if(n == 17)		color = Color.decode("#B3D000");
-    	if(n == 18)		color = Color.decode("#A4CF00");
-    	if(n == 19)		color = Color.decode("#95CE00");
-    	if(n == 20)		color = Color.decode("#86CD00");
-    	if(n == 21)		color = Color.decode("#77CC00");
-    	if(n == 22)		color = Color.decode("#69CA00");
-    	if(n == 23)		color = Color.decode("#5AC900");
-    	if(n == 24)		color = Color.decode("#4CC800");
-    	if(n == 25)		color = Color.decode("#3EC700");
-    	if(n == 26)		color = Color.decode("#30C600");
-    	if(n == 27)		color = Color.decode("#22C400");
-    	if(n == 28)		color = Color.decode("#14C300");
-    	if(n == 29)		color = Color.decode("#07C200");
-    	if(n == 30)		color = Color.decode("#00C105");
-    	if(n == 31)		color = Color.decode("#00C013");
-    	if(n == 32)		color = Color.decode("#00BF1F");
-    	
-    	
+	}
+
+	private void updatePlayerNameAndColor() {
+		switch (game.getCurrentPlayer().getNumber()) {
+		case 0:
+			playerColor.setText("RED");
+			playerColor.setForeground(new java.awt.Color(240, 10, 10));
+			break;
+		case 1:
+			playerColor.setText("BLUE");
+			playerColor.setForeground(new java.awt.Color(10, 10, 240));
+			break;
+		case 2:
+			playerColor.setText("GREEN");
+			playerColor.setForeground(new java.awt.Color(10, 240, 10));
+			break;
+		case 3:
+			playerColor.setText("YELLOW");
+			playerColor.setForeground(new java.awt.Color(240, 240, 10));
+			break;
+		}
+	}
+
+	private void updateConnectionPieces() {
+		Color color = null;
+		int n = game.getCurrentConnectionPieces();
+
+		if (n == 0)
+			color = Color.decode("#E50005");
+		if (n == 1)
+			color = Color.decode("#E30900");
+		if (n == 2)
+			color = Color.decode("#E21900");
+		if (n == 3)
+			color = Color.decode("#E12800");
+		if (n == 4)
+			color = Color.decode("#E03700");
+		if (n == 5)
+			color = Color.decode("#DF4600");
+		if (n == 6)
+			color = Color.decode("#DD5500");
+		if (n == 7)
+			color = Color.decode("#DC6400");
+		if (n == 8)
+			color = Color.decode("#DB7200");
+		if (n == 9)
+			color = Color.decode("#DA8000");
+		if (n == 10)
+			color = Color.decode("#D98F00");
+		if (n == 11)
+			color = Color.decode("#D79D00");
+		if (n == 12)
+			color = Color.decode("#D6AB00");
+		if (n == 13)
+			color = Color.decode("#D5B800");
+		if (n == 14)
+			color = Color.decode("#D4C600");
+		if (n == 15)
+			color = Color.decode("#D2D300");
+		if (n == 16)
+			color = Color.decode("#C3D200");
+		if (n == 17)
+			color = Color.decode("#B3D000");
+		if (n == 18)
+			color = Color.decode("#A4CF00");
+		if (n == 19)
+			color = Color.decode("#95CE00");
+		if (n == 20)
+			color = Color.decode("#86CD00");
+		if (n == 21)
+			color = Color.decode("#77CC00");
+		if (n == 22)
+			color = Color.decode("#69CA00");
+		if (n == 23)
+			color = Color.decode("#5AC900");
+		if (n == 24)
+			color = Color.decode("#4CC800");
+		if (n == 25)
+			color = Color.decode("#3EC700");
+		if (n == 26)
+			color = Color.decode("#30C600");
+		if (n == 27)
+			color = Color.decode("#22C400");
+		if (n == 28)
+			color = Color.decode("#14C300");
+		if (n == 29)
+			color = Color.decode("#07C200");
+		if (n == 30)
+			color = Color.decode("#00C105");
+		if (n == 31)
+			color = Color.decode("#00C013");
+		if (n == 32)
+			color = Color.decode("#00BF1F");
+
 		try {
 			LookAndFeel lnf = UIManager.getLookAndFeel().getClass().newInstance();
-			//UIDefaults uiDefaults = lnf.getDefaults();
-	    	UIManager.put("nimbusOrange",color);
-	    	UIManager.getLookAndFeel().uninitialize();
-	        UIManager.setLookAndFeel(lnf);
+			// UIDefaults uiDefaults = lnf.getDefaults();
+			UIManager.put("nimbusOrange", color);
+			UIManager.getLookAndFeel().uninitialize();
+			UIManager.setLookAndFeel(lnf);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} 
-        
+		}
+
 		jProgressBar1.setValue(n);
-        jProgressBar1.setString(String.valueOf(n));
-        
-        jProgressBar1.updateUI();
-        jProgressBar1.repaint();
-    }
+		jProgressBar1.setString(String.valueOf(n));
+
+		jProgressBar1.updateUI();
+		jProgressBar1.repaint();
+	}
 
 	private void showDisabledConnections() {
-		connectionButtons.parallelStream().filter(s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST && s.getState() == ConnectionUI.State.SHOW)
+		connectionButtons.parallelStream().filter(
+				s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST && s.getState() == ConnectionUI.State.SHOW)
 				.forEach(s -> s.showUI());
 	}
 
@@ -584,73 +672,189 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		connectionButtons.parallelStream().filter(s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST)
 				.forEach(s -> s.hideUI());
 	}
-	
-    private void tileActionPerformed(java.awt.event.ActionEvent evt) {
-    	
-    }
+
+	private void tileActionPerformed(java.awt.event.ActionEvent evt) {
+		TileUI tileUI = (TileUI) evt.getSource();
+		Tile tile = null;
+
+		switch (playState) {
+		case ROLL:
+			tile = game.getTileFromXY(tileUI.getUIX(), tileUI.getUIY());
+			
+			if(tile instanceof ActionTile) {
+				tile.land();
+				update();
+				maskButtons(PICKCARD);
+			}
+			
+			else if(tile instanceof WinTile) {
+				//TODO : Win game
+			}
+			
+			else {
+				tile.land();
+				currentController.nextTurn();
+			}
+			
+			break;
+			
+		case TELEPORT:
+			tile = game.getTileFromXY(tileUI.getUIX(), tileUI.getUIY());
+			currentController.playTeleportActionCard(tile);
+			currentController.nextTurn();
+			break;
+
+		default:
+			tileUI.setSelected(false);
+			tileUI.setBorderPainted(false);
+			tileUI.setFocusPainted(false);
+		}
+	}
+
+	private void connectionActionPerformed(java.awt.event.ActionEvent evt) {
+		ConnectionUI connUI = (ConnectionUI) evt.getSource();
+
+		Tile tile1 = null;
+		Tile tile2 = null;
 		
-    private void connectionActionPerformed(java.awt.event.ActionEvent evt) {
-    	
-    }
+		switch (playState) {
+		case ADD:
+			if (connUI.getLifeState() == ConnectionUI.LifeState.NOTEXIST) {
+				connUI.setLifeState(ConnectionUI.LifeState.EXIST);
 
-    private void pickCardButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        try {
-        	ActionCard actionCard = currentController.getTopCard();
-        	new PopUpManager(this).showActionTile(actionCard);
-        	
-        	//Make play the card
-        } catch (Exception e) {
-        	new PopUpManager(this).acknowledgeMessage(e.getMessage());
-        }
-    }
+				if (connUI.getType() == ConnectionUI.Type.HORIZONTAL) {
+					tile1 = game.getTileFromXY(connUI.getUIX() / 2, (connUI.getUIY() - 1) / 2);
+					tile2 = game.getTileFromXY(connUI.getUIX() / 2, (connUI.getUIY() + 1) / 2);
+				} else if (connUI.getType() == ConnectionUI.Type.VERTICAL) {
+					tile1 = game.getTileFromXY((connUI.getUIX() - 1) / 2, connUI.getUIY() / 2);
+					tile2 = game.getTileFromXY((connUI.getUIX() + 1) / 2, connUI.getUIY() / 2);
+				}
 
-    private void rollDieButtonActionPerformed(java.awt.event.ActionEvent evt) {
-    	List<Tile> possiblePlayerMoves = currentController.rollDie();
-    	
-    	if(possiblePlayerMoves.isEmpty())
-    		new PopUpManager(this).acknowledgeMessage("No possible moves.");
-    	else {
-    		possiblePlayerMoves.parallelStream().forEach(s -> {
-    			getTileUIByXY(s.getX(), s.getY()).setBackground(new java.awt.Color(30,30,220));
-    		});
-    	}
-    }
+				currentController.playAddConnectionActionCard(tile1, tile2);
+				currentController.nextTurn();
+			} else {
+				connUI.setSelected(false);
+				connUI.setBorderPainted(false);
+				connUI.setFocusPainted(false);
+			}
+			break;
 
-    private void addConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        
-    }
+		case REMOVE:
+			if (connUI.getLifeState() == ConnectionUI.LifeState.NOTEXIST) {
+				connUI.setLifeState(ConnectionUI.LifeState.EXIST);
 
-    private void removeConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        
-    }
+				if(connUI.getType() == ConnectionUI.Type.HORIZONTAL) {
+					tile1 = game.getTileFromXY(connUI.getUIX()/2, (connUI.getUIY()-1)/2);
+					tile2 = game.getTileFromXY(connUI.getUIX()/2, (connUI.getUIY()+1)/2);
+				} else if(connUI.getType() == ConnectionUI.Type.VERTICAL) {
+					tile1 = game.getTileFromXY((connUI.getUIX()-1)/2, connUI.getUIY()/2);
+					tile2 = game.getTileFromXY((connUI.getUIX()+1)/2, connUI.getUIY()/2);
+				}
 
-    private void teleportButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        
-    }
+				currentController.playRemoveConnectionActionCard(tile1, tile2);
+				currentController.nextTurn();
+			} else {
+				connUI.setSelected(false);
+				connUI.setBorderPainted(false);
+				connUI.setFocusPainted(false);
+			}
+			break;
 
-    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        
-    }
+		default:
+			connUI.setSelected(false);
+			connUI.setBorderPainted(false);
+			connUI.setFocusPainted(false);
+		}
+	}
 
-    private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        
-    }
-    
-    private TileUI getTileUIByXY(int x, int y) {
-    	return tilesButtons.parallelStream().filter(s -> s.getUIX() == x && s.getUIY() == y).findAny().orElse(null);
-    }
+	private void pickCardButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		try {
+			ActionCard actionCard = currentController.getTopCard();
+			new PopUpManager(this).showActionTile(actionCard);
 
-    private javax.swing.JButton addConnectionButton;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private JProgressBar jProgressBar1;
-    private javax.swing.JButton loadButton;
-    private javax.swing.JButton pickCardButton;
-    private javax.swing.JLabel playerColor;
-    private javax.swing.JLabel playerTurnLabel;
-    private javax.swing.JButton removeConnectionButton;
-    private javax.swing.JButton rollDieButton;
-    private javax.swing.JButton saveButton;
-    private javax.swing.JButton teleportButton;
-    PlayController currentController;
+			if (actionCard instanceof RollDieActionCard) {
+				playState = PlayState.ROLL;
+				maskButtons(ROLLDIE);
+			}
+
+			else if (actionCard instanceof ConnectTilesActionCard) {
+				playState = PlayState.ADD;
+				maskButtons(ADDCONN);
+				showDisabledConnections();
+			}
+
+			else if (actionCard instanceof RemoveConnectionActionCard) {
+				playState = PlayState.REMOVE;
+				maskButtons(REMOVECONN);
+
+				// Change colors for connections
+				connectionButtons.parallelStream().forEach(s -> s.setBackground(null));
+			}
+
+			else if (actionCard instanceof LoseTurnActionCard) {
+				//Make lose next turn for currentPlayer
+				currentController.nextTurn();
+			}
+
+			else if (actionCard instanceof TeleportActionCard) {
+				playState = PlayState.TELEPORT;
+				maskButtons(0);
+			}
+
+		} catch (Exception e) {
+			new PopUpManager(this).acknowledgeMessage(e.getMessage());
+		}
+	}
+
+	private void rollDieButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		List<Tile> possiblePlayerMoves = currentController.rollDie();
+
+		if (possiblePlayerMoves.isEmpty()) {
+			new PopUpManager(this).acknowledgeMessage("No possible moves.");
+			currentController.nextTurn();
+		} else {
+			possiblePlayerMoves.parallelStream().forEach(s -> {
+				getTileUIByXY(s.getX(), s.getY()).setBackground(new java.awt.Color(30, 30, 220));
+				playState = PlayState.ROLL;
+			});
+		}
+	}
+
+	private void addConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {
+
+	}
+
+	private void removeConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {
+
+	}
+
+	private void teleportButtonActionPerformed(java.awt.event.ActionEvent evt) {
+
+	}
+
+	private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
+
+	}
+
+	private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
+
+	}
+
+	private TileUI getTileUIByXY(int x, int y) {
+		return tilesButtons.parallelStream().filter(s -> s.getUIX() == x && s.getUIY() == y).findAny().orElse(null);
+	}
+
+	private javax.swing.JButton addConnectionButton;
+	private javax.swing.JButton jButton1;
+	private javax.swing.JLabel jLabel1;
+	private JProgressBar jProgressBar1;
+	private javax.swing.JButton loadButton;
+	private javax.swing.JButton pickCardButton;
+	private javax.swing.JLabel playerColor;
+	private javax.swing.JLabel playerTurnLabel;
+	private javax.swing.JButton removeConnectionButton;
+	private javax.swing.JButton rollDieButton;
+	private javax.swing.JButton saveButton;
+	private javax.swing.JButton teleportButton;
+	PlayController currentController;
 }

@@ -9,82 +9,62 @@ import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import java.io.Serializable;
 
 // line 39 "../../../../../main.ump"
-public class ActionTile extends Tile implements Serializable
-{
+public class ActionTile extends Tile implements Serializable {
 
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+	// ------------------------
+	// MEMBER VARIABLES
+	// ------------------------
 
-  //ActionTile Attributes
-  private int inactivityPeriod;
-  private int turnsUntilActive;
-  
-  private static final long serialVersionUID = 1298712387189L;
+	// ActionTile Attributes
+	private int inactivityPeriod;
+	private int turnsUntilActive;
 
-  //------------------------
-  // CONSTRUCTOR
-  //------------------------
+	private static final long serialVersionUID = 1298712387189L;
 
-  public ActionTile(int aX, int aY, Game aGame, int aInactivityPeriod)
-  {
-    super(aX, aY, aGame);
-    inactivityPeriod = aInactivityPeriod;
-    turnsUntilActive = 0;
-  }
+	// ------------------------
+	// CONSTRUCTOR
+	// ------------------------
 
-  //------------------------
-  // INTERFACE
-  //------------------------
+	public ActionTile(int aX, int aY, Game aGame, int aInactivityPeriod) {
+		super(aX, aY, aGame);
+		inactivityPeriod = aInactivityPeriod;
+		turnsUntilActive = 0;
+	}
 
-  public void land(){
-    Game currentGame= TileOApplication.getTileO().getCurrentGame();
-    Player currentPlayer = currentGame.getCurrentPlayer();
-    currentPlayer.setCurrentTile(this);
+	// ------------------------
+	// INTERFACE
+	// ------------------------
 
-    if(currentGame.indexOfPlayer(currentPlayer) == (currentGame.numberOfPlayers() - 1))
-        currentGame.setCurrentPlayer(currentGame.getPlayer(0));
-    else
-        currentGame.setCurrentPlayer(currentGame.getPlayer(currentGame.indexOfPlayer(currentPlayer) + 1));
-    
-    setHasBeenVisited(true);
-    
-    ActionCard currentCard = currentGame.getDeck().getCurrentCard();
-    currentGame.setMode(currentCard.getActionCardGameMode());
-  }
+	public void land() {
+		Game currentGame = TileOApplication.getTileO().getCurrentGame();
+		Player currentPlayer = currentGame.getCurrentPlayer();
+		currentPlayer.setCurrentTile(this);
 
+		setHasBeenVisited(true);
+	}
 
+	public boolean setTurnsUntilActive(int aTurnsUntilActive) {
+		boolean wasSet = false;
+		turnsUntilActive = aTurnsUntilActive;
+		wasSet = true;
+		return wasSet;
+	}
 
-  public boolean setTurnsUntilActive(int aTurnsUntilActive)
-  {
-    boolean wasSet = false;
-    turnsUntilActive = aTurnsUntilActive;
-    wasSet = true;
-    return wasSet;
-  }
+	public int getInactivityPeriod() {
+		return inactivityPeriod;
+	}
 
-  public int getInactivityPeriod()
-  {
-    return inactivityPeriod;
-  }
+	public int getTurnsUntilActive() {
+		return turnsUntilActive;
+	}
 
-  public int getTurnsUntilActive()
-  {
-    return turnsUntilActive;
-  }
+	public void delete() {
+		super.delete();
+	}
 
-  public void delete()
-  {
-    super.delete();
-  }
-
-
-  public String toString()
-  {
-    String outputString = "";
-    return super.toString() + "["+
-            "inactivityPeriod" + ":" + getInactivityPeriod()+ "," +
-            "turnsUntilActive" + ":" + getTurnsUntilActive()+ "]"
-     + outputString;
-  }
+	public String toString() {
+		String outputString = "";
+		return super.toString() + "[" + "inactivityPeriod" + ":" + getInactivityPeriod() + "," + "turnsUntilActive"
+				+ ":" + getTurnsUntilActive() + "]" + outputString;
+	}
 }
