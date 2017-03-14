@@ -740,8 +740,8 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			break;
 
 		case REMOVE:
-			if (connUI.getLifeState() == ConnectionUI.LifeState.NOTEXIST) {
-				connUI.setLifeState(ConnectionUI.LifeState.EXIST);
+			if (connUI.getLifeState() == ConnectionUI.LifeState.EXIST) {
+				connUI.setLifeState(ConnectionUI.LifeState.NOTEXIST);
 
 				if(connUI.getType() == ConnectionUI.Type.HORIZONTAL) {
 					tile1 = game.getTileFromXY(connUI.getUIX()/2, (connUI.getUIY()-1)/2);
