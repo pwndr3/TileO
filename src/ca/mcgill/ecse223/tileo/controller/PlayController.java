@@ -105,13 +105,9 @@ public class PlayController {
 	public void playAddConnectionActionCard(Tile tile1, Tile tile2) {
 		game.placeConnection(tile1, tile2);
 		
-	
-		
 		if(game.getCurrentConnectionPieces() > 0)
 			game.setCurrentConnectionPieces(game.getCurrentConnectionPieces()-1);
 	}
-		
-
 
 	public void playRemoveConnectionActionCard(Tile tile1, Tile tile2) {
 		List<Connection> conns = tile1.getConnections();
@@ -121,16 +117,11 @@ public class PlayController {
 			{
 				for (Tile tile : tiles) {
 					if (tile == tile2) {
-<<<<<<< HEAD
-						game.removeConnection(conn);
-						game.setCurrentConnectionPieces(game.getCurrentConnectionPieces()+1);
-=======
 						conn.delete();
 						
 						if(game.getCurrentConnectionPieces() < 32)
 							game.setCurrentConnectionPieces(game.getCurrentConnectionPieces()+1);
 						
->>>>>>> branch 'master' of https://github.com/W2017-ECSE223/Group12.git
 						return;
 					}
 				}
@@ -157,8 +148,8 @@ public class PlayController {
 		else {
 			game.setCurrentPlayer(game.getPlayer(indexOfCurrentPlayer + 1));
 		}
-			//ui.update();
-		//update();
+		
+		ui.update();
 	}
 	
 	public void saveGame(String gameName) {
