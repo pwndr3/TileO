@@ -298,8 +298,8 @@ public class TileODesignUI extends JFrame {
 		cardsLeft.setText(String.valueOf(32 - cardsCounts[0] - cardsCounts[1] - cardsCounts[2] - cardsCounts[3] - cardsCounts[4]));
 		
 		//Board size
-		horizontalLength.setSelectedIndex(numberOfRows - 2);
-		verticalLength.setSelectedIndex(numberOfCols - 2);
+		horizontalLength.setSelectedIndex(numberOfCols - 2);
+		verticalLength.setSelectedIndex(numberOfRows - 2);
 		
 	}
 
@@ -349,8 +349,8 @@ public class TileODesignUI extends JFrame {
 		}
 		
 		if(forceNewGame)
-			changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()),
-				Integer.valueOf(verticalLength.getSelectedItem().toString()));
+			changeBoardSize(Integer.valueOf(verticalLength.getSelectedItem().toString()),
+				Integer.valueOf(horizontalLength.getSelectedItem().toString()));
 		else
 			setTiles();
 		
@@ -868,8 +868,8 @@ public class TileODesignUI extends JFrame {
 				resetUI();
 			}
 		});
-		horizontalLength.addActionListener(e -> {
-			if (Integer.valueOf(String.valueOf(horizontalLength.getSelectedItem())) != numberOfRows) {
+		verticalLength.addActionListener(e -> {
+			if (Integer.valueOf(String.valueOf(verticalLength.getSelectedItem())) != numberOfRows) {
 				if(designState == DesignState.NONE)
 					new PopUpManager(this).acknowledgeMessage("If you apply changes, the whole board will be reset.");
 				enableChanges();
@@ -879,11 +879,10 @@ public class TileODesignUI extends JFrame {
 			else {
 				disableChanges();
 				maskButtons(ALLBTN);
-				designState = DesignState.NONE;
 			}
 		});
-		verticalLength.addActionListener(e -> {
-			if (Integer.valueOf(String.valueOf(verticalLength.getSelectedItem())) != numberOfCols) {
+		horizontalLength.addActionListener(e -> {
+			if (Integer.valueOf(String.valueOf(horizontalLength.getSelectedItem())) != numberOfCols) {
 				if(designState == DesignState.NONE)
 					new PopUpManager(this).acknowledgeMessage("If you apply changes, the whole board will be reset.");
 				enableChanges();
@@ -893,7 +892,6 @@ public class TileODesignUI extends JFrame {
 			else {
 				disableChanges();
 				maskButtons(ALLBTN);
-				designState = DesignState.NONE;
 			}
 		});	
 		//
