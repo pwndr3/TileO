@@ -1479,6 +1479,11 @@ public class TileODesignUI extends JFrame {
 					// Let clicking
 					enableChanges();
 				}
+				else {
+					tile.setSelected(false);
+					tile.setBorderPainted(false);
+					tile.setFocusPainted(false);
+				}
 			}
 		}
 

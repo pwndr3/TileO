@@ -34,7 +34,7 @@ public class ActionCardPopUp extends JFrame {
         getContentPane().add(Button);
         Button.setFont(new java.awt.Font("Lucida Grande", 3, 20));
         Button.setForeground(new java.awt.Color(223,225,0));
-        Button.setBounds(getWidth()/2 - 100, getHeight() - 150, 200, 60);
+        Button.setBounds(getWidth()/2 - 100, getHeight() - 150, 200, 80);
         Button.setText("<html><div style=\"text-align:center; \">"+message+"</div></html>");
 
         String p = getClass().getResource("/icons/popup/actionTile.png").toString();

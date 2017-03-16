@@ -502,6 +502,8 @@ public class TileOPlayUI extends javax.swing.JFrame {
 				s.setBackground(null);
 			else
 				s.setBackground(new java.awt.Color(0, 0, 0));
+			
+			s.setSelected(false);
 		});
 
 		// Reset states
@@ -536,12 +538,6 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			tileUI.setPlayerIcon(entry.getValue());
 			tileUI.setVisited(true);
 		}
-		
-		tilesButtons.stream().filter(s -> s.isVisible()).forEach(s -> {
-			s.setSelected(false);
-			s.setFocusPainted(false);
-			s.setBorderPainted(false);
-		});
 		
 		//Set visited
 		tilesButtons.stream().forEach(s -> {
