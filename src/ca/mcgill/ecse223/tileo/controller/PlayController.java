@@ -97,8 +97,13 @@ public class PlayController {
 	public void playAddConnectionActionCard(Tile tile1, Tile tile2) {
 		game.placeConnection(tile1, tile2);
 		
-		game.setCurrentConnectionPieces(game.getCurrentConnectionPieces()-1);
+	
+		
+		if(game.getCurrentConnectionPieces() > 0)
+			game.setCurrentConnectionPieces(game.getCurrentConnectionPieces()-1);
 	}
+		
+
 
 	public void playRemoveConnectionActionCard(Tile tile1, Tile tile2) {
 		List<Connection> conns = tile1.getConnections();
