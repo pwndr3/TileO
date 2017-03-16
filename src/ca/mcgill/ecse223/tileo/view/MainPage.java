@@ -157,7 +157,7 @@ public class MainPage extends javax.swing.JFrame {
         designNewGameButton.setBackground(new java.awt.Color(255, 207, 0));
         designNewGameButton.setFont(new java.awt.Font("Songti SC", 1, 36)); // NOI18N
         designNewGameButton.setForeground(new java.awt.Color(51, 51, 51));
-        designNewGameButton.setText("Design New Game");
+        designNewGameButton.setText("<html>Design New Game</html>");
         designNewGameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 designNewGameButtonActionPerformed(evt);
