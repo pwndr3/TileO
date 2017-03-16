@@ -559,4 +559,11 @@ public class Game implements Serializable {
 		connectionPiece.addTile(tile1);
 		connectionPiece.addTile(tile2);
 	}
+	/*public void updateTileStatus() {
+		for (Tile tile : getTiles()) {
+			if (tile instanceof ActionTile) { 
+				((ActionTile) tile).takeTurn();
+			} 
+		} 
+	}*/
 }

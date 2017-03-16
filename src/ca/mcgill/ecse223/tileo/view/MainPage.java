@@ -4,6 +4,7 @@ import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.Controller;
 import ca.mcgill.ecse223.tileo.model.ConnectTilesActionCard;
 import ca.mcgill.ecse223.tileo.model.Game;
+import ca.mcgill.ecse223.tileo.model.TileO;
 import ca.mcgill.ecse223.tileo.view.popup.ActionCardPopUp;
 
 import java.util.List;
@@ -54,7 +55,7 @@ public class MainPage extends javax.swing.JFrame {
     	playModel.removeAllElements();
     	
     	designableGames = TileOApplication.getTileO().getGames().parallelStream().filter(s -> !s.hasStarted).collect(Collectors.toList());
-        playableGames = TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted || s.getMode() == Game.Mode.GAME).collect(Collectors.toList());
+        playableGames = TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted || s.getMode() != Game.Mode.DESIGN).collect(Collectors.toList());
         
         for(Game game : designableGames)
         	designModel.addElement(game.getGameName());
@@ -156,7 +157,7 @@ public class MainPage extends javax.swing.JFrame {
         designNewGameButton.setBackground(new java.awt.Color(255, 207, 0));
         designNewGameButton.setFont(new java.awt.Font("Songti SC", 1, 36)); // NOI18N
         designNewGameButton.setForeground(new java.awt.Color(51, 51, 51));
-        designNewGameButton.setText("Design New Game");
+        designNewGameButton.setText("<html>Design New Game</html>");
         designNewGameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 designNewGameButtonActionPerformed(evt);
@@ -186,6 +187,8 @@ public class MainPage extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 654, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
+        
+        setResizable(false);
         
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();
@@ -232,11 +235,12 @@ public class MainPage extends javax.swing.JFrame {
     }
 
     private void deletePlayButtonActionPerformed(java.awt.event.ActionEvent evt) {
-    	if(TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted || s.getMode() == Game.Mode.GAME).count() > 0) {
+    	TileO tileo = TileOApplication.getTileO();
+    	if(!playableGames.isEmpty()) {
         	if(new PopUpManager(this).askYesOrNo("Are you sure you want to delete the game?") == 0) {
-        		if(TileOApplication.getTileO().removeGame(TileOApplication.getTileO().getGameByName(String.valueOf(loadGameToDesignComboBox.getSelectedItem())))) {
+        		if(TileOApplication.getTileO().removeGame(TileOApplication.getTileO().getGameByName(String.valueOf(loadGameToPlayComboBox.getSelectedItem())))) {
 	        		new PopUpManager(this).acknowledgeMessage("Game deleted");
-	        		updateLists();
+	        		updateLists(); 
 	        		TileOApplication.save();
         		}
         		else

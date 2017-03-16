@@ -1,11 +1,18 @@
 package ca.mcgill.ecse223.tileo.view.popup;
 
+import java.awt.Color;
+
 import java.awt.Dimension;
 import java.awt.Point;
 
+import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 public class TurnsUnactive extends JDialog {
 
@@ -29,8 +36,6 @@ public class TurnsUnactive extends JDialog {
         Button2 = new javax.swing.JButton();
         PictureBackground = new javax.swing.JLabel();
 
-        
-        
         setPreferredSize(new Dimension(300, 400)); 
         setSize(new Dimension(300, 400)); 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -41,6 +46,8 @@ public class TurnsUnactive extends JDialog {
         Point middle = new Point(screenSize.width / 2, screenSize.height / 2);
 
         Button9.setText("9");
+        Button9.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        Button9.setContentAreaFilled(false);
         Button9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Button9ActionPerformed(evt);
@@ -146,7 +153,6 @@ public class TurnsUnactive extends JDialog {
         
         setLocationRelativeTo(parentWindow);
         setResizable(false);
-        setAlwaysOnTop(true);
         setUndecorated(true);
         
         setVisible(true);

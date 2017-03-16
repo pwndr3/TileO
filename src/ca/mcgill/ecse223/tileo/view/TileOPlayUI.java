@@ -1,6 +1,8 @@
 package ca.mcgill.ecse223.tileo.view;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9,11 +11,13 @@ import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.LookAndFeel;
 import javax.swing.Painter;
+import javax.swing.Timer;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import ca.mcgill.ecse223.tileo.model.*;
@@ -157,14 +161,14 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		}
 
 		// Remove connections
-		List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST)
+		List<TileUI> tiles = tilesButtons.stream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST)
 				.collect(Collectors.toList());
 		tiles.forEach(s -> {
 			int connX = s.getUIX() * 2;
 			int connY = s.getUIY() * 2;
 
 			// Hide nearest connections
-			connectionButtons.parallelStream().filter(t -> (t.getUIX() == connX && Math.abs(t.getUIY() - connY) == 1)
+			connectionButtons.stream().filter(t -> (t.getUIX() == connX && Math.abs(t.getUIY() - connY) == 1)
 					|| (t.getUIY() == connY && Math.abs(t.getUIX() - connX) == 1)).forEach(t -> {
 						t.setState(ConnectionUI.State.HIDE);
 						t.setLifeState(ConnectionUI.LifeState.NOTEXIST);
@@ -172,37 +176,41 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		});
 
 		// Set connections
-		game.getConnections().parallelStream().forEach(s -> {
-			Tile tile1 = s.getTile(0);
-			Tile tile2 = s.getTile(1);
-
-			connectionButtons.parallelStream().filter(t -> t.getState() == ConnectionUI.State.SHOW).forEach(t -> {
-				// Horizontal
-				if (tile1.getX() == tile2.getX()) {
-					if (t.getUIX() == tile1.getX() * 2) {
-						int farRight = (tile1.getY() > tile2.getY()) ? tile1.getY() * 2 : tile2.getY() * 2;
-
-						if ((farRight - t.getUIY()) == 1) {
-							t.setState(ConnectionUI.State.SHOW);
-							t.setLifeState(ConnectionUI.LifeState.EXIST);
-							t.setVisible(true);
+		game.getConnections().stream().forEach(s -> {
+			if(s != null) {
+				Tile tile1 = s.getTile(0);
+				Tile tile2 = s.getTile(1);
+					
+				connectionButtons.stream().filter(t -> t.getState() == ConnectionUI.State.SHOW).forEach(t -> {
+					// Horizontal
+					if (tile1.getX() == tile2.getX()) {
+						if (t.getUIX() == tile1.getX() * 2) {
+							int farRight = (tile1.getY() > tile2.getY()) ? tile1.getY() * 2 : tile2.getY() * 2;
+	
+							if ((farRight - t.getUIY()) == 1) {
+								t.setState(ConnectionUI.State.SHOW);
+								t.setLifeState(ConnectionUI.LifeState.EXIST);
+								t.setVisible(true);
+							}
 						}
 					}
-				}
-
-				// Vertical
-				if (tile1.getY() == tile2.getY()) {
-					if (t.getUIY() == tile1.getY() * 2) {
-						int bottom = (tile1.getX() > tile2.getX()) ? tile1.getX() * 2 : tile2.getX() * 2;
-
-						if ((bottom - t.getUIX()) == 1) {
-							t.setState(ConnectionUI.State.SHOW);
-							t.setLifeState(ConnectionUI.LifeState.EXIST);
-							t.setVisible(true);
+	
+					// Vertical
+					if (tile1.getY() == tile2.getY()) {
+						if (t.getUIY() == tile1.getY() * 2) {
+							int bottom = (tile1.getX() > tile2.getX()) ? tile1.getX() * 2 : tile2.getX() * 2;
+	
+							if ((bottom - t.getUIX()) == 1) {
+								t.setState(ConnectionUI.State.SHOW);
+								t.setLifeState(ConnectionUI.LifeState.EXIST);
+								t.setVisible(true);
+							}
 						}
 					}
-				}
-			});
+				});
+			} else {
+				System.out.println("null");
+			}
 		});
 
 		// Starting positions
@@ -212,7 +220,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 
 			Tile tile = game.getPlayer(i).getStartingTile();
 
-			TileUI tileGUI = tilesButtons.parallelStream()
+			TileUI tileGUI = tilesButtons.stream()
 					.filter(s -> s.getUIX() == tile.getX() && s.getUIY() == tile.getY()).findAny().orElse(null);
 			if (tileGUI != null) {
 				tileGUI.resetUI();
@@ -223,7 +231,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		}
 
 		// Hide disabled tiles
-		tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).forEach(s -> {
+		tilesButtons.stream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).forEach(s -> {
 			s.hideUI();
 			s.setSelected(false);
 		});
@@ -233,16 +241,10 @@ public class TileOPlayUI extends javax.swing.JFrame {
 
 	private int PICKCARD = 1;
 	private int ROLLDIE = 2;
-	private int ADDCONN = 4;
-	private int REMOVECONN = 8;
-	private int TELEPORT = 16;
 
 	private void maskButtons(int mask) {
 		pickCardButton.setEnabled((mask & PICKCARD) == PICKCARD);
 		rollDieButton.setEnabled((mask & ROLLDIE) == ROLLDIE);
-		addConnectionButton.setEnabled((mask & ADDCONN) == ADDCONN);
-		removeConnectionButton.setEnabled((mask & REMOVECONN) == REMOVECONN);
-		teleportButton.setEnabled((mask & TELEPORT) == TELEPORT);
 	}
 
 	private void initComponents() {
@@ -310,11 +312,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		addConnectionButton.setMinimumSize(new java.awt.Dimension(100, 100));
 		addConnectionButton.setPreferredSize(new java.awt.Dimension(50, 50));
 		addConnectionButton.setSize(new java.awt.Dimension(50, 25));
-		addConnectionButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				addConnectionButtonActionPerformed(evt);
-			}
-		});
+		addConnectionButton.setVisible(false);
 
 		removeConnectionButton.setBackground(new java.awt.Color(51, 102, 255));
 		removeConnectionButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
@@ -325,11 +323,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		removeConnectionButton.setMinimumSize(new java.awt.Dimension(100, 100));
 		removeConnectionButton.setPreferredSize(new java.awt.Dimension(50, 50));
 		removeConnectionButton.setSize(new java.awt.Dimension(50, 25));
-		removeConnectionButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				removeConnectionButtonActionPerformed(evt);
-			}
-		});
+		removeConnectionButton.setVisible(false);
 
 		teleportButton.setBackground(new java.awt.Color(51, 102, 255));
 		teleportButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
@@ -340,11 +334,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		teleportButton.setMinimumSize(new java.awt.Dimension(100, 100));
 		teleportButton.setPreferredSize(new java.awt.Dimension(50, 50));
 		teleportButton.setSize(new java.awt.Dimension(50, 25));
-		teleportButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				teleportButtonActionPerformed(evt);
-			}
-		});
+		teleportButton.setVisible(false);
 
 		jLabel1.setFont(new java.awt.Font("Malayalam MN", 1, 20)); // NOI18N
 		jLabel1.setText("Connection Pieces Left");
@@ -380,17 +370,18 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		loadButton.setMinimumSize(new java.awt.Dimension(100, 100));
 		loadButton.setPreferredSize(new java.awt.Dimension(50, 50));
 		loadButton.setSize(new java.awt.Dimension(50, 25));
-		loadButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				loadButtonActionPerformed(evt);
-			}
-		});
+		loadButton.setVisible(false);
 
 		jButton1.setBackground(new java.awt.Color(255, 0, 0));
 		jButton1.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
 		jButton1.setText("Back");
 		jButton1.addActionListener(e -> {
-			if (new PopUpManager(this).askYesOrNo("Any unsaved changes will be lost. Continue?") == 0) {
+			if(!saved) {
+				if (new PopUpManager(this).askYesOrNo("Any unsaved changes will be lost. Continue?") == 0) {
+					new MainPage().setVisible(true);
+					dispose();
+				}
+			} else {
 				new MainPage().setVisible(true);
 				dispose();
 			}
@@ -506,29 +497,23 @@ public class TileOPlayUI extends javax.swing.JFrame {
 
 	public void update() {
 		// Change colors for connections
-		connectionButtons.parallelStream().forEach(s -> {
+		connectionButtons.stream().forEach(s -> {
 			if (s.getLifeState() == ConnectionUI.LifeState.NOTEXIST)
 				s.setBackground(null);
 			else
 				s.setBackground(new java.awt.Color(0, 0, 0));
+			
+			s.setSelected(false);
 		});
 
 		// Reset states
 		hideDisabledConnections();
 
-		tilesButtons.parallelStream().filter(s -> s.isVisible()).forEach(s -> {
+		tilesButtons.stream().filter(s -> s.isVisible()).forEach(s -> {
 			s.setSelected(false);
 			s.setFocusPainted(false);
 			s.setBorderPainted(false);
 			s.resetUI();
-		});
-		
-		//Set visited
-		tilesButtons.parallelStream().forEach(s -> {
-			if(s.isVisited())
-				s.setBackground(Color.decode("#ffc4c4"));
-			else
-				s.setBackground(null);
 		});
 		
 		//Set player icons
@@ -549,16 +534,20 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			
 			Tile tile = game.getTiles().get(index);
 			
-			getTileUIByXY(tile.getX(), tile.getY()).setPlayerIcon(entry.getValue());
+			TileUI tileUI = getTileUIByXY(tile.getX(), tile.getY());
+			tileUI.setPlayerIcon(entry.getValue());
+			tileUI.setVisited(true);
 		}
 		
-		tilesButtons.parallelStream().filter(s -> s.isVisible()).forEach(s -> {
-			s.setSelected(false);
-			s.setFocusPainted(false);
-			s.setBorderPainted(false);
+		//Set visited
+		tilesButtons.stream().forEach(s -> {
+			if(s.isVisited())
+				s.setBackground(Color.decode("#ffc4c4"));
+			else
+				s.setBackground(null);
 		});
 
-		playState = PlayState.ROLL;
+		playState = PlayState.NONE;
 		maskButtons(ROLLDIE);
 
 		updateConnectionPieces();
@@ -678,9 +667,21 @@ public class TileOPlayUI extends javax.swing.JFrame {
 	}
 
 	private void showDisabledConnections() {
-		connectionButtons.parallelStream().filter(
-				s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST && s.getState() == ConnectionUI.State.SHOW)
-				.forEach(s -> s.showUI());
+		boolean allEnabled = true;
+		
+		for(ConnectionUI s : connectionButtons) {
+			if(s.getLifeState() == ConnectionUI.LifeState.NOTEXIST && s.getState() == ConnectionUI.State.SHOW) {
+				if(!s.isVisible()) {
+					allEnabled = false;
+					s.showUI();
+				}
+			}
+		}
+		
+		if(allEnabled) {
+			new PopUpManager(this).acknowledgeMessage("No connection to add");
+			currentController.nextTurn();
+		}
 	}
 
 	private void hideDisabledConnections() {
@@ -694,24 +695,45 @@ public class TileOPlayUI extends javax.swing.JFrame {
 
 		switch (playState) {
 		case ROLL:
+			if(!tileUI.getBackground().equals(new java.awt.Color(30, 30, 220))) {
+				tileUI.setSelected(false);
+				tileUI.setBorderPainted(false);
+				tileUI.setFocusPainted(false);
+				
+				return;
+			}
+			
 			tile = game.getTileFromXY(tileUI.getUIX(), tileUI.getUIY());
 			
 			if(tile instanceof ActionTile) {
+				tileUI.setVisited(true);
 				tile.land();
 				update();
 				maskButtons(PICKCARD);
-				tileUI.setVisited(true);
 			}
 			
 			else if(tile instanceof WinTile) {
-				//TODO : Win game
 				tileUI.setVisited(true);
+				tile.land();
+				update();
+				maskButtons(0);
+				new PopUpManager(this).acknowledgeMessage("Player "+(game.getCurrentPlayer().getNumber()+1)+" won the game!");
+				Timer timer = new Timer(1000, new ActionListener() {
+		            public void actionPerformed(ActionEvent e) {
+		            	currentController.saveGame(game.getGameName());
+		            	new MainPage().setVisible(true);
+						dispose();
+		            }
+		        });
+		        timer.setRepeats(false);
+		        timer.start();
+				
 			}
 			
 			else {
+				tileUI.setVisited(true);
 				tile.land();
 				currentController.nextTurn();
-				tileUI.setVisited(true);
 			}
 			
 			break;
@@ -734,6 +756,9 @@ public class TileOPlayUI extends javax.swing.JFrame {
 
 		Tile tile1 = null;
 		Tile tile2 = null;
+		
+		connUI.setBorderPainted(false);
+		connUI.setFocusPainted(false);
 		
 		switch (playState) {
 		case ADD:
@@ -789,79 +814,96 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		try {
 			ActionCard actionCard = currentController.getTopCard();
 			new PopUpManager(this).showActionTile(actionCard);
+			JFrame window = this;
+			
+			Timer timer = new Timer(3000, new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                if (actionCard instanceof RollDieActionCard) {
+	    				playState = PlayState.ROLL;
+	    				maskButtons(ROLLDIE);
+	    			}
 
-			if (actionCard instanceof RollDieActionCard) {
-				playState = PlayState.ROLL;
-				maskButtons(ROLLDIE);
-			}
+	    			else if (actionCard instanceof ConnectTilesActionCard) {
+	    				playState = PlayState.ADD;
+	    				maskButtons(0);
+	    				showDisabledConnections();
+	    			}
 
-			else if (actionCard instanceof ConnectTilesActionCard) {
-				playState = PlayState.ADD;
-				maskButtons(ADDCONN);
-				showDisabledConnections();
-			}
+	    			else if (actionCard instanceof RemoveConnectionActionCard) {
+	    				playState = PlayState.REMOVE;
+	    				maskButtons(0);
+	    				
+	    				boolean allDisabled = true;
+	    				
+	    				for(ConnectionUI s : connectionButtons) {
+	    					// Change colors for connections
+	    					
+	    					if(s.isVisible()) {
+	    						allDisabled = false;
+	    						s.setBackground(null);
+	    					}
+	    				}
+	    				
+	    				if(allDisabled) {
+	    					new PopUpManager(window).acknowledgeMessage("No connection to remove");
+	    					currentController.nextTurn();
+	    				}
+	    			}
 
-			else if (actionCard instanceof RemoveConnectionActionCard) {
-				playState = PlayState.REMOVE;
-				maskButtons(REMOVECONN);
+	    			else if (actionCard instanceof LoseTurnActionCard) {
+	    				//Make lose next turn for currentPlayer
+	    				currentController.nextTurn();
+	    			}
 
-				// Change colors for connections
-				connectionButtons.parallelStream().forEach(s -> s.setBackground(null));
-			}
-
-			else if (actionCard instanceof LoseTurnActionCard) {
-				//Make lose next turn for currentPlayer
-				currentController.nextTurn();
-			}
-
-			else if (actionCard instanceof TeleportActionCard) {
-				playState = PlayState.TELEPORT;
-				maskButtons(0);
-			}
-
+	    			else if (actionCard instanceof TeleportActionCard) {
+	    				playState = PlayState.TELEPORT;
+	    				maskButtons(0);
+	    			}
+	            }
+	        });
+	        timer.setRepeats(false);
+	        timer.start();
 		} catch (Exception e) {
 			new PopUpManager(this).acknowledgeMessage(e.getMessage());
+			currentController.nextTurn();
 		}
 	}
 
 	private void rollDieButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		saved = false;
+		
 		List<Tile> possiblePlayerMoves = currentController.rollDie();
-
-		if (possiblePlayerMoves.isEmpty()) {
-			new PopUpManager(this).acknowledgeMessage("No possible moves.");
-			currentController.nextTurn();
-		} else {
-			possiblePlayerMoves.parallelStream().forEach(s -> {
-				getTileUIByXY(s.getX(), s.getY()).setBackground(new java.awt.Color(30, 30, 220));
-				playState = PlayState.ROLL;
-			});
-		}
-	}
-
-	private void addConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {
-
-	}
-
-	private void removeConnectionButtonActionPerformed(java.awt.event.ActionEvent evt) {
-
-	}
-
-	private void teleportButtonActionPerformed(java.awt.event.ActionEvent evt) {
-
+		JFrame window = this;
+		
+		Timer timer = new Timer(4200, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	if (possiblePlayerMoves.isEmpty()) {
+        			new PopUpManager(window).acknowledgeMessage("No possible moves");
+        			currentController.nextTurn();
+        		} else {
+        			possiblePlayerMoves.parallelStream().forEach(s -> {
+        				getTileUIByXY(s.getX(), s.getY()).setBackground(new java.awt.Color(30, 30, 220));
+        			});
+        			playState = PlayState.ROLL;
+        		}
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+        maskButtons(0);
 	}
 
 	private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
-
-	}
-
-	private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
-
+		saved = true;
+		currentController.saveGame(game.getGameName());
+		new PopUpManager(this).acknowledgeMessage("Game saved.");
 	}
 
 	private TileUI getTileUIByXY(int x, int y) {
 		return tilesButtons.parallelStream().filter(s -> s.getUIX() == x && s.getUIY() == y).findAny().orElse(null);
 	}
 
+	private boolean saved = true;
 	private javax.swing.JButton addConnectionButton;
 	private javax.swing.JButton jButton1;
 	private javax.swing.JLabel jLabel1;

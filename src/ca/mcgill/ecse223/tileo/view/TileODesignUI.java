@@ -51,6 +51,7 @@ public class TileODesignUI extends JFrame {
 		// Init layout
 		initComponents();
 		disableChanges();
+		designState = DesignState.NONE;
 	}
 
 	private static final int BOARDSIZE = 1;
@@ -297,8 +298,8 @@ public class TileODesignUI extends JFrame {
 		cardsLeft.setText(String.valueOf(32 - cardsCounts[0] - cardsCounts[1] - cardsCounts[2] - cardsCounts[3] - cardsCounts[4]));
 		
 		//Board size
-		horizontalLength.setSelectedIndex(numberOfRows - 2);
-		verticalLength.setSelectedIndex(numberOfCols - 2);
+		horizontalLength.setSelectedIndex(numberOfCols - 2);
+		verticalLength.setSelectedIndex(numberOfRows - 2);
 		
 	}
 
@@ -348,8 +349,8 @@ public class TileODesignUI extends JFrame {
 		}
 		
 		if(forceNewGame)
-			changeBoardSize(Integer.valueOf(horizontalLength.getSelectedItem().toString()),
-				Integer.valueOf(verticalLength.getSelectedItem().toString()));
+			changeBoardSize(Integer.valueOf(verticalLength.getSelectedItem().toString()),
+				Integer.valueOf(horizontalLength.getSelectedItem().toString()));
 		else
 			setTiles();
 		
@@ -458,13 +459,13 @@ public class TileODesignUI extends JFrame {
 		}
 		
 		//Remove connections
-		List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).collect(Collectors.toList());
+		List<TileUI> tiles = tilesButtons.stream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).collect(Collectors.toList());
 			tiles.forEach(s -> {
 			int connX = s.getUIX()*2;
 			int connY = s.getUIY()*2;
 			
 			//Hide nearest connections
-			connectionButtons.parallelStream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
+			connectionButtons.stream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
 					(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> {
 						t.setState(ConnectionUI.State.HIDE);
 						t.setLifeState(ConnectionUI.LifeState.NOTEXIST);
@@ -472,11 +473,11 @@ public class TileODesignUI extends JFrame {
 		});
 			
 		//Set connections
-		game.getConnections().parallelStream().forEach(s -> {
+		game.getConnections().stream().forEach(s -> {
 			Tile tile1 = s.getTile(0);
 			Tile tile2 = s.getTile(1);
 			
-			connectionButtons.parallelStream().filter(t -> t.getState() == ConnectionUI.State.SHOW).forEach(t -> {
+			connectionButtons.stream().filter(t -> t.getState() == ConnectionUI.State.SHOW).forEach(t -> {
 				//Horizontal
 				if(tile1.getX() == tile2.getX()) {
 					if(t.getUIX() == tile1.getX()*2) {
@@ -819,11 +820,7 @@ public class TileODesignUI extends JFrame {
 		loadButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
 		loadButton.setForeground(new java.awt.Color(0, 0, 0));
 		loadButton.setText("Load");
-		loadButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				loadButtonActionPerformed(evt);
-			}
-		});
+		loadButton.setVisible(false);
 
 		jLabel17.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
 		jLabel17.setText("TileO Design Mode");
@@ -871,8 +868,8 @@ public class TileODesignUI extends JFrame {
 				resetUI();
 			}
 		});
-		horizontalLength.addActionListener(e -> {
-			if (Integer.valueOf(String.valueOf(horizontalLength.getSelectedItem())) != numberOfRows) {
+		verticalLength.addActionListener(e -> {
+			if (Integer.valueOf(String.valueOf(verticalLength.getSelectedItem())) != numberOfRows) {
 				if(designState == DesignState.NONE)
 					new PopUpManager(this).acknowledgeMessage("If you apply changes, the whole board will be reset.");
 				enableChanges();
@@ -884,8 +881,8 @@ public class TileODesignUI extends JFrame {
 				maskButtons(ALLBTN);
 			}
 		});
-		verticalLength.addActionListener(e -> {
-			if (Integer.valueOf(String.valueOf(verticalLength.getSelectedItem())) != numberOfCols) {
+		horizontalLength.addActionListener(e -> {
+			if (Integer.valueOf(String.valueOf(horizontalLength.getSelectedItem())) != numberOfCols) {
 				if(designState == DesignState.NONE)
 					new PopUpManager(this).acknowledgeMessage("If you apply changes, the whole board will be reset.");
 				enableChanges();
@@ -1201,8 +1198,8 @@ public class TileODesignUI extends JFrame {
 		case ADD_TILE:
 			//WinTile
 			if (tileType.getSelectedItem().toString().equals("Win Tile")) {
-				TileUI prevWinTileUI = tilesButtons.parallelStream().filter(s -> s.getState() == TileUI.State.WIN).findAny().orElse(null);
-				TileUI nextWinTileUI = tilesButtons.parallelStream().filter(s -> s.isSelected() && 
+				TileUI prevWinTileUI = tilesButtons.stream().filter(s -> s.getState() == TileUI.State.WIN).findAny().orElse(null);
+				TileUI nextWinTileUI = tilesButtons.stream().filter(s -> s.isSelected() && 
 						s.getLifeState() == TileUI.LifeState.EXIST &&
 						s.getState() == TileUI.State.NORMAL).findAny().orElse(null);
 				
@@ -1228,13 +1225,14 @@ public class TileODesignUI extends JFrame {
 			else if(tileType.getSelectedItem().toString().equals("Action Tile")) {
 				int disableTurns = new PopUpManager(this).askInactivityPeriod();
 				
-				List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.isSelected() && 
+				List<TileUI> tiles = tilesButtons.stream().filter(s -> s.isSelected() && 
 						s.getLifeState() == TileUI.LifeState.EXIST &&
 						s.getState() == TileUI.State.NORMAL).collect(Collectors.toList());
 				
 				tiles.forEach(s -> {
 					try {
 						s.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/action_tile.png"))));
+						s.setState(TileUI.State.ACTION);
 					} catch (IOException e) {
 						
 					}
@@ -1246,7 +1244,7 @@ public class TileODesignUI extends JFrame {
 			}
 			//NormalTile
 			else {
-				List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> !s.isSelected() && s.getLifeState() == TileUI.LifeState.NOTEXIST).collect(Collectors.toList());
+				List<TileUI> tiles = tilesButtons.stream().filter(s -> !s.isSelected() && s.getLifeState() == TileUI.LifeState.NOTEXIST).collect(Collectors.toList());
 				tiles.forEach(s -> {
 					s.setLifeState(TileUI.LifeState.EXIST);
 					s.resetUI();
@@ -1255,7 +1253,7 @@ public class TileODesignUI extends JFrame {
 					int connY = s.getUIY()*2;
 					
 					//Show nearest connections
-					connectionButtons.parallelStream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
+					connectionButtons.stream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
 							(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> {
 								t.setState(ConnectionUI.State.SHOW);
 								t.setLifeState(ConnectionUI.LifeState.EXIST);
@@ -1269,7 +1267,7 @@ public class TileODesignUI extends JFrame {
 		 * IF REMOVING A TILE
 		 */
 		case REMOVE_TILE:
-			List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.isSelected() && s.getLifeState() == TileUI.LifeState.EXIST).collect(Collectors.toList());
+			List<TileUI> tiles = tilesButtons.stream().filter(s -> s.isSelected() && s.getLifeState() == TileUI.LifeState.EXIST).collect(Collectors.toList());
 			tiles.forEach(s -> {
 				s.setLifeState(TileUI.LifeState.NOTEXIST);
 				s.resetUI();
@@ -1280,7 +1278,7 @@ public class TileODesignUI extends JFrame {
 				int connY = s.getUIY()*2;
 				
 				//Hide nearest connections
-				connectionButtons.parallelStream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
+				connectionButtons.stream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
 						(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> {
 							t.setState(ConnectionUI.State.HIDE);
 							t.setLifeState(ConnectionUI.LifeState.NOTEXIST);
@@ -1298,7 +1296,7 @@ public class TileODesignUI extends JFrame {
 		 * IF ADDING A CONNECTION
 		 */
 		case ADD_CONNECTION:
-			connectionButtons.parallelStream()
+			connectionButtons.stream()
 				.filter(s -> s.isSelected() && s.isVisible() && s.getLifeState() == ConnectionUI.LifeState.NOTEXIST
 				&& s.getState() == ConnectionUI.State.SHOW)
 				.forEach(s -> {
@@ -1330,7 +1328,7 @@ public class TileODesignUI extends JFrame {
 		 * IF REMOVING A CONNECTION
 		 */
 		case REMOVE_CONNECTION:
-			connectionButtons.parallelStream().filter(s -> !s.isSelected() && s.isVisible() && s.getLifeState() == ConnectionUI.LifeState.EXIST
+			connectionButtons.stream().filter(s -> !s.isSelected() && s.isVisible() && s.getLifeState() == ConnectionUI.LifeState.EXIST
 				&& s.getState() == ConnectionUI.State.SHOW).forEach(s -> {
 					s.setLifeState(ConnectionUI.LifeState.NOTEXIST);
 					
@@ -1434,7 +1432,7 @@ public class TileODesignUI extends JFrame {
 		if (designState == DesignState.SELECT_STARTING_POSITION) {
 			// If tile is normal
 			if (tile.getState() == TileUI.State.NORMAL) {
-				tilesButtons.parallelStream().filter(s -> s.isSelected() && s != tile)
+				tilesButtons.stream().filter(s -> s.isSelected() && s != tile)
 						.forEach(s -> s.setSelected(false));
 				enableChanges();
 			} else {
@@ -1478,6 +1476,11 @@ public class TileODesignUI extends JFrame {
 				if (tile.getLifeState() == TileUI.LifeState.NOTEXIST) {
 					// Let clicking
 					enableChanges();
+				}
+				else {
+					tile.setSelected(false);
+					tile.setBorderPainted(false);
+					tile.setFocusPainted(false);
 				}
 			}
 		}
@@ -1546,14 +1549,7 @@ public class TileODesignUI extends JFrame {
 		else {
 			disableChanges();
 			maskButtons(ALLBTN);
-		}
-	}
-
-	private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO : then show available games OR create new board
-	
-		if(new PopUpManager(this).askYesOrNo("Any unsaved changes will be lost. Continue?") == 0) {
-			TileOApplication.load();
+			designState = DesignState.NONE;
 		}
 	}
 
@@ -1567,7 +1563,6 @@ public class TileODesignUI extends JFrame {
 		applyChangesButton.setEnabled(false);
 		applyChangesButton.setSelected(false);
 		applyChangesButton.setForeground(new java.awt.Color(200,200,200));
-		designState = DesignState.NONE;
 	}
 
 	private void showDisabledTiles() {

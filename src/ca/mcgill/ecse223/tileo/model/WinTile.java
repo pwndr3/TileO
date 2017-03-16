@@ -32,6 +32,7 @@ public class WinTile extends Tile implements Serializable
   public void land(){
     Game currentGame= TileOApplication.getTileO().getCurrentGame();
     Player currentPlayer = currentGame.getCurrentPlayer();
+    currentPlayer.setCurrentTile(this);
     this.setHasBeenVisited(true);
 
     currentGame.setMode(Mode.GAME_WON);

@@ -6,7 +6,9 @@ import ca.mcgill.ecse223.tileo.model.Game.Mode;
 import ca.mcgill.ecse223.tileo.view.PopUpManager;
 import ca.mcgill.ecse223.tileo.view.TileOPlayUI;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PlayController {
 
@@ -76,6 +78,12 @@ public class PlayController {
 		
 		Player currentPlayer = game.getCurrentPlayer();
 		List<Tile> possibleMoves = currentPlayer.getPossibleMoves(rolledNumber);
+		Set<Tile> uniqueSet = new HashSet<>();
+		uniqueSet.addAll(possibleMoves);
+		possibleMoves.clear();
+		possibleMoves.addAll(uniqueSet);
+		Tile currTile = currentPlayer.getCurrentTile();
+		possibleMoves.remove(currTile);
 		
 		return possibleMoves;
 	}
@@ -113,8 +121,16 @@ public class PlayController {
 			{
 				for (Tile tile : tiles) {
 					if (tile == tile2) {
+<<<<<<< HEAD
 						game.removeConnection(conn);
 						game.setCurrentConnectionPieces(game.getCurrentConnectionPieces()+1);
+=======
+						conn.delete();
+						
+						if(game.getCurrentConnectionPieces() < 32)
+							game.setCurrentConnectionPieces(game.getCurrentConnectionPieces()+1);
+						
+>>>>>>> branch 'master' of https://github.com/W2017-ECSE223/Group12.git
 						return;
 					}
 				}
@@ -143,6 +159,10 @@ public class PlayController {
 		}
 			//ui.update();
 		//update();
+	}
+	
+	public void saveGame(String gameName) {
+		TileOApplication.save();
 	}
 
 	private Game game;
