@@ -34,7 +34,7 @@ public class MainPage extends javax.swing.JFrame {
         TileOApplication.load();
         
         designableGames = TileOApplication.getTileO().getGames().parallelStream().filter(s -> !s.hasStarted).collect(Collectors.toList());
-        playableGames = TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted || s.getMode() == Game.Mode.GAME).collect(Collectors.toList());
+        playableGames = TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted || s.getMode() != Game.Mode.DESIGN).collect(Collectors.toList());
         
         for(Game game : designableGames)
         	designModel.addElement(game.getGameName());
@@ -46,8 +46,6 @@ public class MainPage extends javax.swing.JFrame {
         	designModel.addElement("No designable game");
         if(playModel.getSize() == 0)
         	playModel.addElement("No playable game");
-        
-        //new ActionCardPopUp(this, "yoyoy", null).setVisible(true);
     }
     
     private void updateLists() {
