@@ -1197,8 +1197,8 @@ public class TileODesignUI extends JFrame {
 		case ADD_TILE:
 			//WinTile
 			if (tileType.getSelectedItem().toString().equals("Win Tile")) {
-				TileUI prevWinTileUI = tilesButtons.parallelStream().filter(s -> s.getState() == TileUI.State.WIN).findAny().orElse(null);
-				TileUI nextWinTileUI = tilesButtons.parallelStream().filter(s -> s.isSelected() && 
+				TileUI prevWinTileUI = tilesButtons.stream().filter(s -> s.getState() == TileUI.State.WIN).findAny().orElse(null);
+				TileUI nextWinTileUI = tilesButtons.stream().filter(s -> s.isSelected() && 
 						s.getLifeState() == TileUI.LifeState.EXIST &&
 						s.getState() == TileUI.State.NORMAL).findAny().orElse(null);
 				

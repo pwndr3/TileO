@@ -514,14 +514,6 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			s.resetUI();
 		});
 		
-		//Set visited
-		tilesButtons.stream().forEach(s -> {
-			if(s.isVisited())
-				s.setBackground(Color.decode("#ffc4c4"));
-			else
-				s.setBackground(null);
-		});
-		
 		//Set player icons
 		HashMap<Integer, String> playerArray = new HashMap<Integer, String>();
 		
@@ -540,13 +532,23 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			
 			Tile tile = game.getTiles().get(index);
 			
-			getTileUIByXY(tile.getX(), tile.getY()).setPlayerIcon(entry.getValue());
+			TileUI tileUI = getTileUIByXY(tile.getX(), tile.getY());
+			tileUI.setPlayerIcon(entry.getValue());
+			tileUI.setVisited(true);
 		}
 		
 		tilesButtons.stream().filter(s -> s.isVisible()).forEach(s -> {
 			s.setSelected(false);
 			s.setFocusPainted(false);
 			s.setBorderPainted(false);
+		});
+		
+		//Set visited
+		tilesButtons.stream().forEach(s -> {
+			if(s.isVisited())
+				s.setBackground(Color.decode("#ffc4c4"));
+			else
+				s.setBackground(null);
 		});
 
 		playState = PlayState.NONE;
@@ -748,6 +750,9 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		Tile tile1 = null;
 		Tile tile2 = null;
 		
+		connUI.setBorderPainted(false);
+		connUI.setFocusPainted(false);
+		
 		switch (playState) {
 		case ADD:
 			if (connUI.getLifeState() == ConnectionUI.LifeState.NOTEXIST) {
@@ -871,8 +876,8 @@ public class TileOPlayUI extends javax.swing.JFrame {
         		} else {
         			possiblePlayerMoves.parallelStream().forEach(s -> {
         				getTileUIByXY(s.getX(), s.getY()).setBackground(new java.awt.Color(30, 30, 220));
-        				playState = PlayState.ROLL;
         			});
+        			playState = PlayState.ROLL;
         		}
             }
         });

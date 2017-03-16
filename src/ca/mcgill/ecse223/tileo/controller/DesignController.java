@@ -52,9 +52,17 @@ public class DesignController {
 		// Check if the game already has a win tile
 		if (game.hasWinTile()) {
 			WinTile prevWin = game.getWinTile();
-			List<Connection> tileConnections = prevWin.getConnections();
 			int prevX = prevWin.getX();
 			int prevY = prevWin.getY();
+
+			List<Tile> tilesToConnectTo = new ArrayList<Tile>();
+			
+			for(Connection conn : prevWin.getConnections()) {
+				if(conn.getTile(0) != prevWin)
+					tilesToConnectTo.add(conn.getTile(0));
+				if(conn.getTile(1) != prevWin)
+					tilesToConnectTo.add(conn.getTile(1));
+			}
 
 			try {
 				deleteTile(prevWin);
@@ -65,26 +73,41 @@ public class DesignController {
 			// Replace the deleted with a win Tile
 			NormalTile normalTile = new NormalTile(prevX, prevY, game);
 
-			for (Connection conn : tileConnections) {
-				normalTile.addConnection(conn);
+			for (Tile tileToConnectTo : tilesToConnectTo) {
+				try {
+					connectTiles(normalTile, tileToConnectTo);
+				} catch (InvalidInputException e) {
+					e.printStackTrace();
+				}
 			}
-
 		}
 		// Get the X and Y coordinates
 		int winX = winTile.getX();
 		int winY = winTile.getY();
+		
+		Tile tileToBeDeleted = game.getTileFromXY(winX, winY);
 
-		// Get all info about the tile that will be replaced
-		List<Connection> tileConnections = game.getTileFromXY(winX, winY).getConnections();
-		game.getTileFromXY(winX, winY).delete();
-		// game.deleteTile(win)
+		List<Tile> tilesToConnectTo = new ArrayList<Tile>();
+		
+		for(Connection conn : tileToBeDeleted.getConnections()) {
+			if(conn.getTile(0) != tileToBeDeleted)
+				tilesToConnectTo.add(conn.getTile(0));
+			if(conn.getTile(1) != tileToBeDeleted)
+				tilesToConnectTo.add(conn.getTile(1));
+		}
 
+		// delete the tile
+		tileToBeDeleted.delete();
+		
 		// Replace the tile with a win tile
 		WinTile newWinTile = new WinTile(winX, winY, game);
 
-		// Add previous connections to winTile
-		for (Connection conn : tileConnections) {
-			newWinTile.addConnection(conn);
+		for (Tile tileToConnectTo : tilesToConnectTo) {
+			try {
+				connectTiles(newWinTile, tileToConnectTo);
+			} catch (InvalidInputException e) {
+				e.printStackTrace();
+			}
 		}
 
 		// Set win tile to the game
@@ -117,11 +140,20 @@ public class DesignController {
 		// the initial coordinates of x and y, and connections are saved
 		int x = tile.getX();
 		int y = tile.getY();
+		
+		Tile tileToBeDeleted = game.getTileFromXY(x, y);
 
-		List<Connection> tileConnections = game.getTileFromXY(x, y).getConnections();
+		List<Tile> tilesToConnectTo = new ArrayList<Tile>();
+		
+		for(Connection conn : tileToBeDeleted.getConnections()) {
+			if(conn.getTile(0) != tileToBeDeleted)
+				tilesToConnectTo.add(conn.getTile(0));
+			if(conn.getTile(1) != tileToBeDeleted)
+				tilesToConnectTo.add(conn.getTile(1));
+		}
 
 		// delete the tile
-		game.getTileFromXY(x, y).delete();
+		tileToBeDeleted.delete();
 
 		// an action tile created at the previous location
 		ActionTile actionTile = new ActionTile(x, y, game, disableTurn); // inactivity
@@ -131,11 +163,16 @@ public class DesignController {
 		// otherwise for
 		// deliverable 4
 
-		for (Connection conn : tileConnections) {
-			actionTile.addConnection(conn);
+		for (Tile tileToConnectTo : tilesToConnectTo) {
+			try {
+				connectTiles(actionTile, tileToConnectTo);
+			} catch (InvalidInputException e) {
+				e.printStackTrace();
+			}
 		}
 
 		game.addTile(actionTile);
+		
 		return true;
 	}
 
