@@ -819,11 +819,7 @@ public class TileODesignUI extends JFrame {
 		loadButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
 		loadButton.setForeground(new java.awt.Color(0, 0, 0));
 		loadButton.setText("Load");
-		loadButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				loadButtonActionPerformed(evt);
-			}
-		});
+		loadButton.setVisible(false);
 
 		jLabel17.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
 		jLabel17.setText("TileO Design Mode");
@@ -1546,14 +1542,6 @@ public class TileODesignUI extends JFrame {
 		else {
 			disableChanges();
 			maskButtons(ALLBTN);
-		}
-	}
-
-	private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO : then show available games OR create new board
-	
-		if(new PopUpManager(this).askYesOrNo("Any unsaved changes will be lost. Continue?") == 0) {
-			TileOApplication.load();
 		}
 	}
 

@@ -54,7 +54,7 @@ public class MainPage extends javax.swing.JFrame {
     	playModel.removeAllElements();
     	
     	designableGames = TileOApplication.getTileO().getGames().parallelStream().filter(s -> !s.hasStarted).collect(Collectors.toList());
-        playableGames = TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted || s.getMode() == Game.Mode.GAME).collect(Collectors.toList());
+        playableGames = TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted || s.getMode() != Game.Mode.DESIGN).collect(Collectors.toList());
         
         for(Game game : designableGames)
         	designModel.addElement(game.getGameName());

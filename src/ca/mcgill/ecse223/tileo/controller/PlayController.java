@@ -143,6 +143,10 @@ public class PlayController {
 		
 		ui.update();
 	}
+	
+	public void saveGame(String gameName) {
+		TileOApplication.save();
+	}
 
 	private Game game;
 	private TileOPlayUI ui;
