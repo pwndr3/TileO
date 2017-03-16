@@ -1249,6 +1249,8 @@ public class TileODesignUI extends JFrame {
 					s.setLifeState(TileUI.LifeState.EXIST);
 					s.resetUI();
 					
+					currentController.createNormalTile(s.getUIX(), s.getUIY());
+					
 					int connX = s.getUIX()*2;
 					int connY = s.getUIY()*2;
 					
