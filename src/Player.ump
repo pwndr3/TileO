@@ -20,4 +20,15 @@ class Player {
        			} -> Inactive;
 			}
 		}
+	private int getTurnsUntilActive() {
+		return turnsUntilActive;
+}
+
+	private boolean setTurnsUntilActive(int aTurnsUntilActive) {
+		boolean wasSet = false;
+		turnsUntilActive = aTurnsUntilActive;
+		wasSet = true;
+		return wasSet;
+	}
+	
 }
