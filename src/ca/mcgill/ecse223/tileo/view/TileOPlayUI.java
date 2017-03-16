@@ -26,13 +26,6 @@ import ca.mcgill.ecse223.tileo.controller.InvalidInputException;
 import ca.mcgill.ecse223.tileo.controller.PlayController;
 
 public class TileOPlayUI extends javax.swing.JFrame {
-
-	enum PlayState {
-		NONE, ROLL, PICK, ADD, REMOVE, TELEPORT
-	};
-
-	private PlayState playState = PlayState.NONE;
-
 	public TileOPlayUI(Game aGame) {
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -547,7 +540,8 @@ public class TileOPlayUI extends javax.swing.JFrame {
 				s.setBackground(null);
 		});
 
-		playState = PlayState.NONE;
+		currentController.setState(PlayController.State.Roll);
+		game.setMode(Game.Mode.GAME);
 		maskButtons(ROLLDIE);
 
 		updateConnectionPieces();
@@ -693,8 +687,8 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		TileUI tileUI = (TileUI) evt.getSource();
 		Tile tile = null;
 
-		switch (playState) {
-		case ROLL:
+		switch (currentController.getState()) {
+		case Roll:
 			if(!tileUI.getBackground().equals(new java.awt.Color(30, 30, 220))) {
 				tileUI.setSelected(false);
 				tileUI.setBorderPainted(false);
@@ -723,19 +717,26 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			}
 			
 			break;
-			
-		case TELEPORT:
-			tile = game.getTileFromXY(tileUI.getUIX(), tileUI.getUIY());
-			currentController.playTeleportActionCard(tile);
-			if(tile instanceof ActionTile) {
-				landOnActionTile(tileUI, tile);
-			}
-			else if(tile instanceof WinTile) {
-				landOnWinTile(tileUI, tile);
-			} else {
+
+		case ActionCard:
+			if(game.getMode() == Game.Mode.GAME_TELEPORTACTIONCARD) {
+				tile = game.getTileFromXY(tileUI.getUIX(), tileUI.getUIY());
 				tileUI.setVisited(true);
-				tile.land();
-				currentController.nextTurn();
+				currentController.playTeleportActionCard(tile);
+				
+				switch(currentController.getState()) {
+				case ActionCard:
+					landOnActionTile(tileUI, tile);
+					break;
+				case GameWon:
+					landOnWinTile(tileUI, tile);
+					break;
+				default:
+					tileUI.setVisited(true);
+					tile.land();
+					currentController.nextTurn();
+					break;
+				}
 			}
 			break;
 
@@ -782,8 +783,8 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		connUI.setBorderPainted(false);
 		connUI.setFocusPainted(false);
 		
-		switch (playState) {
-		case ADD:
+		switch (game.getMode()) {
+		case GAME_CONNECTTILESACTIONCARD:
 			if (connUI.getLifeState() == ConnectionUI.LifeState.NOTEXIST) {
 				connUI.setLifeState(ConnectionUI.LifeState.EXIST);
 
@@ -804,7 +805,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			}
 			break;
 
-		case REMOVE:
+		case GAME_REMOVECONNECTIONACTIONCARD:
 			if (connUI.getLifeState() == ConnectionUI.LifeState.EXIST) {
 				connUI.setLifeState(ConnectionUI.LifeState.NOTEXIST);
 
@@ -841,18 +842,21 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			Timer timer = new Timer(3000, new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
 	                if (actionCard instanceof RollDieActionCard) {
-	    				playState = PlayState.ROLL;
+	    				game.setMode(Game.Mode.GAME_ROLLDIEACTIONCARD);
+	    				currentController.setState(PlayController.State.Roll);
 	    				maskButtons(ROLLDIE);
 	    			}
 
 	    			else if (actionCard instanceof ConnectTilesActionCard) {
-	    				playState = PlayState.ADD;
+	    				game.setMode(Game.Mode.GAME_CONNECTTILESACTIONCARD);
+	    				currentController.setState(PlayController.State.ActionCard);
 	    				maskButtons(0);
 	    				showDisabledConnections();
 	    			}
 
 	    			else if (actionCard instanceof RemoveConnectionActionCard) {
-	    				playState = PlayState.REMOVE;
+	    				game.setMode(Game.Mode.GAME_REMOVECONNECTIONACTIONCARD);
+	    				currentController.setState(PlayController.State.ActionCard);
 	    				maskButtons(0);
 	    				
 	    				boolean allDisabled = true;
@@ -874,11 +878,14 @@ public class TileOPlayUI extends javax.swing.JFrame {
 
 	    			else if (actionCard instanceof LoseTurnActionCard) {
 	    				//Make lose next turn for currentPlayer
+	    				game.setMode(Game.Mode.GAME_LOSETURNACTIONCARD);
+	    				currentController.setState(PlayController.State.ActionCard);
 	    				currentController.playLoseTurnActionCard();
 	    			}
 
 	    			else if (actionCard instanceof TeleportActionCard) {
-	    				playState = PlayState.TELEPORT;
+	    				game.setMode(Game.Mode.GAME_TELEPORTACTIONCARD);
+	    				currentController.setState(PlayController.State.ActionCard);
 	    				maskButtons(0);
 	    			}
 	            }
@@ -906,7 +913,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
         			possiblePlayerMoves.parallelStream().forEach(s -> {
         				getTileUIByXY(s.getX(), s.getY()).setBackground(new java.awt.Color(30, 30, 220));
         			});
-        			playState = PlayState.ROLL;
+        			currentController.setState(PlayController.State.Roll);
         		}
             }
         });
