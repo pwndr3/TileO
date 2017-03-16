@@ -19,7 +19,6 @@ class ActionTile{
     
   }
 
-
 private void land() {
 	Game currentGame = TileOApplication.getTileO().getCurrentGame();
 	Player currentPlayer = currentGame.getCurrentPlayer();
