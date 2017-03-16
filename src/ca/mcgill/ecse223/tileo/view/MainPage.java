@@ -187,6 +187,8 @@ public class MainPage extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         
+        setResizable(false);
+        
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double width = screenSize.getWidth();
         double height = screenSize.getHeight();

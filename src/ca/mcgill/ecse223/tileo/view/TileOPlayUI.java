@@ -719,7 +719,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			else if(tile instanceof WinTile) {
 				tileUI.setVisited(true);
 				tile.land();
-				new PopUpManager(this).acknowledgeMessage("Player "+game.getCurrentPlayer().getNumber()+1+"won the game!");
+				new PopUpManager(this).acknowledgeMessage("Player "+(game.getCurrentPlayer().getNumber()+1)+" won the game!");
 				maskButtons(0);
 			}
 			

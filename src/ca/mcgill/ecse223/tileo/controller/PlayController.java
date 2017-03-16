@@ -76,6 +76,7 @@ public class PlayController {
 		
 		Player currentPlayer = game.getCurrentPlayer();
 		List<Tile> possibleMoves = currentPlayer.getPossibleMoves(rolledNumber);
+		possibleMoves.remove(currentPlayer.getCurrentTile());
 		
 		return possibleMoves;
 	}

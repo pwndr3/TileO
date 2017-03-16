@@ -240,24 +240,24 @@ public abstract class Tile implements Serializable {
 		// Base case below: if rolled number equals/reduces to 1:
 		if (aRolledNumber == 1) {
 			for (Connection connection : connections) {
-				// List of tiles for a particular connection can only contain 2
-				// tiles.
-				// If tile at index 0 of this list is "this" tile, then tile at
-				// index 1 must be added as neighbor.
-				if (connection.getTile(0) == this)
-					neighbours.add(connection.getTile(1));
-				else
-					neighbours.add(connection.getTile(0));
+				if(connection != null) {
+					if (connection.getTile(0) == this)
+						neighbours.add(connection.getTile(1));
+					else
+						neighbours.add(connection.getTile(0));
+				}
 			}
 		}
 
 		// If rolled number is greater than 1:
 		else {
 			for (Connection connection : connections) {
-				if (connection.getTile(0) == this)
-					neighbours.addAll(connection.getTile(1).getNeighbours(aRolledNumber - 1));
-				else
-					neighbours.addAll(connection.getTile(0).getNeighbours(aRolledNumber - 1));
+				if(connection != null) {
+					if (connection.getTile(0) == this)
+						neighbours.addAll(connection.getTile(1).getNeighbours(aRolledNumber - 1));
+					else
+						neighbours.addAll(connection.getTile(0).getNeighbours(aRolledNumber - 1));
+				}
 			}
 		}
 
