@@ -8,7 +8,6 @@ import ca.mcgill.ecse223.tileo.application.TileOApplication;
 
 import java.io.Serializable;
 
-// line 39 "../../../../../main.ump"
 public class ActionTile extends Tile implements Serializable {
 
 	// ------------------------
@@ -22,6 +21,17 @@ public class ActionTile extends Tile implements Serializable {
 	private static final long serialVersionUID = 1298712387189L;
 
 	// ------------------------
+	// MEMBER VARIABLES
+	// ------------------------
+
+	// ActionTile State Machines
+	public enum ActionTileStatus {
+		Active, Inactive
+	}
+
+	private ActionTileStatus actionTileStatus;
+
+	// ------------------------
 	// CONSTRUCTOR
 	// ------------------------
 
@@ -29,6 +39,72 @@ public class ActionTile extends Tile implements Serializable {
 		super(aX, aY, aGame);
 		inactivityPeriod = aInactivityPeriod;
 		turnsUntilActive = 0;
+		setActionTileStatus(ActionTileStatus.Active);
+	}
+
+	// ------------------------
+	// INTERFACE
+	// ------------------------
+
+	public String getActionTileStatusFullName() {
+		String answer = actionTileStatus.toString();
+		return answer;
+	}
+
+	public ActionTileStatus getActionTileStatus() {
+		return actionTileStatus;
+	}
+
+	public boolean deactivate() {
+		boolean wasEventProcessed = false;
+
+		ActionTileStatus aActionTileStatus = actionTileStatus;
+		switch (aActionTileStatus) {
+		case Active:
+			if (getInactivityPeriod() > 0) {
+				setTurnsUntilActive(getInactivityPeriod() + 1);
+				setActionTileStatus(ActionTileStatus.Inactive);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
+
+		return wasEventProcessed;
+	}
+
+	public boolean takeTurn() {
+		boolean wasEventProcessed = false;
+
+		ActionTileStatus aActionTileStatus = actionTileStatus;
+		switch (aActionTileStatus) {
+		case Inactive:
+			if (getTurnsUntilActive() > 1) {
+				// line 13 "../../../../../ActionTile.ump"
+				setTurnsUntilActive(getTurnsUntilActive() - 1);
+				setActionTileStatus(ActionTileStatus.Inactive);
+				wasEventProcessed = true;
+				break;
+			}
+			if (getTurnsUntilActive() <= 1) {
+				// line 17 "../../../../../ActionTile.ump"
+				setTurnsUntilActive(0);
+				setActionTileStatus(ActionTileStatus.Active);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
+
+		return wasEventProcessed;
+	}
+
+	private void setActionTileStatus(ActionTileStatus aActionTileStatus) {
+		actionTileStatus = aActionTileStatus;
 	}
 
 	// ------------------------

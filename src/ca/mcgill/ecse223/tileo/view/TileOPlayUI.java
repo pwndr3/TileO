@@ -708,8 +708,13 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			if(tile instanceof ActionTile) {
 				tileUI.setVisited(true);
 				tile.land();
-				update();
-				maskButtons(PICKCARD);
+				if(((ActionTile)game.getCurrentPlayer().getCurrentTile()).getActionTileStatus() == ActionTile.ActionTileStatus.Active) {
+					update();
+					maskButtons(PICKCARD);
+					((ActionTile)game.getCurrentPlayer().getCurrentTile()).deactivate();
+				} else {
+					currentController.nextTurn();
+				}
 			}
 			
 			else if(tile instanceof WinTile) {

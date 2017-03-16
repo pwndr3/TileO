@@ -577,16 +577,22 @@ public class Game implements Serializable {
 			if (nextPlayer.getPlayerStatus() == Player.PlayerStatus.Active) {
 				found = true;
 			} else {
-				new PopUpManager(window).acknowledgeMessage("Player "+(nextPlayer.getColorFullName())+" cannot play. Turn skipped.");
+				new PopUpManager(window).acknowledgeMessage(
+						"Player " + (nextPlayer.getColorFullName()) + " cannot play. Turn skipped.");
 				nextPlayer.takeTurn();
 			}
 			player = nextPlayer;
+			updateTileStatus();
 		}
 
 		setCurrentPlayer(player);
 	}
-	/*
-	 * public void updateTileStatus() { for (Tile tile : getTiles()) { if (tile
-	 * instanceof ActionTile) { ((ActionTile) tile).takeTurn(); } } }
-	 */
+
+	public void updateTileStatus() {
+		for (Tile tile : getTiles()) {
+			if (tile instanceof ActionTile) {
+				((ActionTile) tile).takeTurn();
+			}
+		}
+	}
 }
