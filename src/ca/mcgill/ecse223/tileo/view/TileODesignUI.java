@@ -51,6 +51,7 @@ public class TileODesignUI extends JFrame {
 		// Init layout
 		initComponents();
 		disableChanges();
+		designState = DesignState.NONE;
 	}
 
 	private static final int BOARDSIZE = 1;
@@ -878,6 +879,7 @@ public class TileODesignUI extends JFrame {
 			else {
 				disableChanges();
 				maskButtons(ALLBTN);
+				designState = DesignState.NONE;
 			}
 		});
 		verticalLength.addActionListener(e -> {
@@ -891,6 +893,7 @@ public class TileODesignUI extends JFrame {
 			else {
 				disableChanges();
 				maskButtons(ALLBTN);
+				designState = DesignState.NONE;
 			}
 		});	
 		//
@@ -1231,6 +1234,7 @@ public class TileODesignUI extends JFrame {
 				tiles.forEach(s -> {
 					try {
 						s.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/action_tile.png"))));
+						s.setState(TileUI.State.ACTION);
 					} catch (IOException e) {
 						
 					}
@@ -1430,7 +1434,7 @@ public class TileODesignUI extends JFrame {
 		if (designState == DesignState.SELECT_STARTING_POSITION) {
 			// If tile is normal
 			if (tile.getState() == TileUI.State.NORMAL) {
-				tilesButtons.parallelStream().filter(s -> s.isSelected() && s != tile)
+				tilesButtons.stream().filter(s -> s.isSelected() && s != tile)
 						.forEach(s -> s.setSelected(false));
 				enableChanges();
 			} else {
@@ -1542,6 +1546,7 @@ public class TileODesignUI extends JFrame {
 		else {
 			disableChanges();
 			maskButtons(ALLBTN);
+			designState = DesignState.NONE;
 		}
 	}
 
@@ -1555,7 +1560,6 @@ public class TileODesignUI extends JFrame {
 		applyChangesButton.setEnabled(false);
 		applyChangesButton.setSelected(false);
 		applyChangesButton.setForeground(new java.awt.Color(200,200,200));
-		designState = DesignState.NONE;
 	}
 
 	private void showDisabledTiles() {
