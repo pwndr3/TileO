@@ -28,10 +28,10 @@ public class DesignController {
 		// Get the specific player
 		Player player = allPlayers.get(playerNumber);
 		// Exceptions
-		if(game.hasWinTile()) {
+		if (game.hasWinTile()) {
 			if (tile == game.getWinTile()) {
 				throw new InvalidInputException("Cannot place a player on the win tile.");
-			} 
+			}
 		} else if (tile instanceof ActionTile) {
 			throw new InvalidInputException("Cannot place a player on an action tile.");
 		} else {
@@ -56,11 +56,11 @@ public class DesignController {
 			int prevY = prevWin.getY();
 
 			List<Tile> tilesToConnectTo = new ArrayList<Tile>();
-			
-			for(Connection conn : prevWin.getConnections()) {
-				if(conn.getTile(0) != prevWin)
+
+			for (Connection conn : prevWin.getConnections()) {
+				if (conn.getTile(0) != prevWin)
 					tilesToConnectTo.add(conn.getTile(0));
-				if(conn.getTile(1) != prevWin)
+				if (conn.getTile(1) != prevWin)
 					tilesToConnectTo.add(conn.getTile(1));
 			}
 
@@ -84,21 +84,21 @@ public class DesignController {
 		// Get the X and Y coordinates
 		int winX = winTile.getX();
 		int winY = winTile.getY();
-		
+
 		Tile tileToBeDeleted = game.getTileFromXY(winX, winY);
 
 		List<Tile> tilesToConnectTo = new ArrayList<Tile>();
-		
-		for(Connection conn : tileToBeDeleted.getConnections()) {
-			if(conn.getTile(0) != tileToBeDeleted)
+
+		for (Connection conn : tileToBeDeleted.getConnections()) {
+			if (conn.getTile(0) != tileToBeDeleted)
 				tilesToConnectTo.add(conn.getTile(0));
-			if(conn.getTile(1) != tileToBeDeleted)
+			if (conn.getTile(1) != tileToBeDeleted)
 				tilesToConnectTo.add(conn.getTile(1));
 		}
 
 		// delete the tile
 		tileToBeDeleted.delete();
-		
+
 		// Replace the tile with a win tile
 		WinTile newWinTile = new WinTile(winX, winY, game);
 
@@ -125,8 +125,8 @@ public class DesignController {
 		if (tile == null) {
 			throw new InvalidInputException("There is no tile to delete");
 		}
-		
-		if(tile instanceof WinTile) {
+
+		if (tile instanceof WinTile) {
 			game.setWinTile(null);
 		}
 
@@ -140,15 +140,15 @@ public class DesignController {
 		// the initial coordinates of x and y, and connections are saved
 		int x = tile.getX();
 		int y = tile.getY();
-		
+
 		Tile tileToBeDeleted = game.getTileFromXY(x, y);
 
 		List<Tile> tilesToConnectTo = new ArrayList<Tile>();
-		
-		for(Connection conn : tileToBeDeleted.getConnections()) {
-			if(conn.getTile(0) != tileToBeDeleted)
+
+		for (Connection conn : tileToBeDeleted.getConnections()) {
+			if (conn.getTile(0) != tileToBeDeleted)
 				tilesToConnectTo.add(conn.getTile(0));
-			if(conn.getTile(1) != tileToBeDeleted)
+			if (conn.getTile(1) != tileToBeDeleted)
 				tilesToConnectTo.add(conn.getTile(1));
 		}
 
@@ -172,7 +172,7 @@ public class DesignController {
 		}
 
 		game.addTile(actionTile);
-		
+
 		return true;
 	}
 
@@ -183,12 +183,10 @@ public class DesignController {
 
 		for (Connection conn : conns) {
 			List<Tile> tiles = conn.getTiles();
-			{
-				for (Tile tile : tiles) {
-					if (tile == tile2) {
-						conn.delete();
-						return;
-					}
+			for (Tile tile : tiles) {
+				if (tile == tile2) {
+					conn.delete();
+					return;
 				}
 			}
 		}
@@ -203,14 +201,14 @@ public class DesignController {
 		int x2 = tile2.getX();
 		int y2 = tile2.getY();
 
-		//If already connected
-		if (!tile1.getConnections().parallelStream().filter(s -> s != null).anyMatch(s -> s.getTile(0) == tile2 || s.getTile(1) == tile2))
-		{
+		// If already connected
+		if (!tile1.getConnections().parallelStream().filter(s -> s != null)
+				.anyMatch(s -> s.getTile(0) == tile2 || s.getTile(1) == tile2)) {
 			// Check if tiles are adjacent to one another
 			if (x1 == x2 && Math.abs((y1 - y2)) == 1) {
 				game.placeConnection(tile1, tile2);
 			}
-	
+
 			if (y1 == y2 && Math.abs((x1 - x2)) == 1) {
 				game.placeConnection(tile1, tile2);
 			}
@@ -223,10 +221,10 @@ public class DesignController {
 		if (connectTiles + loseTurn + removeConnection + rollDie + teleport > 32) {
 			throw new InvalidInputException("Cannot have more than 32 cards in a deck.");
 		}
-		
+
 		Deck deck = game.getDeck();
 		deck.clearDeck();
-		
+
 		// add cards to the deck
 		for (int i = 0; i < connectTiles; i++) {
 			ConnectTilesActionCard card = new ConnectTilesActionCard("Connect two tiles", deck);
@@ -250,16 +248,17 @@ public class DesignController {
 		}
 		return deck.hasCards();
 	}
-	 //done  
+
+	// done
 	public Game initGame(int numOfPlayersInGame) {
-		if(game != null)
+		if (game != null)
 			TileOApplication.getTileO().removeGame(game);
-		
+
 		game = new Game(32, TileOApplication.getTileO());
 		game.setMode(Game.Mode.DESIGN);
 		TileOApplication.getTileO().addGame(game);
 		TileOApplication.getTileO().setCurrentGame(game);
-		
+
 		Player.clearPlayers();
 		for (int n = 0; n < numOfPlayersInGame; n++) {
 			Player player = new Player(n, game);
@@ -279,28 +278,28 @@ public class DesignController {
 			}
 			game.addPlayer(player);
 		}
-		
+
 		return game;
 	}
-	
+
 	public void saveGame(String gameName) {
 		boolean modeGame = true;
-		
+
 		game.setGameName(gameName);
-		
-		if(!game.hasWinTile())
+
+		if (!game.hasWinTile())
 			modeGame = false;
-		
-		for(Player player : game.getPlayers()) {
-			if(!player.hasStartingTile())
+
+		for (Player player : game.getPlayers()) {
+			if (!player.hasStartingTile())
 				modeGame = false;
 		}
-		
-		if(modeGame)
+
+		if (modeGame)
 			game.setMode(Game.Mode.GAME);
 		else
 			game.setMode(Game.Mode.DESIGN);
-		
+
 		TileOApplication.save();
 	}
 

@@ -146,7 +146,6 @@ public class TurnsUnactive extends JDialog {
         
         setLocationRelativeTo(parentWindow);
         setResizable(false);
-        setAlwaysOnTop(true);
         setUndecorated(true);
         
         setVisible(true);

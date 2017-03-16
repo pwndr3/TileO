@@ -43,7 +43,6 @@ public class ActionCardPopUp extends JFrame {
         ActionTilePicture.setBounds(0, 0, 300, 400);
         
         setResizable(false);
-        setAlwaysOnTop(true);
         setUndecorated(true);
         setLocationRelativeTo(window);
 

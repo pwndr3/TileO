@@ -35,7 +35,6 @@ public class RollDiePopUp extends JFrame {
         setFocusable(false);
         
         setResizable(false);
-        setAlwaysOnTop(true);
         setUndecorated(true);
         setLocationRelativeTo(window);
 

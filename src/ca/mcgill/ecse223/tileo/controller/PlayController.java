@@ -117,7 +117,7 @@ public class PlayController {
 			{
 				for (Tile tile : tiles) {
 					if (tile == tile2) {
-						game.removeConnection(conn);
+						conn.delete();
 						
 						if(game.getCurrentConnectionPieces() < 32)
 							game.setCurrentConnectionPieces(game.getCurrentConnectionPieces()+1);
