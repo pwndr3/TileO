@@ -4,6 +4,7 @@ import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.Controller;
 import ca.mcgill.ecse223.tileo.model.ConnectTilesActionCard;
 import ca.mcgill.ecse223.tileo.model.Game;
+import ca.mcgill.ecse223.tileo.model.TileO;
 import ca.mcgill.ecse223.tileo.view.popup.ActionCardPopUp;
 
 import java.util.List;
@@ -234,11 +235,12 @@ public class MainPage extends javax.swing.JFrame {
     }
 
     private void deletePlayButtonActionPerformed(java.awt.event.ActionEvent evt) {
-    	if(TileOApplication.getTileO().getGames().parallelStream().filter(s -> s.hasStarted || s.getMode() == Game.Mode.GAME).count() > 0) {
+    	TileO tileo = TileOApplication.getTileO();
+    	if(!playableGames.isEmpty()) {
         	if(new PopUpManager(this).askYesOrNo("Are you sure you want to delete the game?") == 0) {
-        		if(TileOApplication.getTileO().removeGame(TileOApplication.getTileO().getGameByName(String.valueOf(loadGameToDesignComboBox.getSelectedItem())))) {
+        		if(TileOApplication.getTileO().removeGame(TileOApplication.getTileO().getGameByName(String.valueOf(loadGameToPlayComboBox.getSelectedItem())))) {
 	        		new PopUpManager(this).acknowledgeMessage("Game deleted");
-	        		updateLists();
+	        		updateLists(); 
 	        		TileOApplication.save();
         		}
         		else

@@ -719,8 +719,19 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			else if(tile instanceof WinTile) {
 				tileUI.setVisited(true);
 				tile.land();
-				new PopUpManager(this).acknowledgeMessage("Player "+(game.getCurrentPlayer().getNumber()+1)+" won the game!");
+				update();
 				maskButtons(0);
+				new PopUpManager(this).acknowledgeMessage("Player "+(game.getCurrentPlayer().getNumber()+1)+" won the game!");
+				Timer timer = new Timer(1000, new ActionListener() {
+		            public void actionPerformed(ActionEvent e) {
+		            	currentController.saveGame(game.getGameName());
+		            	new MainPage().setVisible(true);
+						dispose();
+		            }
+		        });
+		        timer.setRepeats(false);
+		        timer.start();
+				
 			}
 			
 			else {

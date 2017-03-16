@@ -16,7 +16,7 @@ public class Controller {
 		if(gameName != null)
 			game = TileOApplication.getTileO().getGameByName(gameName);
 		
-		if(game.getMode() == Game.Mode.GAME) {
+		if(game.getMode() != Game.Mode.DESIGN) {
 			new TileOPlayUI(game).setVisible(true);
 			ui.dispose();
 		} 
