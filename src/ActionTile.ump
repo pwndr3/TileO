@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 namespace ca.mcgill.ecse223.tileo.model;
 
 class ActionTile{
@@ -22,59 +21,3 @@ class ActionTile{
     
   }
 }
-=======
-class ActionTile{
-  actionTileStatus{
-    
-    Active{
-      deactivate()[getInactivityPeriod() > 0] / {
-        setTurnsUntilActive(getInactivityPeriod()+1);
-      } -> Inactive;
-    }
-    
-    Inactive{
-      takeTurn()[getTurnsUntilActive() > 1] / {
-        setTurnsUntilActive(getInactivityPeriod()-1);
-      } -> Inactive;
-      
-      takeTurn()[getTurnsUntilActive() <= 1]/{
-        setTurnsUntilActive(0);
-      } -> Active;
-    }
-    
-  }
-
-private void land() {
-	Game currentGame = TileOApplication.getTileO().getCurrentGame();
-	Player currentPlayer = currentGame.getCurrentPlayer();
-    currentPlayer.setCurrentTile(this);
-    setHasBeenVisited(true);
-	}
-
-private int getTurnsUntilActive() {
-	return turnsUntilActive;
-}
-
-private boolean setTurnsUntilActive(int aTurnsUntilActive) {
-		boolean wasSet = false;
-		turnsUntilActive = aTurnsUntilActive;
-		wasSet = true;
-		return wasSet;
-	}
-	
-private int getInactivityPeriod() {
-		return inactivityPeriod;
-	}
-	
-		public void delete() {
-		super.delete();
-	}
-
-	public String toString() {
-		String outputString = "";
-		return super.toString() + "[" + "inactivityPeriod" + ":" + getInactivityPeriod() + "," + "turnsUntilActive"
-				+ ":" + getTurnsUntilActive() + "]" + outputString;
-	}
-
-}
->>>>>>> branch 'master' of https://github.com/W2017-ECSE223/Group12.git
