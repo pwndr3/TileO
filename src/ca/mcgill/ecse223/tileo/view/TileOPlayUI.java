@@ -706,32 +706,13 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			tile = game.getTileFromXY(tileUI.getUIX(), tileUI.getUIY());
 			
 			if(tile instanceof ActionTile) {
-				tileUI.setVisited(true);
 				tile.land();
-				if(((ActionTile)game.getCurrentPlayer().getCurrentTile()).getActionTileStatus() == ActionTile.ActionTileStatus.Active) {
-					update();
-					maskButtons(PICKCARD);
-					((ActionTile)game.getCurrentPlayer().getCurrentTile()).deactivate();
-				} else {
-					currentController.nextTurn();
-				}
+				landOnActionTile(tileUI, tile);
 			}
 			
 			else if(tile instanceof WinTile) {
-				tileUI.setVisited(true);
 				tile.land();
-				update();
-				maskButtons(0);
-				new PopUpManager(this).acknowledgeMessage("Player "+(game.getCurrentPlayer().getNumber()+1)+" won the game!");
-				Timer timer = new Timer(1000, new ActionListener() {
-		            public void actionPerformed(ActionEvent e) {
-		            	currentController.saveGame(game.getGameName());
-		            	new MainPage().setVisible(true);
-						dispose();
-		            }
-		        });
-		        timer.setRepeats(false);
-		        timer.start();
+				landOnWinTile(tileUI, tile);
 				
 			}
 			
@@ -746,7 +727,16 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		case TELEPORT:
 			tile = game.getTileFromXY(tileUI.getUIX(), tileUI.getUIY());
 			currentController.playTeleportActionCard(tile);
-			currentController.nextTurn();
+			if(tile instanceof ActionTile) {
+				landOnActionTile(tileUI, tile);
+			}
+			else if(tile instanceof WinTile) {
+				landOnWinTile(tileUI, tile);
+			} else {
+				tileUI.setVisited(true);
+				tile.land();
+				currentController.nextTurn();
+			}
 			break;
 
 		default:
@@ -754,6 +744,33 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			tileUI.setBorderPainted(false);
 			tileUI.setFocusPainted(false);
 		}
+	}
+	
+	private void landOnActionTile(TileUI tileUI, Tile tile) {
+		tileUI.setVisited(true);
+		if(((ActionTile)game.getCurrentPlayer().getCurrentTile()).getActionTileStatus() == ActionTile.ActionTileStatus.Active) {
+			update();
+			maskButtons(PICKCARD);
+			((ActionTile)game.getCurrentPlayer().getCurrentTile()).deactivate();
+		} else {
+			currentController.nextTurn();
+		}
+	}
+	
+	private void landOnWinTile(TileUI tileUI, Tile tile) {
+		tileUI.setVisited(true);
+		update();
+		maskButtons(0);
+		new PopUpManager(this).acknowledgeMessage("Player "+(game.getCurrentPlayer().getColor())+" won the game!");
+		Timer timer = new Timer(1000, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	currentController.saveGame(game.getGameName());
+            	new MainPage().setVisible(true);
+				dispose();
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
 	}
 
 	private void connectionActionPerformed(java.awt.event.ActionEvent evt) {
