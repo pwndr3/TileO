@@ -160,26 +160,24 @@ public class DesignController {
 	}
 
 	public void connectTiles(Tile tile1, Tile tile2) throws InvalidInputException {
-
 		int x1 = tile1.getX();
 		int y1 = tile1.getY();
 
 		int x2 = tile2.getX();
 		int y2 = tile2.getY();
 
-		// Check if tiles are adjancent to one another
-		if (x1 == x2 && Math.abs((y1 - y2)) == 1) {
-			// You made connetion
-			game.placeConnection(tile1, tile2);
+		//If already connected
+		if (!tile1.getConnections().parallelStream().filter(s -> s != null).anyMatch(s -> s.getTile(0) == tile2 || s.getTile(1) == tile2))
+		{
+			// Check if tiles are adjacent to one another
+			if (x1 == x2 && Math.abs((y1 - y2)) == 1) {
+				game.placeConnection(tile1, tile2);
+			}
+	
+			if (y1 == y2 && Math.abs((x1 - x2)) == 1) {
+				game.placeConnection(tile1, tile2);
+			}
 		}
-
-		if (y1 == y2 && Math.abs((x1 - x2)) == 1) {
-			// You made connection
-			game.placeConnection(tile1, tile2);
-		}
-
-		throw new InvalidInputException("No connection to be deleted");
-
 	}
 
 	public boolean createDeck(int rollDie, int removeConnection, int teleport, int loseTurn, int connectTiles)

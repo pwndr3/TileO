@@ -161,14 +161,14 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		}
 
 		// Remove connections
-		List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST)
+		List<TileUI> tiles = tilesButtons.stream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST)
 				.collect(Collectors.toList());
 		tiles.forEach(s -> {
 			int connX = s.getUIX() * 2;
 			int connY = s.getUIY() * 2;
 
 			// Hide nearest connections
-			connectionButtons.parallelStream().filter(t -> (t.getUIX() == connX && Math.abs(t.getUIY() - connY) == 1)
+			connectionButtons.stream().filter(t -> (t.getUIX() == connX && Math.abs(t.getUIY() - connY) == 1)
 					|| (t.getUIY() == connY && Math.abs(t.getUIX() - connX) == 1)).forEach(t -> {
 						t.setState(ConnectionUI.State.HIDE);
 						t.setLifeState(ConnectionUI.LifeState.NOTEXIST);
@@ -176,37 +176,41 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		});
 
 		// Set connections
-		game.getConnections().parallelStream().forEach(s -> {
-			Tile tile1 = s.getTile(0);
-			Tile tile2 = s.getTile(1);
-				
-			connectionButtons.parallelStream().filter(t -> t.getState() == ConnectionUI.State.SHOW).forEach(t -> {
-				// Horizontal
-				if (tile1.getX() == tile2.getX()) {
-					if (t.getUIX() == tile1.getX() * 2) {
-						int farRight = (tile1.getY() > tile2.getY()) ? tile1.getY() * 2 : tile2.getY() * 2;
-
-						if ((farRight - t.getUIY()) == 1) {
-							t.setState(ConnectionUI.State.SHOW);
-							t.setLifeState(ConnectionUI.LifeState.EXIST);
-							t.setVisible(true);
+		game.getConnections().stream().forEach(s -> {
+			if(s != null) {
+				Tile tile1 = s.getTile(0);
+				Tile tile2 = s.getTile(1);
+					
+				connectionButtons.stream().filter(t -> t.getState() == ConnectionUI.State.SHOW).forEach(t -> {
+					// Horizontal
+					if (tile1.getX() == tile2.getX()) {
+						if (t.getUIX() == tile1.getX() * 2) {
+							int farRight = (tile1.getY() > tile2.getY()) ? tile1.getY() * 2 : tile2.getY() * 2;
+	
+							if ((farRight - t.getUIY()) == 1) {
+								t.setState(ConnectionUI.State.SHOW);
+								t.setLifeState(ConnectionUI.LifeState.EXIST);
+								t.setVisible(true);
+							}
 						}
 					}
-				}
-
-				// Vertical
-				if (tile1.getY() == tile2.getY()) {
-					if (t.getUIY() == tile1.getY() * 2) {
-						int bottom = (tile1.getX() > tile2.getX()) ? tile1.getX() * 2 : tile2.getX() * 2;
-
-						if ((bottom - t.getUIX()) == 1) {
-							t.setState(ConnectionUI.State.SHOW);
-							t.setLifeState(ConnectionUI.LifeState.EXIST);
-							t.setVisible(true);
+	
+					// Vertical
+					if (tile1.getY() == tile2.getY()) {
+						if (t.getUIY() == tile1.getY() * 2) {
+							int bottom = (tile1.getX() > tile2.getX()) ? tile1.getX() * 2 : tile2.getX() * 2;
+	
+							if ((bottom - t.getUIX()) == 1) {
+								t.setState(ConnectionUI.State.SHOW);
+								t.setLifeState(ConnectionUI.LifeState.EXIST);
+								t.setVisible(true);
+							}
 						}
 					}
-				}
-			});
+				});
+			} else {
+				System.out.println("null");
+			}
 		});
 
 		// Starting positions
@@ -216,7 +220,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 
 			Tile tile = game.getPlayer(i).getStartingTile();
 
-			TileUI tileGUI = tilesButtons.parallelStream()
+			TileUI tileGUI = tilesButtons.stream()
 					.filter(s -> s.getUIX() == tile.getX() && s.getUIY() == tile.getY()).findAny().orElse(null);
 			if (tileGUI != null) {
 				tileGUI.resetUI();
@@ -227,7 +231,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		}
 
 		// Hide disabled tiles
-		tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).forEach(s -> {
+		tilesButtons.stream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).forEach(s -> {
 			s.hideUI();
 			s.setSelected(false);
 		});
@@ -237,16 +241,10 @@ public class TileOPlayUI extends javax.swing.JFrame {
 
 	private int PICKCARD = 1;
 	private int ROLLDIE = 2;
-	private int ADDCONN = 4;
-	private int REMOVECONN = 8;
-	private int TELEPORT = 16;
 
 	private void maskButtons(int mask) {
 		pickCardButton.setEnabled((mask & PICKCARD) == PICKCARD);
 		rollDieButton.setEnabled((mask & ROLLDIE) == ROLLDIE);
-		addConnectionButton.setEnabled((mask & ADDCONN) == ADDCONN);
-		removeConnectionButton.setEnabled((mask & REMOVECONN) == REMOVECONN);
-		teleportButton.setEnabled((mask & TELEPORT) == TELEPORT);
 	}
 
 	private void initComponents() {
@@ -499,7 +497,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 
 	public void update() {
 		// Change colors for connections
-		connectionButtons.parallelStream().forEach(s -> {
+		connectionButtons.stream().forEach(s -> {
 			if (s.getLifeState() == ConnectionUI.LifeState.NOTEXIST)
 				s.setBackground(null);
 			else
@@ -509,7 +507,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		// Reset states
 		hideDisabledConnections();
 
-		tilesButtons.parallelStream().filter(s -> s.isVisible()).forEach(s -> {
+		tilesButtons.stream().filter(s -> s.isVisible()).forEach(s -> {
 			s.setSelected(false);
 			s.setFocusPainted(false);
 			s.setBorderPainted(false);
@@ -517,7 +515,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		});
 		
 		//Set visited
-		tilesButtons.parallelStream().forEach(s -> {
+		tilesButtons.stream().forEach(s -> {
 			if(s.isVisited())
 				s.setBackground(Color.decode("#ffc4c4"));
 			else
@@ -545,7 +543,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			getTileUIByXY(tile.getX(), tile.getY()).setPlayerIcon(entry.getValue());
 		}
 		
-		tilesButtons.parallelStream().filter(s -> s.isVisible()).forEach(s -> {
+		tilesButtons.stream().filter(s -> s.isVisible()).forEach(s -> {
 			s.setSelected(false);
 			s.setFocusPainted(false);
 			s.setBorderPainted(false);
@@ -815,13 +813,13 @@ public class TileOPlayUI extends javax.swing.JFrame {
 
 	    			else if (actionCard instanceof ConnectTilesActionCard) {
 	    				playState = PlayState.ADD;
-	    				maskButtons(ADDCONN);
+	    				maskButtons(0);
 	    				showDisabledConnections();
 	    			}
 
 	    			else if (actionCard instanceof RemoveConnectionActionCard) {
 	    				playState = PlayState.REMOVE;
-	    				maskButtons(REMOVECONN);
+	    				maskButtons(0);
 	    				
 	    				boolean allDisabled = true;
 	    				

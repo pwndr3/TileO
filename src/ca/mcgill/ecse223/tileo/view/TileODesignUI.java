@@ -458,13 +458,13 @@ public class TileODesignUI extends JFrame {
 		}
 		
 		//Remove connections
-		List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).collect(Collectors.toList());
+		List<TileUI> tiles = tilesButtons.stream().filter(s -> s.getLifeState() == TileUI.LifeState.NOTEXIST).collect(Collectors.toList());
 			tiles.forEach(s -> {
 			int connX = s.getUIX()*2;
 			int connY = s.getUIY()*2;
 			
 			//Hide nearest connections
-			connectionButtons.parallelStream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
+			connectionButtons.stream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
 					(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> {
 						t.setState(ConnectionUI.State.HIDE);
 						t.setLifeState(ConnectionUI.LifeState.NOTEXIST);
@@ -472,11 +472,11 @@ public class TileODesignUI extends JFrame {
 		});
 			
 		//Set connections
-		game.getConnections().parallelStream().forEach(s -> {
+		game.getConnections().stream().forEach(s -> {
 			Tile tile1 = s.getTile(0);
 			Tile tile2 = s.getTile(1);
 			
-			connectionButtons.parallelStream().filter(t -> t.getState() == ConnectionUI.State.SHOW).forEach(t -> {
+			connectionButtons.stream().filter(t -> t.getState() == ConnectionUI.State.SHOW).forEach(t -> {
 				//Horizontal
 				if(tile1.getX() == tile2.getX()) {
 					if(t.getUIX() == tile1.getX()*2) {
@@ -1224,7 +1224,7 @@ public class TileODesignUI extends JFrame {
 			else if(tileType.getSelectedItem().toString().equals("Action Tile")) {
 				int disableTurns = new PopUpManager(this).askInactivityPeriod();
 				
-				List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.isSelected() && 
+				List<TileUI> tiles = tilesButtons.stream().filter(s -> s.isSelected() && 
 						s.getLifeState() == TileUI.LifeState.EXIST &&
 						s.getState() == TileUI.State.NORMAL).collect(Collectors.toList());
 				
@@ -1242,7 +1242,7 @@ public class TileODesignUI extends JFrame {
 			}
 			//NormalTile
 			else {
-				List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> !s.isSelected() && s.getLifeState() == TileUI.LifeState.NOTEXIST).collect(Collectors.toList());
+				List<TileUI> tiles = tilesButtons.stream().filter(s -> !s.isSelected() && s.getLifeState() == TileUI.LifeState.NOTEXIST).collect(Collectors.toList());
 				tiles.forEach(s -> {
 					s.setLifeState(TileUI.LifeState.EXIST);
 					s.resetUI();
@@ -1251,7 +1251,7 @@ public class TileODesignUI extends JFrame {
 					int connY = s.getUIY()*2;
 					
 					//Show nearest connections
-					connectionButtons.parallelStream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
+					connectionButtons.stream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
 							(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> {
 								t.setState(ConnectionUI.State.SHOW);
 								t.setLifeState(ConnectionUI.LifeState.EXIST);
@@ -1265,7 +1265,7 @@ public class TileODesignUI extends JFrame {
 		 * IF REMOVING A TILE
 		 */
 		case REMOVE_TILE:
-			List<TileUI> tiles = tilesButtons.parallelStream().filter(s -> s.isSelected() && s.getLifeState() == TileUI.LifeState.EXIST).collect(Collectors.toList());
+			List<TileUI> tiles = tilesButtons.stream().filter(s -> s.isSelected() && s.getLifeState() == TileUI.LifeState.EXIST).collect(Collectors.toList());
 			tiles.forEach(s -> {
 				s.setLifeState(TileUI.LifeState.NOTEXIST);
 				s.resetUI();
@@ -1276,7 +1276,7 @@ public class TileODesignUI extends JFrame {
 				int connY = s.getUIY()*2;
 				
 				//Hide nearest connections
-				connectionButtons.parallelStream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
+				connectionButtons.stream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
 						(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> {
 							t.setState(ConnectionUI.State.HIDE);
 							t.setLifeState(ConnectionUI.LifeState.NOTEXIST);
@@ -1294,7 +1294,7 @@ public class TileODesignUI extends JFrame {
 		 * IF ADDING A CONNECTION
 		 */
 		case ADD_CONNECTION:
-			connectionButtons.parallelStream()
+			connectionButtons.stream()
 				.filter(s -> s.isSelected() && s.isVisible() && s.getLifeState() == ConnectionUI.LifeState.NOTEXIST
 				&& s.getState() == ConnectionUI.State.SHOW)
 				.forEach(s -> {
@@ -1326,7 +1326,7 @@ public class TileODesignUI extends JFrame {
 		 * IF REMOVING A CONNECTION
 		 */
 		case REMOVE_CONNECTION:
-			connectionButtons.parallelStream().filter(s -> !s.isSelected() && s.isVisible() && s.getLifeState() == ConnectionUI.LifeState.EXIST
+			connectionButtons.stream().filter(s -> !s.isSelected() && s.isVisible() && s.getLifeState() == ConnectionUI.LifeState.EXIST
 				&& s.getState() == ConnectionUI.State.SHOW).forEach(s -> {
 					s.setLifeState(ConnectionUI.LifeState.NOTEXIST);
 					
