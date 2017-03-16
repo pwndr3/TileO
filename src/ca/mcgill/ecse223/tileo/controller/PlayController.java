@@ -136,19 +136,15 @@ public class PlayController {
 		playedCard.play(tile);
 	}
 	
+	public void playLoseTurnActionCard() {
+		Player player = game.getCurrentPlayer();
+		player.loseTurns(1);
+		nextTurn();
+	}
+	
 	public void nextTurn() {
-		int indexOfCurrentPlayer = game.indexOfPlayer(game.getCurrentPlayer());
-
-		// If current player is last player, make the first player the current
-		// player.
-		if (indexOfCurrentPlayer == (game.numberOfPlayers() - 1)) {
-			game.setCurrentPlayer(game.getPlayer(0));
-		}
-		// Set next player as current player.
-		else {
-			game.setCurrentPlayer(game.getPlayer(indexOfCurrentPlayer + 1));
-		}
-		
+		ui.update();
+		game.determineNextPlayer(ui);
 		ui.update();
 	}
 	

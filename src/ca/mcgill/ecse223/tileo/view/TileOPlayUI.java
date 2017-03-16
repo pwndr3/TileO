@@ -852,7 +852,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 
 	    			else if (actionCard instanceof LoseTurnActionCard) {
 	    				//Make lose next turn for currentPlayer
-	    				currentController.nextTurn();
+	    				currentController.playLoseTurnActionCard();
 	    			}
 
 	    			else if (actionCard instanceof TeleportActionCard) {

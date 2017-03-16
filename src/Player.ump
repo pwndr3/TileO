@@ -1,0 +1,23 @@
+//Player states
+namespace ca.mcgill.ecse223.tileo.model;
+
+class Player {
+       playerStatus {
+			Active {
+       			loseTurns(int n) [n>0] / {
+              		setTurnsUntilActive(getTurnsUntilActive() + n);
+       			} -> Inactive;
+			}
+			Inactive {
+       			takeTurn() [getTurnsUntilActive() > 1] / {
+              		setTurnsUntilActive(getTurnsUntilActive() - 1);
+      			} -> Inactive;
+       			takeTurn() [getTurnsUntilActive() <= 1] / {
+              		setTurnsUntilActive(0);
+       			} -> Active;
+       			loseTurns(int n) [n>0] / {
+              		setTurnsUntilActive(getTurnsUntilActive() + n);
+       			} -> Inactive;
+			}
+		}
+}

@@ -3,8 +3,12 @@
 package ca.mcgill.ecse223.tileo.model;
 
 import java.util.*;
+
+import javax.swing.JFrame;
+
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.*;
+import ca.mcgill.ecse223.tileo.view.PopUpManager;
 
 import java.io.Serializable;
 
@@ -34,7 +38,7 @@ public class Game implements Serializable {
 
 	private Mode mode;
 	private String gameName = null;
-	public boolean hasStarted = false; //means we can still edit it
+	public boolean hasStarted = false; // means we can still edit it
 
 	// Game Associations
 	private List<Player> players;
@@ -86,12 +90,12 @@ public class Game implements Serializable {
 	// ------------------------
 	// INTERFACE
 	// ------------------------
-	
+
 	public String getGameName() {
 		return gameName;
 	}
-	
-	public void setGameName(String name){
+
+	public void setGameName(String name) {
 		gameName = name;
 	}
 
@@ -547,9 +551,9 @@ public class Game implements Serializable {
 	}
 
 	public int rollDie() {
-		if(!hasStarted)
+		if (!hasStarted)
 			hasStarted = true;
-		
+
 		Die die = getDie();
 		return getDie().roll();
 	}
@@ -559,11 +563,30 @@ public class Game implements Serializable {
 		connectionPiece.addTile(tile1);
 		connectionPiece.addTile(tile2);
 	}
-	/*public void updateTileStatus() {
-		for (Tile tile : getTiles()) {
-			if (tile instanceof ActionTile) { 
-				((ActionTile) tile).takeTurn();
-			} 
-		} 
-	}*/
+
+	public void determineNextPlayer(JFrame window) {
+		boolean found = false;
+		Player player = getCurrentPlayer();
+		Player nextPlayer;
+		while (!found) {
+			try {
+				nextPlayer = getPlayer(indexOfPlayer(player) + 1);
+			} catch (IndexOutOfBoundsException e) {
+				nextPlayer = getPlayer(0);
+			}
+			if (nextPlayer.getPlayerStatus() == Player.PlayerStatus.Active) {
+				found = true;
+			} else {
+				new PopUpManager(window).acknowledgeMessage("Player "+(nextPlayer.getColorFullName())+" cannot play. Turn skipped.");
+				nextPlayer.takeTurn();
+			}
+			player = nextPlayer;
+		}
+
+		setCurrentPlayer(player);
+	}
+	/*
+	 * public void updateTileStatus() { for (Tile tile : getTiles()) { if (tile
+	 * instanceof ActionTile) { ((ActionTile) tile).takeTurn(); } } }
+	 */
 }
