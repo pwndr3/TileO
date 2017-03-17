@@ -38,8 +38,10 @@ public class DesignController {
 			for (int i = 0; i < game.numberOfPlayers(); i++) {
 				Player otherPlayer = allPlayers.get(i);
 				if (otherPlayer.hasStartingTile()) {
-					if (otherPlayer.getStartingTile() == tile) { // this one too
-						throw new InvalidInputException("This tile is already a start tile for another player");
+					if (otherPlayer.getStartingTile() == tile  && otherPlayer != player) { // this one too
+						throw new InvalidInputException("This tile is already assigned to another player");
+					} else if (otherPlayer.getStartingTile() == tile && otherPlayer == player) {
+						throw new InvalidInputException("The player's already there no worries");
 					}
 				}
 			}

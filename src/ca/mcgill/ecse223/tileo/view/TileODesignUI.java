@@ -1192,7 +1192,7 @@ public class TileODesignUI extends JFrame {
 					}
 				}
 			} catch (InvalidInputException e) {
-				System.out.println(e);
+				new PopUpManager(this).acknowledgeMessage(e.getMessage());
 			}
 
 			break;
