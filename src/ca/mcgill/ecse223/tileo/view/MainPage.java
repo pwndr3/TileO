@@ -10,6 +10,7 @@ import ca.mcgill.ecse223.tileo.view.popup.ActionCardPopUp;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import javax.swing.*;
@@ -153,16 +154,16 @@ public class MainPage extends javax.swing.JFrame {
         deletePlayButton.setBounds(740, 290, 90, 29);
 
         designNewGameButton.setBackground(new java.awt.Color(255, 207, 0));
-        designNewGameButton.setFont(new java.awt.Font("Songti SC", 1, 36)); // NOI18N
+        designNewGameButton.setFont(new java.awt.Font("Helvetica", 1, 24)); // NOI18N
         designNewGameButton.setForeground(new java.awt.Color(51, 51, 51));
-        designNewGameButton.setText("<html>Design New Game</html>");
+        designNewGameButton.setText("Design New Game");
         designNewGameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 designNewGameButtonActionPerformed(evt);
             }
         });
         jPanel1.add(designNewGameButton);
-        designNewGameButton.setBounds(330, 520, 310, 60);
+        
 
         jLabel2.setIcon(backgroundImage); // NOI18N
         jLabel2.setText("");
@@ -195,6 +196,9 @@ public class MainPage extends javax.swing.JFrame {
         //setUndecorated(true);
         setLocationRelativeTo(null);
         setLocation(new Double(width/2).intValue()-980/2, new Double(height/2).intValue()-654/2);
+        
+        designNewGameButton.setMargin(new Insets(0,0,0,0));
+        designNewGameButton.setBounds(330, 520, 980/4, 50);
 
         pack();
     }
