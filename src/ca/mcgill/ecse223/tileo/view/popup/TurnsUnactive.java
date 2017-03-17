@@ -4,8 +4,11 @@ import java.awt.Color;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
@@ -45,89 +48,109 @@ public class TurnsUnactive extends JDialog {
         Dimension screenSize = parentWindow.getSize();
         Point middle = new Point(screenSize.width / 2, screenSize.height / 2);
 
-        Button9.setText("9");
+        try {
+			Button9.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/9.png"))));
+			Button8.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/8.png"))));
+			Button7.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/7.png"))));
+			Button6.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/6.png"))));
+			Button5.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/5.png"))));
+			Button4.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/4.png"))));
+			Button3.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/3.png"))));
+			Button2.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/2.png"))));
+			Button1.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/1.png"))));
+		} catch (IOException e) {
+			
+		}
         Button9.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
         Button9.setContentAreaFilled(false);
+        Button8.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        Button8.setContentAreaFilled(false);
+        Button7.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        Button7.setContentAreaFilled(false);
+        Button6.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        Button6.setContentAreaFilled(false);
+        Button5.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        Button5.setContentAreaFilled(false);
+        Button4.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        Button4.setContentAreaFilled(false);
+        Button3.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        Button3.setContentAreaFilled(false);
+        Button2.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        Button2.setContentAreaFilled(false);
+        Button1.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+        Button1.setContentAreaFilled(false);
+        
         Button9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Button9ActionPerformed(evt);
             }
         });
         Container.add(Button9);
-        Button9.setBounds(210, 340, 80, 35);
+        Button9.setBounds(220, 320, 50, 50);
 
-        Button3.setText("3");
         Button3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Button3ActionPerformed(evt);
             }
         });
         Container.add(Button3);
-        Button3.setBounds(210, 160, 80, 35);
+        Button3.setBounds(220, 140, 50, 50);
 
-        Button4.setText("4");
         Button4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Button4ActionPerformed(evt);
             }
         });
         Container.add(Button4);
-        Button4.setBounds(10, 250, 80, 35);
+        Button4.setBounds(30, 230, 50, 50);
 
-        Button7.setText("7");
         Button7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Button7ActionPerformed(evt);
             }
         });
         Container.add(Button7);
-        Button7.setBounds(10, 340, 80, 35);
+        Button7.setBounds(30, 320, 50, 50);
 
-        Button8.setText("8");
         Button8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Button8ActionPerformed(evt);
             }
         });
         Container.add(Button8);
-        Button8.setBounds(110, 340, 80, 35);
+        Button8.setBounds(125, 320, 50, 50);
 
-        Button5.setText("5");
         Button5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Button5ActionPerformed(evt);
             }
         });
         Container.add(Button5);
-        Button5.setBounds(110, 250, 80, 35);
+        Button5.setBounds(125, 230, 50, 50);
 
-        Button6.setText("6");
         Button6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Button6ActionPerformed(evt);
             }
         });
         Container.add(Button6);
-        Button6.setBounds(210, 250, 80, 35);
+        Button6.setBounds(220, 230, 50, 50);
 
-        Button1.setText("1");
         Button1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Button1ActionPerformed(evt);
             }
         });
         Container.add(Button1);
-        Button1.setBounds(10, 160, 80, 35);
-
-        Button2.setText("2");
-        Button2.setActionCommand("2");
+        Button1.setBounds(30, 140, 50, 50);
+        
         Button2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Button2ActionPerformed(evt);
             }
         });
         Container.add(Button2);
-        Button2.setBounds(110, 160, 80, 35);
+        Button2.setBounds(125, 140, 50, 50);
 
         String p = getClass().getResource("/icons/popup/inactivityPeriod.png").toString();
         PictureBackground.setText("<html><img src=\""+p+"\"></html>");
