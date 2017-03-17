@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.*;
 import ca.mcgill.ecse223.tileo.view.PopUpManager;
+import ca.mcgill.ecse223.tileo.view.TileOPlayUI;
 
 import java.io.Serializable;
 
@@ -564,7 +565,7 @@ public class Game implements Serializable {
 		connectionPiece.addTile(tile2);
 	}
 
-	public void determineNextPlayer(JFrame window) {
+	public void determineNextPlayer(TileOPlayUI window) {
 		boolean found = false;
 		Player player = getCurrentPlayer();
 		Player nextPlayer;
@@ -577,6 +578,11 @@ public class Game implements Serializable {
 			if (nextPlayer.getPlayerStatus() == Player.PlayerStatus.Active) {
 				found = true;
 			} else {
+				//UI trick
+				setCurrentPlayer(nextPlayer);
+				window.update();
+				setCurrentPlayer(player);
+				//
 				new PopUpManager(window).acknowledgeMessage(
 						"Player " + (nextPlayer.getColorFullName()) + " cannot play. Turn skipped.");
 				nextPlayer.takeTurn();
