@@ -529,12 +529,7 @@ public class TileODesignUI extends JFrame {
 			if(tile instanceof ActionTile) {
 				TileUI tileGUI = tilesButtons.parallelStream().filter(s -> s.getUIX()==tile.getX() && s.getUIY()==tile.getY()).findAny().orElse(null);
 				tileGUI.resetUI();
-				try {
-					tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/action_tile.png"))));
-				} catch (IOException e) {
-					
-				}
-				
+				setActionTileIcon(tileGUI, ((ActionTile)tile).getInactivityPeriod());
 			} else if(tile instanceof WinTile) {
 				TileUI tileGUI = tilesButtons.parallelStream().filter(s -> s.getUIX()==tile.getX() && s.getUIY()==tile.getY()).findAny().orElse(null);
 				tileGUI.resetUI();
@@ -547,6 +542,16 @@ public class TileODesignUI extends JFrame {
  		}
 		
 		update();
+	}
+	
+	private void setActionTileIcon(TileUI tileUI, int inactivityPeriod) {
+		try {
+			tileUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/actiontiles/"+inactivityPeriod+".png"))));
+			
+		} catch (IOException e) {
+		}
+		
+		tileUI.setState(TileUI.State.ACTION);
 	}
 
 	private void initComponents() {
@@ -1230,12 +1235,7 @@ public class TileODesignUI extends JFrame {
 						s.getState() == TileUI.State.NORMAL).collect(Collectors.toList());
 				
 				tiles.forEach(s -> {
-					try {
-						s.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/action_tile.png"))));
-						s.setState(TileUI.State.ACTION);
-					} catch (IOException e) {
-						
-					}
+					setActionTileIcon(s, disableTurns);
 					
 					Tile tileEquivalent = game.getTileFromXY(s.getUIX(), s.getUIY());
 					
