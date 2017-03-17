@@ -98,6 +98,11 @@ public class PopUpManager {
 	public void showActionTile(ActionCard card) {
 		Image img = null;
 		
+		if(card == null) {
+			new ActionCardPopUp(parentWindow);
+			return;
+		}
+		
 		try {
 			//Roll die again
 			if(card instanceof RollDieActionCard) {

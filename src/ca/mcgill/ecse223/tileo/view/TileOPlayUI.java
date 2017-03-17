@@ -760,6 +760,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 	private void landOnActionTile(TileUI tileUI, Tile tile) {
 		tileUI.setVisited(true);
 		if(((ActionTile)game.getCurrentPlayer().getCurrentTile()).getActionTileStatus() == ActionTile.ActionTileStatus.Active) {
+			new PopUpManager(this).showActionTile(null);
 			update();
 			currentController.setState(PlayController.State.ActionCard);
 			maskButtons(PICKCARD);

@@ -59,6 +59,36 @@ public class ActionCardPopUp extends JFrame {
         timer.start();
 	}
 	
+	public ActionCardPopUp(JFrame window) {
+        ActionTilePicture = new javax.swing.JLabel();
+
+        setPreferredSize(new Dimension(300, 400)); 
+        setSize(new Dimension(300, 400)); 
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        getContentPane().setLayout(null);
+
+        String p = getClass().getResource("/icons/popup/actionTileLand.png").toString();
+        ActionTilePicture.setText("<html><img src=\""+p+"\"></html>");
+        getContentPane().add(ActionTilePicture);
+        ActionTilePicture.setBounds(0, 0, 300, 400);
+        
+        setResizable(false);
+        setUndecorated(true);
+        setLocationRelativeTo(window);
+
+        setVisible(true);
+        pack();
+        
+        Timer timer = new Timer(2000, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                dispose();
+            }
+        });
+        timer.setRepeats(false);
+        timer.start();
+	}
+	
 	private javax.swing.JLabel ActionTilePicture;
     private javax.swing.JLabel Button;
     private javax.swing.JLabel Picture;
