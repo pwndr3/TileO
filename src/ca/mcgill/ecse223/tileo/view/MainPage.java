@@ -154,7 +154,6 @@ public class MainPage extends javax.swing.JFrame {
         deletePlayButton.setBounds(740, 290, 90, 29);
 
         designNewGameButton.setBackground(new java.awt.Color(255, 207, 0));
-        designNewGameButton.setFont(new java.awt.Font("Helvetica", 1, 24)); // NOI18N
         designNewGameButton.setForeground(new java.awt.Color(51, 51, 51));
         designNewGameButton.setText("Design New Game");
         designNewGameButton.addActionListener(new java.awt.event.ActionListener() {
@@ -197,8 +196,9 @@ public class MainPage extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setLocation(new Double(width/2).intValue()-980/2, new Double(height/2).intValue()-654/2);
         
+        designNewGameButton.setFont(new java.awt.Font("Helvetica", 1, 24));
         designNewGameButton.setMargin(new Insets(0,0,0,0));
-        designNewGameButton.setBounds(330, 520, 980/4, 50);
+        designNewGameButton.setBounds(368, 520, 245, 50);
 
         pack();
     }
