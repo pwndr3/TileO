@@ -558,6 +558,19 @@ public class TileOPlayUI extends javax.swing.JFrame {
 
 		updateConnectionPieces();
 		updatePlayerNameAndColor();
+		
+		if(currentController.getState() == PlayController.State.GameWon) {
+			maskButtons(0);
+			saveButton.setEnabled(false);
+			
+			Timer timer = new Timer(1000, new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	            	winGame();
+	            }
+	        });
+	        timer.setRepeats(false);
+	        timer.start();
+		}
 
 		repaint();
 		revalidate();
