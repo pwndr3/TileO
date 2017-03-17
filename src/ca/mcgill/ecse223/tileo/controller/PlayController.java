@@ -129,6 +129,7 @@ public class PlayController {
 			}
 			if (tile instanceof WinTile) {
 				tile.land();
+				game.setMode(Game.Mode.GAME_WON);
 				setState(State.GameWon);
 				wasEventProcessed = true;
 				break;
@@ -203,6 +204,7 @@ public class PlayController {
 				// Play the card
 				playedCard.play(tile);
 				setState(State.GameWon);
+				game.setMode(Game.Mode.GAME_WON);
 				wasEventProcessed = true;
 				break;
 			}
@@ -246,9 +248,12 @@ public class PlayController {
 		ui.update();
 		game.determineNextPlayer(ui);
 		ui.update();
+		setState(PlayController.State.Roll);
+		game.setMode(Game.Mode.GAME);
+		ui.maskButtons(ui.ROLLDIE);
 	}
 
-	public void saveGame(String gameName) {
+	public void saveGame() {
 		TileOApplication.save();
 	}
 

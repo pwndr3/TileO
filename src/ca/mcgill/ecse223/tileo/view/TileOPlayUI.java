@@ -44,6 +44,8 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			} catch (Exception e) {
 				new PopUpManager(this).acknowledgeMessage(e.getMessage());
 			}
+		} else {
+			currentController.loadGame();
 		}
 
 		setupBoardFromGame();
@@ -230,12 +232,26 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		});
 
 		update();
+		maskButtons(ROLLDIE);
+		
+		if(currentController.getState() == PlayController.State.GameWon) {
+			maskButtons(0);
+			saveButton.setEnabled(false);
+			
+			Timer timer = new Timer(1000, new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	            	winGame();
+	            }
+	        });
+	        timer.setRepeats(false);
+	        timer.start();
+		}
 	}
 
-	private int PICKCARD = 1;
-	private int ROLLDIE = 2;
+	public int PICKCARD = 1;
+	public int ROLLDIE = 2;
 
-	private void maskButtons(int mask) {
+	public void maskButtons(int mask) {
 		pickCardButton.setEnabled((mask & PICKCARD) == PICKCARD);
 		rollDieButton.setEnabled((mask & ROLLDIE) == ROLLDIE);
 	}
@@ -540,10 +556,6 @@ public class TileOPlayUI extends javax.swing.JFrame {
 				s.setBackground(null);
 		});
 
-		currentController.setState(PlayController.State.Roll);
-		game.setMode(Game.Mode.GAME);
-		maskButtons(ROLLDIE);
-
 		updateConnectionPieces();
 		updatePlayerNameAndColor();
 
@@ -697,22 +709,21 @@ public class TileOPlayUI extends javax.swing.JFrame {
 				return;
 			}
 			
+			currentController.setState(PlayController.State.Move);
 			tile = game.getTileFromXY(tileUI.getUIX(), tileUI.getUIY());
+			currentController.land(tile);
 			
 			if(tile instanceof ActionTile) {
-				tile.land();
 				landOnActionTile(tileUI, tile);
 			}
 			
 			else if(tile instanceof WinTile) {
-				tile.land();
 				landOnWinTile(tileUI, tile);
 				
 			}
 			
 			else {
 				tileUI.setVisited(true);
-				tile.land();
 				currentController.nextTurn();
 			}
 			
@@ -733,7 +744,6 @@ public class TileOPlayUI extends javax.swing.JFrame {
 					break;
 				default:
 					tileUI.setVisited(true);
-					tile.land();
 					currentController.nextTurn();
 					break;
 				}
@@ -751,6 +761,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		tileUI.setVisited(true);
 		if(((ActionTile)game.getCurrentPlayer().getCurrentTile()).getActionTileStatus() == ActionTile.ActionTileStatus.Active) {
 			update();
+			currentController.setState(PlayController.State.ActionCard);
 			maskButtons(PICKCARD);
 			((ActionTile)game.getCurrentPlayer().getCurrentTile()).deactivate();
 		} else {
@@ -761,11 +772,13 @@ public class TileOPlayUI extends javax.swing.JFrame {
 	private void landOnWinTile(TileUI tileUI, Tile tile) {
 		tileUI.setVisited(true);
 		update();
-		maskButtons(0);
+	}
+	
+	private void winGame() {
+		currentController.saveGame();
 		new PopUpManager(this).acknowledgeMessage("Player "+(game.getCurrentPlayer().getColor())+" won the game!");
 		Timer timer = new Timer(1000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	currentController.saveGame(game.getGameName());
             	new MainPage().setVisible(true);
 				dispose();
             }
@@ -924,7 +937,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 
 	private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		saved = true;
-		currentController.saveGame(game.getGameName());
+		currentController.saveGame();
 		new PopUpManager(this).acknowledgeMessage("Game saved.");
 	}
 
