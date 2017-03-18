@@ -1,5 +1,9 @@
 package ca.mcgill.ecse223.tileo.view;
 
+import java.awt.Insets;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import ca.mcgill.ecse223.tileo.view.TileUI.LifeState;
@@ -20,6 +24,26 @@ public class ConnectionUI extends JToggleButton {
 		currentLifeState = LifeState.NOTEXIST;
 		currentState = State.SHOW;
 		type = aType;
+		
+		/*if(type == Type.VERTICAL) {
+			try {
+				setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/vert.png"))));
+			} catch (IOException e) {
+
+			}
+			setMargin(new Insets(0,0,0,0));
+	        setContentAreaFilled(false);
+		}
+		
+		else {
+			try {
+				setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/horiz.png"))));
+			} catch (IOException e) {
+
+			}
+			setMargin(new Insets(0,0,0,0));
+	        setContentAreaFilled(false);
+		}*/
 		
 		saveUIState();
 	}
