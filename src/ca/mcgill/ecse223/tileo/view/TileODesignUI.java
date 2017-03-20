@@ -913,7 +913,7 @@ public class TileODesignUI extends JFrame {
 												.addComponent(cardsLeft).addGap(52, 52, 52)
 												.addComponent(nbRollDieCard, javax.swing.GroupLayout.PREFERRED_SIZE,
 														33, javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39,
+												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 0,
 														Short.MAX_VALUE))
 										.addGroup(layout.createSequentialGroup().addComponent(jLabel5)
 												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
@@ -1330,7 +1330,7 @@ public class TileODesignUI extends JFrame {
 		 * IF REMOVING A CONNECTION
 		 */
 		case REMOVE_CONNECTION:
-			connectionButtons.stream().filter(s -> !s.isSelected() && s.isVisible() && s.getLifeState() == ConnectionUI.LifeState.EXIST
+			connectionButtons.stream().filter(s -> s.isSelected() && s.isVisible() && s.getLifeState() == ConnectionUI.LifeState.EXIST
 				&& s.getState() == ConnectionUI.State.SHOW).forEach(s -> {
 					s.setLifeState(ConnectionUI.LifeState.NOTEXIST);
 					
@@ -1395,10 +1395,15 @@ public class TileODesignUI extends JFrame {
 
 		// Change colors for connections
 		connectionButtons.parallelStream().forEach(s -> {
-			if (s.getLifeState() == ConnectionUI.LifeState.NOTEXIST) 
+			if (s.getLifeState() == ConnectionUI.LifeState.NOTEXIST) {
 				s.setBackground(null); 
-			else
+				s.setColored(false);
+			}
+			else {
 				s.setBackground(new java.awt.Color(0, 0, 0));
+				s.setColored(true);
+			}
+			s.setSelected(false);
 		});
 
 		// Reset states
@@ -1515,9 +1520,11 @@ public class TileODesignUI extends JFrame {
 			// Enable changes
 			else {
 				enableChanges();
+				conn.toggleColor();
 			}
 		} else if (designState == DesignState.REMOVE_CONNECTION) {
 			enableChanges();
+			conn.toggleColor();
 		}
 		// Does not allow connections to be clicked
 		else {
