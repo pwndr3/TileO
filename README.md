@@ -14,14 +14,36 @@
   - [x] Sequence diagrams for Controller methods of features (50)
   - [x] Uniform look and formatting of the project report (5)
 
-- [ ] **Part 3 : Implementation - 8% - Feb 24**  
+- [x] **Part 3 : Implementation - 8% - Feb 24**  
+  - [x] Implementation of features - Individual (60)
+  - [x] Implementation of features - Team (30)
+  - [x] Uniform look and feel of the application - Team (10)
 
-- [ ] **Part 4 : State Machines - 4% - Mar 10**  
+- [x] **Part 4 : State Machines - 4% - Mar 10**  
+  - [x] State Machine for Controller (40)
+  - [x] Inactivity Period (30)
+  - [x] "Loses your next turn" (30)
 
-- [ ] **Part 5 : State Machine Integration - 4% - Mar 17**  
+- [x] **Part 5 : State Machine Integration - 4% - Mar 17**  
+  - [x] Implementation of Controller state machine (40)
+  - [x] Implementation of inactivity period (30)
+  - [x] Implementation of Action Card “Lose your next turn” (30)
 
 - [ ] **Part 6 : Expand Application - 4% - Mar 24**  
+  - [x] On-time submission of new action card (10)
+  - [x] Quality of description of new action card (10)
+  - [ ] Update to Umple code and implementation of Controller methods (60)
+  - [ ] On-time submission to shared TileO repository in our GitHub organization (20)
 
 - [ ] **Part 7 : Final Application - 8% - Apr 6**  
+  - [ ] Implementation of additional action card - Individual (25)
+  - [ ] Implementation of all other features - Team (70)
+  - [ ] Uniform look and feel of the application - Team (5)
 
 - [ ] **Part 8 : Demo - 4% - Apr 7/10/11**  
+  - [ ] Presentation style (15)
+  - [ ] Communication (15)
+  - [ ] Quality of presentation slides (15)
+  - [ ] Quality of your live demo (Design Mode) (20)
+  - [ ] Quality of your live demo (Play Mode) (20)
+  - [ ] Questions for demos of other teams (15)
