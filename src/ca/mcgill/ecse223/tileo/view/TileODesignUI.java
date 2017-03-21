@@ -1249,17 +1249,34 @@ public class TileODesignUI extends JFrame {
 					s.setLifeState(TileUI.LifeState.EXIST);
 					s.resetUI();
 					
+					int x = s.getUIX();
+					int y = s.getUIY();
+					
 					currentController.createNormalTile(s.getUIX(), s.getUIY());
 					
 					int connX = s.getUIX()*2;
 					int connY = s.getUIY()*2;
 					
 					//Show nearest connections
-					connectionButtons.stream().filter(t -> (t.getUIX()==connX && Math.abs(t.getUIY()-connY)==1) ||
-							(t.getUIY()==connY && Math.abs(t.getUIX()-connX)==1)).forEach(t -> {
-								t.setState(ConnectionUI.State.SHOW);
-								t.setLifeState(ConnectionUI.LifeState.EXIST);
-							});		
+					connectionButtons.stream().filter(t -> t.getState() == ConnectionUI.State.HIDE).forEach(t -> {
+						boolean show = false;
+								
+						//Top
+						if(getTileUIByXY(x-1,y) != null && getTileUIByXY(x-1,y).getLifeState() == TileUI.LifeState.EXIST && y*2 == t.getUIY() && x*2-1 == t.getUIX())
+							show = true;
+						//Bottom
+						else if(getTileUIByXY(x+1,y) != null && getTileUIByXY(x+1,y).getLifeState() == TileUI.LifeState.EXIST && y*2 == t.getUIY() && x*2+1 == t.getUIX())
+							show = true;
+						//Left
+						else if(getTileUIByXY(x,y-1) != null && getTileUIByXY(x,y-1).getLifeState() == TileUI.LifeState.EXIST && y*2-1 == t.getUIY() && x*2 == t.getUIX())
+							show = true;
+						//Right
+						else if(getTileUIByXY(x,y+1) != null && getTileUIByXY(x,y+1).getLifeState() == TileUI.LifeState.EXIST && y*2+1 == t.getUIY() && x*2 == t.getUIX())
+							show = true;
+						
+						if(show)
+							t.setState(ConnectionUI.State.SHOW);
+					});
 				});
 				
 			}
@@ -1598,6 +1615,10 @@ public class TileODesignUI extends JFrame {
 	private void hideDisabledConnections() {
 		connectionButtons.parallelStream().filter(s -> s.getLifeState() == ConnectionUI.LifeState.NOTEXIST)
 				.forEach(s -> s.hideUI());
+	}
+	
+	private TileUI getTileUIByXY(int x, int y) {
+		return tilesButtons.parallelStream().filter(s -> s.getUIX() == x && s.getUIY() == y).findAny().orElse(null);
 	}
 
 	//
