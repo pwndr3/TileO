@@ -1254,9 +1254,6 @@ public class TileODesignUI extends JFrame {
 					
 					currentController.createNormalTile(s.getUIX(), s.getUIY());
 					
-					int connX = s.getUIX()*2;
-					int connY = s.getUIY()*2;
-					
 					//Show nearest connections
 					connectionButtons.stream().filter(t -> t.getState() == ConnectionUI.State.HIDE).forEach(t -> {
 						boolean show = false;
