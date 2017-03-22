@@ -263,4 +263,58 @@ public abstract class Tile implements Serializable {
 
 		return neighbours;
 	}
+	
+	public int longestPathFromTile(Tile previousTile, List<Tile> previousTiles) {
+		int longestPath = 0;
+		
+		if(!previousTiles.contains(this))
+			previousTiles.add(this);
+		else
+			return 0;
+		
+		//No connections
+		if(!hasConnections()) {
+			return 0;
+		}
+		
+		//Only connection is previousTile
+		if(getConnections().size() == 1) {
+			Connection connection = getConnection(0);
+			
+			if(connection.getTile(0) == this && connection.getTile(1) == previousTile)
+				return 0;
+			if(connection.getTile(1) == this && connection.getTile(0) == previousTile)
+				return 0;
+		}
+		
+		List<Tile> tilesToBeVisited = new ArrayList<Tile>();
+		
+		//Only visited tiles
+		for(Connection connection : getConnections()) {
+			if(connection != null) {
+				if (connection.getTile(0) == this) {
+					if(!previousTiles.contains(connection.getTile(1))) {
+						tilesToBeVisited.add(connection.getTile(1));
+					}
+				}
+					
+				else if (connection.getTile(1) == this) {
+					if(!previousTiles.contains(connection.getTile(0))) {
+						tilesToBeVisited.add(connection.getTile(0));
+					}
+				}
+			}
+		}
+		
+		for(Tile tile : tilesToBeVisited) {
+			int tmpMax = 0;
+			
+			tmpMax = tile.longestPathFromTile(this, previousTiles)+1;
+			
+			if(tmpMax > longestPath)
+				longestPath = tmpMax;
+		}
+		
+		return longestPath;
+	}
 }

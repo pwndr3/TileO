@@ -29,8 +29,8 @@ public class TileODesignUI extends JFrame {
 
 	private DesignState designState = DesignState.NONE;
 
-	private int numberOfRows = 0;
-	private int numberOfCols = 0;
+	public int numberOfRows = 0;
+	public int numberOfCols = 0;
 
 	private int nbOfCardsLeft = 32;
 	int[] cardsCounts = { 0, 0, 0, 0, 0 };
@@ -46,7 +46,7 @@ public class TileODesignUI extends JFrame {
 		}
 
 		game = aGame;
-		currentController = new DesignController(game);
+		currentController = new DesignController(game, this);
 
 		// Init layout
 		initComponents();
@@ -64,9 +64,9 @@ public class TileODesignUI extends JFrame {
 	private static final int REMOVECONNBTN = 128;
 	private static final int CARDS = 256;
 	private static final int SAVEBTN = 512;
-	private static final int LOADBTN = 1024;
-	private static final int CHOSENPLAYER = 2048;
-	private static final int ALLBTN = 8191;
+	private static final int CHOSENPLAYER = 1024;
+	private static final int GENERATEBTN = 2048;
+	private static final int ALLBTN = 4095;
 
 	private void maskButtons(int param) {
 		verticalLength.setEnabled((param & BOARDSIZE) == BOARDSIZE);
@@ -87,6 +87,8 @@ public class TileODesignUI extends JFrame {
 		//
 		addConnectionButton.setEnabled((param & ADDCONNBTN) == ADDCONNBTN);
 		//
+		generateButton.setEnabled((param & GENERATEBTN) == GENERATEBTN);
+		//
 		nbRollDieCard.setEnabled((param & CARDS) == CARDS);
 		nbRemoveConnectionCard.setEnabled((param & CARDS) == CARDS);
 		nbTeleportCard.setEnabled((param & CARDS) == CARDS);
@@ -99,14 +101,6 @@ public class TileODesignUI extends JFrame {
 		} else {
 			saveButton.setEnabled(false);
 			saveButton.setForeground(new java.awt.Color(200,200,200));
-		}
-		//
-		if((param & LOADBTN) == LOADBTN) {
-			loadButton.setEnabled(true);
-			loadButton.setForeground(new java.awt.Color(0,0,0));
-		} else {
-			loadButton.setEnabled(false);
-			loadButton.setForeground(new java.awt.Color(200,200,200));
 		}
 	}
 
@@ -276,6 +270,7 @@ public class TileODesignUI extends JFrame {
 		 }
 		 
 		//Cards
+		cardsCounts = new int[]{0,0,0,0,0};
 		game.getDeck().getCards().parallelStream().forEach(s -> {
 			if(s instanceof RollDieActionCard)
 				cardsCounts[0]++;
@@ -298,8 +293,8 @@ public class TileODesignUI extends JFrame {
 		cardsLeft.setText(String.valueOf(32 - cardsCounts[0] - cardsCounts[1] - cardsCounts[2] - cardsCounts[3] - cardsCounts[4]));
 		
 		//Board size
-		horizontalLength.setSelectedIndex(numberOfCols - 2);
-		verticalLength.setSelectedIndex(numberOfRows - 2);
+		horizontalLength.setSelectedIndex(numberOfCols - 3);
+		verticalLength.setSelectedIndex(numberOfRows - 3);
 		
 	}
 
@@ -319,7 +314,7 @@ public class TileODesignUI extends JFrame {
 	}
 
 	// Setup new board
-	private void setupBoard(boolean forceNewGame) {
+	public void setupBoard(boolean forceNewGame) {
 		numberOfRows = numberOfCols = 0;
 		
 		if(tilesButtons == null) {
@@ -586,7 +581,7 @@ public class TileODesignUI extends JFrame {
 		nbConnectTilesCard = new javax.swing.JTextField();
 		saveButton = new javax.swing.JButton();
 		nbOfPlayers = new javax.swing.JComboBox<>();
-		loadButton = new javax.swing.JButton();
+		generateButton = new javax.swing.JButton();
 		jLabel17 = new javax.swing.JLabel();
 		backButton = new javax.swing.JButton();
 		cardsLeft = new javax.swing.JLabel();
@@ -821,11 +816,13 @@ public class TileODesignUI extends JFrame {
 		nbOfPlayers.setBackground(new java.awt.Color(204, 204, 255));
 		nbOfPlayers.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2", "3", "4" }));
 
-		loadButton.setBackground(new java.awt.Color(255, 204, 0));
-		loadButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-		loadButton.setForeground(new java.awt.Color(0, 0, 0));
-		loadButton.setText("Load");
-		loadButton.setVisible(false);
+		generateButton.setBackground(Color.decode("#681072"));
+		generateButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+		generateButton.setForeground(new java.awt.Color(255, 255, 255));
+		generateButton.setText("Generate");
+		generateButton.addActionListener(e -> {
+			currentController.generateRandomBoard();
+		});
 
 		jLabel17.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
 		jLabel17.setText("TileO Design Mode");
@@ -850,12 +847,12 @@ public class TileODesignUI extends JFrame {
 		cardsLeft.setText("32");
 
 		horizontalLength.setModel(new javax.swing.DefaultComboBoxModel<>(
-				new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }));
-		horizontalLength.setSelectedIndex(8 - 2);
+				new String[] { "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }));
+		horizontalLength.setSelectedIndex(8 - 3);
 
 		verticalLength.setModel(new javax.swing.DefaultComboBoxModel<>(
-				new String[] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }));
-		verticalLength.setSelectedIndex(8 - 2);
+				new String[] { "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }));
+		verticalLength.setSelectedIndex(8 - 3);
 		// Window
 
 		setResizable(false);
@@ -1016,7 +1013,7 @@ public class TileODesignUI extends JFrame {
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 								.addComponent(applyChangesButton, javax.swing.GroupLayout.Alignment.TRAILING,
 										javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
-								.addComponent(loadButton, javax.swing.GroupLayout.DEFAULT_SIZE,
+								.addComponent(generateButton, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(saveButton, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1065,7 +1062,7 @@ public class TileODesignUI extends JFrame {
 												.addComponent(addConnectionButton)))
 								.addGroup(layout.createSequentialGroup()
 										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(saveButton).addGap(13, 13, 13).addComponent(loadButton)))
+										.addComponent(saveButton).addGap(13, 13, 13).addComponent(generateButton)))
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 								.addGroup(layout.createSequentialGroup()
@@ -1117,7 +1114,7 @@ public class TileODesignUI extends JFrame {
         setLocation(new Double(width/2).intValue()-getWidth()/2, new Double(height/2).intValue()-getHeight()/2);
 	}
 
-	private void update() {
+	public void update() {
 		switch (designState) {
 		/*
 		 * IF BOARD SIZE HAS CHANGED
@@ -1240,6 +1237,7 @@ public class TileODesignUI extends JFrame {
 					Tile tileEquivalent = game.getTileFromXY(s.getUIX(), s.getUIY());
 					
 					currentController.createActionTile(tileEquivalent, disableTurns);
+					s.setState(TileUI.State.ACTION);
 				});
 			}
 			//NormalTile
@@ -1247,6 +1245,7 @@ public class TileODesignUI extends JFrame {
 				List<TileUI> tiles = tilesButtons.stream().filter(s -> !s.isSelected() && s.getLifeState() == TileUI.LifeState.NOTEXIST).collect(Collectors.toList());
 				tiles.forEach(s -> {
 					s.setLifeState(TileUI.LifeState.EXIST);
+					s.setState(TileUI.State.NORMAL);
 					s.resetUI();
 					
 					int x = s.getUIX();
@@ -1286,6 +1285,7 @@ public class TileODesignUI extends JFrame {
 			List<TileUI> tiles = tilesButtons.stream().filter(s -> s.isSelected() && s.getLifeState() == TileUI.LifeState.EXIST).collect(Collectors.toList());
 			tiles.forEach(s -> {
 				s.setLifeState(TileUI.LifeState.NOTEXIST);
+				s.setState(TileUI.State.NORMAL);
 				s.resetUI();
 				
 				Tile tileEquivalent = game.getTileFromXY(s.getUIX(), s.getUIY());
@@ -1549,7 +1549,6 @@ public class TileODesignUI extends JFrame {
 	}
 
 	private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO : Check if game is playable to change game state
 		String newName = null;
 		while((newName = new PopUpManager(this).askSaveName(game.getGameName())) == "");
 			
@@ -1614,8 +1613,28 @@ public class TileODesignUI extends JFrame {
 				.forEach(s -> s.hideUI());
 	}
 	
-	private TileUI getTileUIByXY(int x, int y) {
+	public TileUI getTileUIByXY(int x, int y) {
 		return tilesButtons.parallelStream().filter(s -> s.getUIX() == x && s.getUIY() == y).findAny().orElse(null);
+	}
+	
+	public ConnectionUI getConnectionUIByXY(int x, int y) {
+		return connectionButtons.parallelStream().filter(s -> s.getUIX() == x && s.getUIY() == y).findAny().orElse(null);
+	}
+	
+	public Game getGame() {
+		return game;
+	}
+	
+	public void setGame(Game aGame) {
+		game = aGame;
+	}
+	
+	public List<ConnectionUI> getConnectionsUI() {
+		return connectionButtons;
+	}
+	
+	public List<TileUI> getTilesUI() {
+		return tilesButtons;
 	}
 
 	//
@@ -1646,7 +1665,7 @@ public class TileODesignUI extends JFrame {
 	private javax.swing.JLabel jLabel7;
 	private javax.swing.JLabel jLabel8;
 	private javax.swing.JLabel jLabel9;
-	private javax.swing.JButton loadButton;
+	private javax.swing.JButton generateButton;
 	private javax.swing.JTextField nbConnectTilesCard;
 	private javax.swing.JTextField nbLoseTurnCard;
 	private javax.swing.JComboBox<String> nbOfPlayers;

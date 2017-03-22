@@ -714,7 +714,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 
 		switch (currentController.getState()) {
 		case Roll:
-			if(!tileUI.getBackground().equals(new java.awt.Color(30, 30, 220))) {
+			if(!tileUI.getBackground().equals(new java.awt.Color(30, 30, 220)) && !tileUI.getBackground().equals(new java.awt.Color(132,105,209))) {
 				tileUI.setSelected(false);
 				tileUI.setBorderPainted(false);
 				tileUI.setFocusPainted(false);
@@ -938,7 +938,10 @@ public class TileOPlayUI extends javax.swing.JFrame {
         			currentController.nextTurn();
         		} else {
         			possiblePlayerMoves.parallelStream().forEach(s -> {
-        				getTileUIByXY(s.getX(), s.getY()).setBackground(new java.awt.Color(30, 30, 220));
+        				if(!s.getHasBeenVisited())
+        					getTileUIByXY(s.getX(), s.getY()).setBackground(new java.awt.Color(30, 30, 220));
+        				else
+        					getTileUIByXY(s.getX(), s.getY()).setBackground(new java.awt.Color(132,105,209));
         			});
         			currentController.setState(PlayController.State.Roll);
         		}
