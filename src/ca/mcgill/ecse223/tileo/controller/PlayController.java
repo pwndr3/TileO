@@ -146,6 +146,34 @@ public class PlayController {
 
 		return wasEventProcessed;
 	}
+	
+	public boolean playSendBackToStartActionCard(Player playerChosen)
+	{
+		boolean wasEventProcessed = false;
+
+		State aState = state;
+		switch (aState)
+		{
+			case ActionCard:
+				if (game.getDeck().getCurrentCard() instanceof SendBackToStartActionCard)
+				{
+					// line 42 "model.ump"
+					doPlaySendBackToStartActionCard(playerChosen);
+					setState(State.Roll);
+					wasEventProcessed = true;
+					break;
+				}
+				break;
+			default:
+				// Other states do respond to this event
+		}
+
+		return wasEventProcessed;
+	}
+	
+	public void doPlaySendBackToStartActionCard(Player playerChosen){
+	//CODE FOR THE NEW ACTION CARD GOES HERE	
+	}
 
 	public List<Tile> playRollDieActionCard() {
 		// Roll The Die method returns possible tiles for player to move to.
