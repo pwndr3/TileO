@@ -171,8 +171,9 @@ public class PlayController {
 		return wasEventProcessed;
 	}
 	
-	public void doPlaySendBackToStartActionCard(Player playerChosen){
-	//CODE FOR THE NEW ACTION CARD GOES HERE	
+	public boolean doPlaySendBackToStartActionCard(Player playerChosen){
+		playerChosen.setCurrentTile(playerChosen.getStartingTile())
+		return true;
 	}
 
 	public List<Tile> playRollDieActionCard() {
