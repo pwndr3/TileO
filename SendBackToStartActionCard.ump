@@ -1,0 +1,5 @@
+namespace ca.mcgill.ecse223.tileo.model;
+
+class SendBackToStartActionCard {
+  isA ActionCard;
+}
