@@ -40,6 +40,10 @@ class PlayController {
         }
           
         ActionCard {
+            playSendBackToStartActionCard(Player playerChosen) [isSendBackToStartActionCard()] / {
+            doPlaySendBackToStartActionCard(Player playerChosen);
+            } -> Roll;
+            
             playRollDieActionCard() [isRollDieActionCard()] / {
             possibleMoves = doPlayRollDieActionCard();
             } -> Roll;
