@@ -25,7 +25,7 @@ super(aInstructions, aDeck);
 //------------------------
 
 public Mode getActionCardGameMode() {
-    return Mode.GAME_SENDBACKTOSTART;
+    return Mode.GAME_SENDBACKTOSTARTACTIONCARD;
   }
 
 public void delete(){

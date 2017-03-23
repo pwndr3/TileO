@@ -157,8 +157,7 @@ public class PlayController {
 			case ActionCard:
 				if (game.getDeck().getCurrentCard() instanceof SendBackToStartActionCard)
 				{
-					// line 42 "model.ump"
-					doPlaySendBackToStartActionCard(playerChosen);
+					playerChosen.setCurrentTile(playerChosen.getStartingTile());
 					setState(State.Roll);
 					wasEventProcessed = true;
 					break;
@@ -169,11 +168,6 @@ public class PlayController {
 		}
 
 		return wasEventProcessed;
-	}
-	
-	public boolean doPlaySendBackToStartActionCard(Player playerChosen){
-		playerChosen.setCurrentTile(playerChosen.getStartingTile())
-		return true;
 	}
 
 	public List<Tile> playRollDieActionCard() {
