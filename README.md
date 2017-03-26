@@ -29,11 +29,11 @@
   - [x] Implementation of inactivity period (30)
   - [x] Implementation of Action Card “Lose your next turn” (30)
 
-- [ ] **Part 6 : Expand Application - 4% - Mar 24**  
+- [x] **Part 6 : Expand Application - 4% - Mar 24**  
   - [x] On-time submission of new action card (10)
   - [x] Quality of description of new action card (10)
-  - [ ] Update to Umple code and implementation of Controller methods (60)
-  - [ ] On-time submission to shared TileO repository in our GitHub organization (20)
+  - [x] Update to Umple code and implementation of Controller methods (60)
+  - [x] On-time submission to shared TileO repository in our GitHub organization (20)
 
 - [ ] **Part 7 : Final Application - 8% - Apr 6**  
   - [ ] Implementation of additional action card - Individual (25)
