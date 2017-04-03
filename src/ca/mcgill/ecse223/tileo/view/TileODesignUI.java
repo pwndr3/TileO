@@ -1,13 +1,10 @@
 package ca.mcgill.ecse223.tileo.view;
 
-import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.*;
 import ca.mcgill.ecse223.tileo.model.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import java.util.*;
 import java.util.List;
@@ -16,6 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 
+@SuppressWarnings("serial")
 public class TileODesignUI extends JFrame {
 	private DesignController currentController;
 
@@ -33,11 +31,8 @@ public class TileODesignUI extends JFrame {
 	public int numberOfCols = 0;
 
 	private int nbOfCardsLeft = 32;
-	int[] cardsCounts = { 0, 0, 0, 0, 0 };
+	int[] cardsCounts = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-	/**
-	 * Creates new form TileOUGUI
-	 */
 	public TileODesignUI(Game aGame) {
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -87,13 +82,27 @@ public class TileODesignUI extends JFrame {
 		//
 		addConnectionButton.setEnabled((param & ADDCONNBTN) == ADDCONNBTN);
 		//
-		generateButton.setEnabled((param & GENERATEBTN) == GENERATEBTN);
+		if((param & GENERATEBTN) == GENERATEBTN) {
+			generateButton.setEnabled(true);
+			generateButton.setForeground(new java.awt.Color(255,255,255));
+		} else {
+			generateButton.setEnabled(false);
+			generateButton.setForeground(new java.awt.Color(200,200,200));
+		}
+		
 		//
 		nbRollDieCard.setEnabled((param & CARDS) == CARDS);
 		nbRemoveConnectionCard.setEnabled((param & CARDS) == CARDS);
 		nbTeleportCard.setEnabled((param & CARDS) == CARDS);
 		nbLoseTurnCard.setEnabled((param & CARDS) == CARDS);
 		nbConnectTilesCard.setEnabled((param & CARDS) == CARDS);
+		nbAdditionalMoveCard.setEnabled((param & CARDS) == CARDS);
+	    nbSendBackCard.setEnabled((param & CARDS) == CARDS);
+	    nbShowActionTilesCard.setEnabled((param & CARDS) == CARDS);
+	    nbMovePlayerCard.setEnabled((param & CARDS) == CARDS);
+	    nbMoveWinTileCard.setEnabled((param & CARDS) == CARDS);
+	    nbNextRollsOneCard.setEnabled((param & CARDS) == CARDS);
+	    nbInactivityPeriodCard.setEnabled((param & CARDS) == CARDS);
 		//
 		if((param & SAVEBTN) == SAVEBTN) {
 			saveButton.setEnabled(true);
@@ -140,17 +149,74 @@ public class TileODesignUI extends JFrame {
 		} catch(NumberFormatException e) {
 			nbConnectTilesCard.setText(String.valueOf(cardsCounts[4]));
 		}
-
+		
+		try {
+			if (Integer.valueOf(nbSendBackCard.getText()) < 0)
+				nbSendBackCard.setText(String.valueOf(cardsCounts[5]));
+		} catch(NumberFormatException e) {
+			nbSendBackCard.setText(String.valueOf(cardsCounts[5]));
+		}
+		
+		try {
+			if (Integer.valueOf(nbAdditionalMoveCard.getText()) < 0)
+				nbAdditionalMoveCard.setText(String.valueOf(cardsCounts[6]));
+		} catch(NumberFormatException e) {
+			nbAdditionalMoveCard.setText(String.valueOf(cardsCounts[6]));
+		}
+		
+		try {
+			if (Integer.valueOf(nbNextRollsOneCard.getText()) < 0)
+				nbNextRollsOneCard.setText(String.valueOf(cardsCounts[7]));
+		} catch(NumberFormatException e) {
+			nbNextRollsOneCard.setText(String.valueOf(cardsCounts[7]));
+		}
+		
+		try {
+			if (Integer.valueOf(nbShowActionTilesCard.getText()) < 0)
+				nbShowActionTilesCard.setText(String.valueOf(cardsCounts[8]));
+		} catch(NumberFormatException e) {
+			nbShowActionTilesCard.setText(String.valueOf(cardsCounts[8]));
+		}
+		
+		try {
+			if (Integer.valueOf(nbMoveWinTileCard.getText()) < 0)
+				nbMoveWinTileCard.setText(String.valueOf(cardsCounts[9]));
+		} catch(NumberFormatException e) {
+			nbMoveWinTileCard.setText(String.valueOf(cardsCounts[9]));
+		}
+		
+		try {
+			if (Integer.valueOf(nbMovePlayerCard.getText()) < 0)
+				nbMovePlayerCard.setText(String.valueOf(cardsCounts[10]));
+		} catch(NumberFormatException e) {
+			nbMovePlayerCard.setText(String.valueOf(cardsCounts[10]));
+		}
+		
+		try {
+			if (Integer.valueOf(nbInactivityPeriodCard.getText()) < 0)
+				nbInactivityPeriodCard.setText(String.valueOf(cardsCounts[11]));
+		} catch(NumberFormatException e) {
+			nbInactivityPeriodCard.setText(String.valueOf(cardsCounts[11]));
+		}
+		
 		cardsCounts[0] = Integer.valueOf(nbRollDieCard.getText());
 		cardsCounts[1] = Integer.valueOf(nbRemoveConnectionCard.getText());
 		cardsCounts[2] = Integer.valueOf(nbTeleportCard.getText());
 		cardsCounts[3] = Integer.valueOf(nbLoseTurnCard.getText());
 		cardsCounts[4] = Integer.valueOf(nbConnectTilesCard.getText());
+		cardsCounts[5] = Integer.valueOf(nbSendBackCard.getText());
+		cardsCounts[6] = Integer.valueOf(nbAdditionalMoveCard.getText());
+		cardsCounts[7] = Integer.valueOf(nbNextRollsOneCard.getText());
+		cardsCounts[8] = Integer.valueOf(nbShowActionTilesCard.getText());
+		cardsCounts[9] = Integer.valueOf(nbMoveWinTileCard.getText());
+		cardsCounts[10] = Integer.valueOf(nbMovePlayerCard.getText());
+		cardsCounts[11] = Integer.valueOf(nbInactivityPeriodCard.getText());
 
 		// If number has changed
-		if (nbOfCardsLeft != (32 - cardsCounts[0] - cardsCounts[1] - cardsCounts[2] - cardsCounts[3]
-				- cardsCounts[4])) {
-			nbOfCardsLeft = (32 - cardsCounts[0] - cardsCounts[1] - cardsCounts[2] - cardsCounts[3] - cardsCounts[4]);
+		if (nbOfCardsLeft != (32 - cardsCounts[0] - cardsCounts[1] - cardsCounts[2] - cardsCounts[3] - cardsCounts[4]
+				- cardsCounts[5] - cardsCounts[6] - cardsCounts[7] - cardsCounts[8] - cardsCounts[9] - cardsCounts[10] - cardsCounts[11])) {
+			nbOfCardsLeft = (32 - cardsCounts[0] - cardsCounts[1] - cardsCounts[2] - cardsCounts[3] - cardsCounts[4]
+					- cardsCounts[5] - cardsCounts[6] - cardsCounts[7] - cardsCounts[8] - cardsCounts[9] - cardsCounts[10] - cardsCounts[11]);
 
 			if (nbOfCardsLeft < 0) {
 				cardsLeft.setForeground(new java.awt.Color(255, 0, 0));
@@ -270,7 +336,7 @@ public class TileODesignUI extends JFrame {
 		 }
 		 
 		//Cards
-		cardsCounts = new int[]{0,0,0,0,0};
+		cardsCounts = new int[]{0,0,0,0,0,0,0,0,0,0,0,0};
 		game.getDeck().getCards().parallelStream().forEach(s -> {
 			if(s instanceof RollDieActionCard)
 				cardsCounts[0]++;
@@ -282,20 +348,41 @@ public class TileODesignUI extends JFrame {
 				cardsCounts[3]++;
 			if(s instanceof ConnectTilesActionCard)
 				cardsCounts[4]++;
+			if(s instanceof SendBackToStartActionCard)
+				cardsCounts[5]++;
+			if(s instanceof AdditionalMoveActionCard)
+				cardsCounts[6]++;
+			if(s instanceof NextRollsOneActionCard)
+				cardsCounts[7]++;
+			if(s instanceof ShowActionTilesActionCard)
+				cardsCounts[8]++;
+			if(s instanceof MoveWinTileActionCard)
+				cardsCounts[9]++;
+			if(s instanceof MovePlayerActionCard)
+				cardsCounts[10]++;
+			if(s instanceof InactivityPeriodActionCard)
+				cardsCounts[11]++;
 		});
 		
-		nbRollDieCard.setText(String.valueOf(cardsCounts[0]));
-		nbRemoveConnectionCard.setText(String.valueOf(cardsCounts[1]));
-		nbTeleportCard.setText(String.valueOf(cardsCounts[2]));
-		nbLoseTurnCard.setText(String.valueOf(cardsCounts[3]));
-		nbConnectTilesCard.setText(String.valueOf(cardsCounts[4]));
+		cardsCounts[0] = Integer.valueOf(nbRollDieCard.getText());
+		cardsCounts[1] = Integer.valueOf(nbRemoveConnectionCard.getText());
+		cardsCounts[2] = Integer.valueOf(nbTeleportCard.getText());
+		cardsCounts[3] = Integer.valueOf(nbLoseTurnCard.getText());
+		cardsCounts[4] = Integer.valueOf(nbConnectTilesCard.getText());
+		cardsCounts[5] = Integer.valueOf(nbSendBackCard.getText());
+		cardsCounts[6] = Integer.valueOf(nbAdditionalMoveCard.getText());
+		cardsCounts[7] = Integer.valueOf(nbNextRollsOneCard.getText());
+		cardsCounts[8] = Integer.valueOf(nbShowActionTilesCard.getText());
+		cardsCounts[9] = Integer.valueOf(nbMoveWinTileCard.getText());
+		cardsCounts[10] = Integer.valueOf(nbMovePlayerCard.getText());
+		cardsCounts[11] = Integer.valueOf(nbInactivityPeriodCard.getText());
 		
-		cardsLeft.setText(String.valueOf(32 - cardsCounts[0] - cardsCounts[1] - cardsCounts[2] - cardsCounts[3] - cardsCounts[4]));
+		cardsLeft.setText(String.valueOf(32 - cardsCounts[0] - cardsCounts[1] - cardsCounts[2] - cardsCounts[3] - cardsCounts[4]
+				- cardsCounts[5] - cardsCounts[6] - cardsCounts[7] - cardsCounts[8] - cardsCounts[9] - cardsCounts[10] - cardsCounts[11]));
 		
 		//Board size
 		horizontalLength.setSelectedIndex(numberOfCols - 3);
 		verticalLength.setSelectedIndex(numberOfRows - 3);
-		
 	}
 
 	private void backupLists() {
@@ -331,7 +418,7 @@ public class TileODesignUI extends JFrame {
 
 		if(tilesPanel == null) {
 			tilesPanel = new javax.swing.JPanel();
-			tilesPanel.setPreferredSize(new java.awt.Dimension(1130, 680));
+			tilesPanel.setPreferredSize(new java.awt.Dimension(1130, 530));
 			//TODO : MouseClick changeNumberOfCards
 		} else {
 			tilesPanel.removeAll();
@@ -551,89 +638,151 @@ public class TileODesignUI extends JFrame {
 
 	private void initComponents() {
 		jLabel1 = new javax.swing.JLabel();
-		jLabel2 = new javax.swing.JLabel();
-		jLabel3 = new javax.swing.JLabel();
-		jLabel4 = new javax.swing.JLabel();
-		jLabel5 = new javax.swing.JLabel();
-		jLabel6 = new javax.swing.JLabel();
-		jLabel7 = new javax.swing.JLabel();
-		jLabel8 = new javax.swing.JLabel();
-		jLabel9 = new javax.swing.JLabel();
-		jLabel10 = new javax.swing.JLabel();
-		applyChangesButton = new javax.swing.JToggleButton();
-		chosenPlayer = new javax.swing.JComboBox<>();
-		removeTileButton = new javax.swing.JToggleButton();
-		tileType = new javax.swing.JComboBox<>();
-		addTileButton = new javax.swing.JToggleButton();
-		selectPositionButton = new javax.swing.JToggleButton();
-		removeConnectionButton = new javax.swing.JToggleButton();
-		addConnectionButton = new javax.swing.JToggleButton();
-		jLabel11 = new javax.swing.JLabel();
-		jLabel12 = new javax.swing.JLabel();
-		jLabel13 = new javax.swing.JLabel();
-		jLabel14 = new javax.swing.JLabel();
-		jLabel15 = new javax.swing.JLabel();
-		jLabel16 = new javax.swing.JLabel();
-		nbRollDieCard = new javax.swing.JTextField();
-		nbRemoveConnectionCard = new javax.swing.JTextField();
-		nbTeleportCard = new javax.swing.JTextField();
-		nbLoseTurnCard = new javax.swing.JTextField();
-		nbConnectTilesCard = new javax.swing.JTextField();
-		saveButton = new javax.swing.JButton();
-		nbOfPlayers = new javax.swing.JComboBox<>();
-		generateButton = new javax.swing.JButton();
-		jLabel17 = new javax.swing.JLabel();
-		backButton = new javax.swing.JButton();
-		cardsLeft = new javax.swing.JLabel();
-		horizontalLength = new javax.swing.JComboBox<>();
-		verticalLength = new javax.swing.JComboBox<>();
+        backButton = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        verticalLength = new javax.swing.JComboBox<>();
+        horizontalLength = new javax.swing.JComboBox<>();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        nbOfPlayers = new javax.swing.JComboBox<>();
+        chosenPlayer = new javax.swing.JComboBox<>();
+        jLabel10 = new javax.swing.JLabel();
+        removeTileButton = new javax.swing.JToggleButton();
+        jLabel11 = new javax.swing.JLabel();
+        tileType = new javax.swing.JComboBox<>();
+        addTileButton = new javax.swing.JToggleButton();
+        selectPositionButton = new javax.swing.JToggleButton();
+        addConnectionButton = new javax.swing.JToggleButton();
+        removeConnectionButton = new javax.swing.JToggleButton();
+        jLabel12 = new javax.swing.JLabel();
+        nbRollDieCard = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        nbRemoveConnectionCard = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        nbTeleportCard = new javax.swing.JTextField();
+        jLabel15 = new javax.swing.JLabel();
+        nbLoseTurnCard = new javax.swing.JTextField();
+        jLabel16 = new javax.swing.JLabel();
+        nbConnectTilesCard = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        nbSendBackCard = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
+        nbAdditionalMoveCard = new javax.swing.JTextField();
+        jLabel19 = new javax.swing.JLabel();
+        nbNextRollsOneCard = new javax.swing.JTextField();
+        jLabel20 = new javax.swing.JLabel();
+        nbShowActionTilesCard = new javax.swing.JTextField();
+        jLabel21 = new javax.swing.JLabel();
+        nbMoveWinTileCard = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
+        nbMovePlayerCard = new javax.swing.JTextField();
+        jLabel24 = new javax.swing.JLabel();
+        nbInactivityPeriodCard = new javax.swing.JTextField();
+        jLabel23 = new javax.swing.JLabel();
+        cardsLeft = new javax.swing.JLabel();
+        saveButton = new javax.swing.JButton();
+        applyChangesButton = new javax.swing.JToggleButton();
+        generateButton = new javax.swing.JButton();
 
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		setBackground(new java.awt.Color(204, 255, 255));
-
-		jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-		jLabel1.setText("Board:");
-
-		jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-		jLabel2.setText("Player:");
-
-		jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-		jLabel3.setText("Tile:");
-
-		jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-		jLabel4.setText("Connection:");
-
-		jLabel5.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-		jLabel5.setText("Deck:");
-
-		jLabel6.setText("Enter dimensions");
-
-		jLabel7.setText("Enter number of players");
-
-		jLabel8.setText("Select player");
-
-		jLabel9.setText("Change tile type");
-
-		jLabel10.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-		jLabel10.setText("x");
-
-		applyChangesButton.setBackground(new java.awt.Color(0, 204, 0));
-		applyChangesButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-		applyChangesButton.setForeground(new java.awt.Color(0, 0, 0));
-		applyChangesButton.setText("Apply changes");
-		disableChanges();
-		applyChangesButton.addActionListener(e -> {
-			update();
-			designState = DesignState.NONE;
+        //jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
+        //jLabel1.setText("Design Mode");
+        String p = getClass().getResource("/icons/test.png").toString();
+        jLabel1.setText("<html><img src=\""+p+"\"></html>");
+        jLabel1.setVisible(false);
+        
+        backButton.setBackground(new java.awt.Color(255, 0, 0));
+        backButton.setFont(new java.awt.Font("Lucida Grande", 2, 13)); // NOI18N
+        backButton.setText("Back");
+        backButton.addActionListener(e -> {
+			if(designState != DesignState.NONE) {
+				if(new PopUpManager(this).askYesOrNo("Any unsaved changes will be lost. Continue?") == 0) {
+				new MainPage().setVisible(true);
+				dispose();
+				}
+			} else {
+				new MainPage().setVisible(true);
+				dispose();
+			}
 		});
 
-		chosenPlayer.setBackground(new java.awt.Color(204, 204, 255));
-		chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2" }));
+        jLabel2.setFont(new java.awt.Font("Lucida Grande", 1, 13)); 
+        jLabel2.setText("Board :");
 
-		removeTileButton.setBackground(new java.awt.Color(51, 102, 255));
-		removeTileButton.setForeground(new java.awt.Color(255,255,255));
-		removeTileButton.setText("Remove Tile");
-		removeTileButton.addActionListener(e -> {
+        jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13)); 
+        jLabel3.setText("Player :");
+
+        jLabel4.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        jLabel4.setText("Tile :");
+
+        jLabel5.setFont(new java.awt.Font("Lucida Grande", 1, 13)); 
+        jLabel5.setText("Connection :");
+
+        jLabel6.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        jLabel6.setText("Deck :");
+
+        jLabel7.setLabelFor(verticalLength);
+        jLabel7.setText("Enter dimensions");
+
+        verticalLength.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}));
+        verticalLength.setSelectedIndex(8 - 3);
+        verticalLength.addActionListener(e -> {
+			if (Integer.valueOf(String.valueOf(verticalLength.getSelectedItem())) != numberOfRows) {
+				if(designState == DesignState.NONE)
+					new PopUpManager(this).acknowledgeMessage("If you apply changes, the whole board will be reset.");
+				enableChanges();
+				designState = DesignState.BOARD_SIZE;
+				maskButtons(BOARDSIZE);
+			}
+			else {
+				disableChanges();
+				maskButtons(ALLBTN);
+			}
+		});
+
+        horizontalLength.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}));
+        horizontalLength.setSelectedIndex(8 - 3);
+        horizontalLength.addActionListener(e -> {
+			if (Integer.valueOf(String.valueOf(horizontalLength.getSelectedItem())) != numberOfCols) {
+				if(designState == DesignState.NONE)
+					new PopUpManager(this).acknowledgeMessage("If you apply changes, the whole board will be reset.");
+				enableChanges();
+				designState = DesignState.BOARD_SIZE;
+				maskButtons(BOARDSIZE);
+			}
+			else {
+				disableChanges();
+				maskButtons(ALLBTN);
+			}
+		});
+
+        jLabel8.setFont(new java.awt.Font("Lucida Sans Typewriter", 1, 13)); // NOI18N
+        jLabel8.setText("x");
+
+        jLabel9.setText("Enter number of players");
+
+        nbOfPlayers.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2", "3", "4" }));
+        nbOfPlayers.addActionListener(e -> {
+			if (Integer.valueOf(String.valueOf(nbOfPlayers.getSelectedItem())) != game.numberOfPlayers()) {
+				nbOfPlayersChanged();
+			} else {
+				designState = DesignState.NONE;
+				resetUI();
+			}
+		});
+        
+        chosenPlayer.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
+
+        jLabel10.setText("Select player:");
+
+        removeTileButton.setForeground(new java.awt.Color(255,255,255));
+        removeTileButton.setBackground(new java.awt.Color(51, 102, 255));
+        removeTileButton.setText("Remove Tile");
+        removeTileButton.addActionListener(e -> {
 			if (removeTileButton.isSelected()) {
 				designState = DesignState.REMOVE_TILE;
 				tileType.setEnabled(false);
@@ -647,11 +796,12 @@ public class TileODesignUI extends JFrame {
 			}
 		});
 
-		tileType.setModel(
-				new javax.swing.DefaultComboBoxModel<>(new String[] { "Regular Tile", "Action Tile", "Win Tile" }));
+        jLabel11.setText("Change tile type");
 
-		addTileButton.setBackground(new java.awt.Color(51, 102, 255));
-		addTileButton.setForeground(new java.awt.Color(255,255,255));
+        tileType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Regular Tile", "Action Tile", "Win Tile" }));
+
+        addTileButton.setForeground(new java.awt.Color(255,255,255));
+        addTileButton.setBackground(new java.awt.Color(51, 102, 255));
 		addTileButton.setText("Add Tile");
 		addTileButton.addActionListener(e -> {
 			if (addTileButton.isSelected()) {
@@ -670,10 +820,10 @@ public class TileODesignUI extends JFrame {
 			}
 		});
 
-		selectPositionButton.setBackground(new java.awt.Color(51, 102, 255));
 		selectPositionButton.setForeground(new java.awt.Color(255,255,255));
-		selectPositionButton.setText("Select Start Position");
-		selectPositionButton.addActionListener(e -> {
+        selectPositionButton.setBackground(new java.awt.Color(51, 102, 255));
+        selectPositionButton.setText("Select Start Position");
+        selectPositionButton.addActionListener(e -> {
 			if (selectPositionButton.isSelected()) {
 				designState = DesignState.SELECT_STARTING_POSITION;
 
@@ -685,10 +835,27 @@ public class TileODesignUI extends JFrame {
 			}
 		});
 
-		removeConnectionButton.setBackground(new java.awt.Color(51, 102, 255));
-		removeConnectionButton.setForeground(new java.awt.Color(255,255,255));
-		removeConnectionButton.setText("Remove Connection");
-		removeConnectionButton.addActionListener(e -> {
+        addConnectionButton.setForeground(new java.awt.Color(255,255,255));
+        addConnectionButton.setBackground(new java.awt.Color(51, 102, 255));
+        addConnectionButton.setText("Add Connection");
+        addConnectionButton.addActionListener(e -> {
+			if (addConnectionButton.isSelected()) {
+				designState = DesignState.ADD_CONNECTION;
+
+				backupLists();
+				maskButtons(ADDCONNBTN);
+
+				showDisabledConnections();
+			} else {
+				designState = DesignState.NONE;
+				resetUI();
+			}
+		});
+
+        removeConnectionButton.setForeground(new java.awt.Color(255,255,255));
+        removeConnectionButton.setBackground(new java.awt.Color(51, 102, 255));
+        removeConnectionButton.setText("Remove Connection");
+        removeConnectionButton.addActionListener(e -> {
 			if (removeConnectionButton.isSelected()) {
 				designState = DesignState.REMOVE_CONNECTION;
 
@@ -703,41 +870,18 @@ public class TileODesignUI extends JFrame {
 			}
 		});
 
-		addConnectionButton.setBackground(new java.awt.Color(51, 102, 255));
-		addConnectionButton.setForeground(new java.awt.Color(255,255,255));
-		addConnectionButton.setText("Add Connection");
-		addConnectionButton.addActionListener(e -> {
-			if (addConnectionButton.isSelected()) {
-				designState = DesignState.ADD_CONNECTION;
-
-				backupLists();
-				maskButtons(ADDCONNBTN);
-
-				showDisabledConnections();
-			} else {
-				designState = DesignState.NONE;
-				resetUI();
-			}
-		});
-
-		jLabel11.setText("Cards left :");
-
-		jLabel12.setText("Roll Die");
-
-		jLabel13.setText("Remove Connection");
-
-		jLabel14.setText("Teleport");
-
-		jLabel15.setText("Lose Turn");
-
-		jLabel16.setText("Connect Tiles");
-
-		nbRollDieCard.setText("0");
-		nbRollDieCard.addActionListener(e -> {
+        jLabel12.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel12.setLabelFor(nbRollDieCard);
+        jLabel12.setText("Roll Die");
+        jLabel12.setToolTipText("<html>\nThis card allows the player to  <br />roll the die a second time.");
+        nbRollDieCard.setToolTipText("<html>\nThis card allows the player to  <br />roll the die a second time.");
+        nbRollDieCard.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        nbRollDieCard.setText("0");
+        nbRollDieCard.addActionListener(e -> {
 			changeNumberOfCardsLeft();
 		});
-		
-		nbRollDieCard.addFocusListener(new FocusListener() {
+        
+        nbRollDieCard.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) {
 
 			}
@@ -747,8 +891,14 @@ public class TileODesignUI extends JFrame {
 			}
 		});
 
-		nbRemoveConnectionCard.setText("0");
-		nbRemoveConnectionCard.addActionListener(e -> {
+        jLabel13.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel13.setLabelFor(nbRemoveConnectionCard);
+        jLabel13.setText("Remove Connection");
+        jLabel13.setToolTipText("<html>\nThis card allows the player to <br />remove a connection currently on the board.");
+        nbRemoveConnectionCard.setToolTipText("<html>\nThis card allows the player to <br />remove a connection currently on the board.");
+        nbRemoveConnectionCard.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        nbRemoveConnectionCard.setText("0");
+        nbRemoveConnectionCard.addActionListener(e -> {
 			changeNumberOfCardsLeft();
 		});
 		nbRemoveConnectionCard.addFocusListener(new FocusListener() {
@@ -761,11 +911,17 @@ public class TileODesignUI extends JFrame {
 			}
 		});
 
-		nbTeleportCard.setText("0");
-		nbTeleportCard.addActionListener(e -> {
+        jLabel14.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel14.setLabelFor(nbTeleportCard);
+        jLabel14.setText("Teleport");
+        jLabel14.setToolTipText("<html>\nThis card allows the player to teleport <br /> himself on any tile on the board.");
+        nbTeleportCard.setToolTipText("<html>\nThis card allows the player to teleport <br /> himself on any tile on the board.");
+        nbTeleportCard.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        nbTeleportCard.setText("0");
+        nbTeleportCard.addActionListener(e -> {
 			changeNumberOfCardsLeft();
 		});
-		nbTeleportCard.addFocusListener(new FocusListener() {
+        nbTeleportCard.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) {
 
 			}
@@ -775,11 +931,17 @@ public class TileODesignUI extends JFrame {
 			}
 		});
 
-		nbLoseTurnCard.setText("0");
-		nbLoseTurnCard.addActionListener(e -> {
+        jLabel15.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel15.setLabelFor(nbLoseTurnCard);
+        jLabel15.setText("Lose Turn");
+        jLabel15.setToolTipText("<html>\nThis card makes the player <br /> lose his next turn.");
+        nbLoseTurnCard.setToolTipText("<html>\nThis card makes the player <br /> lose his next turn.");
+        nbLoseTurnCard.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        nbLoseTurnCard.setText("0");
+        nbLoseTurnCard.addActionListener(e -> {
 			changeNumberOfCardsLeft();
 		});
-		nbLoseTurnCard.addFocusListener(new FocusListener() {
+        nbLoseTurnCard.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) {
 
 			}
@@ -789,11 +951,17 @@ public class TileODesignUI extends JFrame {
 			}
 		});
 
-		nbConnectTilesCard.setText("0");
-		nbConnectTilesCard.addActionListener(e -> {
+        jLabel16.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel16.setLabelFor(nbConnectTilesCard);
+        jLabel16.setText("Connect Tiles");
+        jLabel16.setToolTipText("<html>\nThis card allows the player to add <br />a connection anywhere on the board.");
+        nbConnectTilesCard.setToolTipText("<html>\nThis card allows the player to add <br />a connection anywhere on the board.");
+        nbConnectTilesCard.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        nbConnectTilesCard.setText("0");
+        nbConnectTilesCard.addActionListener(e -> {
 			changeNumberOfCardsLeft();
 		});
-		nbConnectTilesCard.addFocusListener(new FocusListener() {
+        nbConnectTilesCard.addFocusListener(new FocusListener() {
 			public void focusGained(FocusEvent e) {
 
 			}
@@ -803,7 +971,162 @@ public class TileODesignUI extends JFrame {
 			}
 		});
 
-		saveButton.setBackground(new java.awt.Color(255, 204, 0));
+        jLabel17.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel17.setLabelFor(nbSendBackCard);
+        jLabel17.setText("Send Back To Start");
+        jLabel17.setToolTipText("<html>\nThis card allows the player to send another <br />player of his choice to his starting position.");
+        nbSendBackCard.setToolTipText("<html>\nThis card allows the player to send another <br />player of his choice to his starting position.");
+        nbSendBackCard.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        nbSendBackCard.setText("0");
+        nbSendBackCard.addActionListener(e -> {
+			changeNumberOfCardsLeft();
+		});
+        nbSendBackCard.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+
+			}
+
+			public void focusLost(FocusEvent e) {
+				changeNumberOfCardsLeft();
+			}
+		});
+
+        jLabel18.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel18.setLabelFor(nbAdditionalMoveCard);
+        jLabel18.setText("Additional Move");
+        jLabel18.setToolTipText("<html>\nThis card allows the player to make an additional move. <br /> For this move, the player chooses a number between 1 and 6 <br /> and then moves exactly that number of tiles on the board.");
+        nbAdditionalMoveCard.setToolTipText("<html>\nThis card allows the player to make an additional move. <br /> For this move, the player chooses a number between 1 and 6 <br /> and then moves exactly that number of tiles on the board.");
+        nbAdditionalMoveCard.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        nbAdditionalMoveCard.setText("0");
+        nbAdditionalMoveCard.addActionListener(e -> {
+			changeNumberOfCardsLeft();
+		});
+        nbAdditionalMoveCard.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+
+			}
+
+			public void focusLost(FocusEvent e) {
+				changeNumberOfCardsLeft();
+			}
+		});
+
+        jLabel19.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel19.setLabelFor(nbNextRollsOneCard);
+        jLabel19.setText("Next Rolls One");
+        jLabel19.setToolTipText("<html>\nThis card allows the player to make <br /> the next player roll a one.");
+        nbNextRollsOneCard.setToolTipText("<html>\nThis card allows the player to make <br /> the next player roll a one.");
+        nbNextRollsOneCard.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        nbNextRollsOneCard.setText("0");
+        nbNextRollsOneCard.addActionListener(e -> {
+			changeNumberOfCardsLeft();
+		});
+        nbNextRollsOneCard.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+
+			}
+
+			public void focusLost(FocusEvent e) {
+				changeNumberOfCardsLeft();
+			}
+		});
+
+        jLabel20.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel20.setLabelFor(nbShowActionTilesCard);
+        jLabel20.setText("Show Action Tiles");
+        jLabel20.setToolTipText("<html>\nThis card allows the player to see all the action tiles <br />present on the board for a duration of 5 seconds.");
+        nbShowActionTilesCard.setToolTipText("<html>\nThis card allows the player to see all the action tiles <br />present on the board for a duration of 5 seconds.");
+        nbShowActionTilesCard.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        nbShowActionTilesCard.setText("0");
+        nbShowActionTilesCard.addActionListener(e -> {
+			changeNumberOfCardsLeft();
+		});
+        nbShowActionTilesCard.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+
+			}
+
+			public void focusLost(FocusEvent e) {
+				changeNumberOfCardsLeft();
+			}
+		});
+
+        jLabel21.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel21.setLabelFor(nbMoveWinTileCard);
+        jLabel21.setText("Move Win Tile");
+        jLabel21.setToolTipText("<html>\nThis card allos the player to move the <br />Win Tile anywhere on the board, except <br />for his current position.");
+        nbMoveWinTileCard.setToolTipText("<html>\nThis card allos the player to move the <br />Win Tile anywhere on the board, except <br />for his current position.");
+        nbMoveWinTileCard.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        nbMoveWinTileCard.setText("0");
+        nbMoveWinTileCard.addActionListener(e -> {
+			changeNumberOfCardsLeft();
+		});
+        nbMoveWinTileCard.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+
+			}
+
+			public void focusLost(FocusEvent e) {
+				changeNumberOfCardsLeft();
+			}
+		});
+
+        jLabel22.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        jLabel22.setLabelFor(nbMovePlayerCard);
+        jLabel22.setText("Move Player");
+        jLabel22.setToolTipText("<html>\nThis card allows the player to move <br />one of his opponent to an arbitrary <br />tile of his choice.");
+        nbMovePlayerCard.setToolTipText("<html>\nThis card allows the player to move <br />one of his opponent to an arbitrary <br />tile of his choice.");
+        nbMovePlayerCard.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        nbMovePlayerCard.setText("0");
+        nbMovePlayerCard.addActionListener(e -> {
+			changeNumberOfCardsLeft();
+		});
+        nbMovePlayerCard.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+
+			}
+
+			public void focusLost(FocusEvent e) {
+				changeNumberOfCardsLeft();
+			}
+		});
+        
+        jLabel24.setFont(new java.awt.Font("Lucida Grande", 1, 13)); 
+        jLabel24.setLabelFor(nbInactivityPeriodCard);
+        jLabel24.setText("Inactivity Period");
+        jLabel24.setToolTipText("<html>\nThis card allows the player to assign new inactivity periods <br /> to all action tiles in the game. The new inactivity periods are randomly chosen from 0, 1, 2, or 3. <br />  The players are not informed about the new inactivity periods. ");
+
+        nbInactivityPeriodCard.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        nbInactivityPeriodCard.setText("0");
+        nbInactivityPeriodCard.addActionListener(e -> {
+			changeNumberOfCardsLeft();
+		});
+        nbInactivityPeriodCard.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+
+			}
+
+			public void focusLost(FocusEvent e) {
+				changeNumberOfCardsLeft();
+			}
+		});
+
+        jLabel23.setText("Cards left : ");
+
+        cardsLeft.setFont(new java.awt.Font("Lucida Grande", 1, 24)); // NOI18N
+        cardsLeft.setText("32");
+
+        applyChangesButton.setBackground(new java.awt.Color(0, 204, 0));
+		applyChangesButton.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+		applyChangesButton.setForeground(new java.awt.Color(0, 0, 0));
+        applyChangesButton.setText("Apply Changes");
+        disableChanges();
+        applyChangesButton.addActionListener(e -> {
+			update();
+			designState = DesignState.NONE;
+		});
+        
+        saveButton.setBackground(new java.awt.Color(255, 204, 0));
 		saveButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
 		saveButton.setForeground(new java.awt.Color(0, 0, 0));
 		saveButton.setText("Save");
@@ -813,297 +1136,273 @@ public class TileODesignUI extends JFrame {
 			}
 		});
 
-		nbOfPlayers.setBackground(new java.awt.Color(204, 204, 255));
-		nbOfPlayers.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2", "3", "4" }));
-
 		generateButton.setBackground(Color.decode("#681072"));
-		generateButton.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
 		generateButton.setForeground(new java.awt.Color(255, 255, 255));
-		generateButton.setText("Generate");
-		generateButton.addActionListener(e -> {
-			currentController.generateRandomBoard();
+		generateButton.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        generateButton.setText("Generate");
+        generateButton.addActionListener(e -> {
+			if(new PopUpManager(this).askYesOrNo("This will generate a random board with size "+numberOfRows+"x"+numberOfCols+" and "+game.numberOfPlayers()+" players. Continue?") == 0)
+        		currentController.generateRandomBoard();
 		});
-
-		jLabel17.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
-		jLabel17.setText("TileO Design Mode");
-
-		backButton.setBackground(new java.awt.Color(255, 0, 0));
-		backButton.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
-		backButton.setForeground(new java.awt.Color(255, 255, 255));
-		backButton.setText("Back");
-		backButton.addActionListener(e -> {
-			if(designState != DesignState.NONE) {
-				if(new PopUpManager(this).askYesOrNo("Any unsaved changes will be lost. Continue?") == 0) {
-				new MainPage().setVisible(true);
-				dispose();
-				}
-			} else {
-				new MainPage().setVisible(true);
-				dispose();
-			}
-		});
-
-		cardsLeft.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
-		cardsLeft.setText("32");
-
-		horizontalLength.setModel(new javax.swing.DefaultComboBoxModel<>(
-				new String[] { "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }));
-		horizontalLength.setSelectedIndex(8 - 3);
-
-		verticalLength.setModel(new javax.swing.DefaultComboBoxModel<>(
-				new String[] { "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }));
-		verticalLength.setSelectedIndex(8 - 3);
-		// Window
-
-		setResizable(false);
-
-		// Board
-		setupBoard(game == null);
-		
-		maskButtons(ALLBTN);
-		//
-		nbOfPlayers.addActionListener(e -> {
-			if (Integer.valueOf(String.valueOf(nbOfPlayers.getSelectedItem())) != game.numberOfPlayers()) {
-				nbOfPlayersChanged();
-			} else {
-				designState = DesignState.NONE;
-				resetUI();
-			}
-		});
-		verticalLength.addActionListener(e -> {
-			if (Integer.valueOf(String.valueOf(verticalLength.getSelectedItem())) != numberOfRows) {
-				if(designState == DesignState.NONE)
-					new PopUpManager(this).acknowledgeMessage("If you apply changes, the whole board will be reset.");
-				enableChanges();
-				designState = DesignState.BOARD_SIZE;
-				maskButtons(BOARDSIZE);
-			}
-			else {
-				disableChanges();
-				maskButtons(ALLBTN);
-			}
-		});
-		horizontalLength.addActionListener(e -> {
-			if (Integer.valueOf(String.valueOf(horizontalLength.getSelectedItem())) != numberOfCols) {
-				if(designState == DesignState.NONE)
-					new PopUpManager(this).acknowledgeMessage("If you apply changes, the whole board will be reset.");
-				enableChanges();
-				designState = DesignState.BOARD_SIZE;
-				maskButtons(BOARDSIZE);
-			}
-			else {
-				disableChanges();
-				maskButtons(ALLBTN);
-			}
-		});	
-		//
-		GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
-
-		layout.setHorizontalGroup(
-				layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
-						.createSequentialGroup().addContainerGap()
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
-								.createSequentialGroup().addGroup(layout
-										.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout
-												.createSequentialGroup().addComponent(jLabel11).addGap(6, 6, 6)
-												.addComponent(cardsLeft).addGap(52, 52, 52)
-												.addComponent(nbRollDieCard, javax.swing.GroupLayout.PREFERRED_SIZE,
-														33, javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 0,
-														Short.MAX_VALUE))
-										.addGroup(layout.createSequentialGroup().addComponent(jLabel5)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-														javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-												.addComponent(jLabel12).addGap(31, 31, 31)))
-								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addGroup(layout.createSequentialGroup().addGap(18, 18, 18)
-												.addComponent(jLabel13))
-										.addGroup(layout.createSequentialGroup().addGap(57, 57, 57).addComponent(
-												nbRemoveConnectionCard, javax.swing.GroupLayout.PREFERRED_SIZE, 33,
-												javax.swing.GroupLayout.PREFERRED_SIZE)))
-								.addGap(36, 36, 36)
-								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jLabel14)
-										.addGroup(layout.createSequentialGroup().addGap(6, 6, 6).addComponent(
-												nbTeleportCard, javax.swing.GroupLayout.PREFERRED_SIZE, 33,
-												javax.swing.GroupLayout.PREFERRED_SIZE)))
-								.addGap(50, 50, 50)
-								.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addGroup(layout.createSequentialGroup().addGap(6, 6, 6)
-												.addComponent(nbLoseTurnCard, javax.swing.GroupLayout.PREFERRED_SIZE,
-														33, javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addGap(87, 87, 87).addComponent(nbConnectTilesCard,
-														javax.swing.GroupLayout.PREFERRED_SIZE, 33,
-														javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addGroup(layout.createSequentialGroup().addComponent(jLabel15)
-												.addGap(43, 43, 43).addComponent(jLabel16)))
-								.addGap(46, 46, 46))
-								.addGroup(layout.createSequentialGroup()
-										.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-												.addComponent(jLabel1).addComponent(jLabel2).addComponent(jLabel3))
-										.addGap(61, 61, 61)
-										.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-												.addGroup(layout.createSequentialGroup().addGap(100, 100, 100)
-														.addComponent(addConnectionButton,
-																javax.swing.GroupLayout.PREFERRED_SIZE, 153,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addGroup(layout
-																.createParallelGroup(
-																		javax.swing.GroupLayout.Alignment.LEADING)
-																.addGroup(layout.createSequentialGroup()
-																		.addGap(36, 36, 36)
-																		.addComponent(removeConnectionButton,
-																				javax.swing.GroupLayout.PREFERRED_SIZE,
-																				153,
-																				javax.swing.GroupLayout.PREFERRED_SIZE)
-																		.addGap(0, 0, Short.MAX_VALUE))
-																.addGroup(layout.createSequentialGroup()
-																		.addGap(18, 18, 18).addComponent(jLabel8)
-																		.addPreferredGap(
-																				javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-																		.addComponent(chosenPlayer,
-																				javax.swing.GroupLayout.PREFERRED_SIZE,
-																				javax.swing.GroupLayout.DEFAULT_SIZE,
-																				javax.swing.GroupLayout.PREFERRED_SIZE)
-																		.addGap(18, 18, 18)
-																		.addComponent(selectPositionButton,
-																				javax.swing.GroupLayout.DEFAULT_SIZE,
-																				191, Short.MAX_VALUE))))
-												.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout
-														.createSequentialGroup().addComponent(jLabel9)
-														.addPreferredGap(
-																javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-														.addComponent(tileType, javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addGap(51, 51, 51)
-														.addComponent(addTileButton,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-														.addPreferredGap(
-																javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-														.addComponent(removeTileButton,
-																javax.swing.GroupLayout.PREFERRED_SIZE, 153,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-												.addGroup(layout.createSequentialGroup().addGroup(layout
-														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-														.addGroup(layout.createSequentialGroup().addComponent(jLabel6)
-																.addGap(61, 61, 61)
-																.addComponent(verticalLength,
-																		javax.swing.GroupLayout.PREFERRED_SIZE, 60,
-																		javax.swing.GroupLayout.PREFERRED_SIZE)
-																.addPreferredGap(
-																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																.addComponent(jLabel10)
-																.addPreferredGap(
-																		javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-																.addComponent(horizontalLength,
-																		javax.swing.GroupLayout.PREFERRED_SIZE, 60,
-																		javax.swing.GroupLayout.PREFERRED_SIZE))
-														.addGroup(layout.createSequentialGroup().addComponent(jLabel7)
-																.addGap(18, 18, 18).addComponent(nbOfPlayers,
-																		javax.swing.GroupLayout.PREFERRED_SIZE,
-																		javax.swing.GroupLayout.DEFAULT_SIZE,
-																		javax.swing.GroupLayout.PREFERRED_SIZE)))
-														.addGap(0, 0, Short.MAX_VALUE))))
-								.addGroup(layout.createSequentialGroup().addComponent(jLabel4).addGap(0, 0,
-										Short.MAX_VALUE)))
-						.addGap(18, 18, 18)
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addComponent(applyChangesButton, javax.swing.GroupLayout.Alignment.TRAILING,
-										javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
-								.addComponent(generateButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(saveButton, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-						.addGap(26, 26, 26))
-						.addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-								layout.createSequentialGroup().addGap(16, 16, 16).addComponent(backButton)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-												javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(jLabel17).addGap(376, 376, 376))
-						// .addGap(120, 120, 120))
-						.addComponent(tilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
-		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup().addGap(7, 7, 7)
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jLabel17).addComponent(backButton))
-						.addGap(18, 18, 18)
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jLabel1).addComponent(jLabel6).addComponent(jLabel10).addComponent(
-										verticalLength, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(horizontalLength, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-						.addGap(14, 14, 14)
-						.addGroup(layout
-								.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(jLabel2)
-								.addComponent(jLabel7).addComponent(jLabel8)
-								.addComponent(chosenPlayer, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(
-										selectPositionButton)
-								.addComponent(nbOfPlayers, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(layout.createSequentialGroup().addGap(13, 13, 13)
-										.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-												.addComponent(jLabel3).addComponent(jLabel9)
-												.addComponent(tileType, javax.swing.GroupLayout.PREFERRED_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addComponent(addTileButton).addComponent(removeTileButton))
-										.addGap(14, 14, 14)
-										.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-												.addComponent(jLabel4).addComponent(removeConnectionButton)
-												.addComponent(addConnectionButton)))
-								.addGroup(layout.createSequentialGroup()
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(saveButton).addGap(13, 13, 13).addComponent(generateButton)))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-								.addGroup(layout.createSequentialGroup()
-										.addComponent(jLabel5)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(
-												layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(jLabel11).addComponent(applyChangesButton)
-														.addComponent(cardsLeft)))
-								.addGroup(layout
-										.createSequentialGroup()
-										.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-												.addComponent(jLabel12).addComponent(jLabel13).addComponent(jLabel14)
-												.addComponent(jLabel15).addComponent(jLabel16))
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-												.addComponent(nbRollDieCard, javax.swing.GroupLayout.PREFERRED_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addComponent(nbRemoveConnectionCard,
-														javax.swing.GroupLayout.PREFERRED_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addComponent(nbTeleportCard, javax.swing.GroupLayout.PREFERRED_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addComponent(nbLoseTurnCard, javax.swing.GroupLayout.PREFERRED_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addComponent(nbConnectTilesCard,
-														javax.swing.GroupLayout.PREFERRED_SIZE,
-														javax.swing.GroupLayout.DEFAULT_SIZE,
-														javax.swing.GroupLayout.PREFERRED_SIZE))))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(tilesPanel,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-								Short.MAX_VALUE)));
-		
-		
         
+        // Window
+ 		setResizable(false);
+
+ 		// Board
+ 		setupBoard(game == null);
+     		
+ 		maskButtons(ALLBTN);
+     	//
+
+ 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(backButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel23)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cardsLeft)))
+                        .addGap(31, 31, 31)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(addConnectionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(removeConnectionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jLabel7))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(nbOfPlayers, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(92, 92, 92)
+                                        .addComponent(jLabel10)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(chosenPlayer, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(24, 24, 24)
+                                        .addComponent(selectPositionButton))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(verticalLength, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(8, 8, 8)
+                                        .addComponent(jLabel8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(horizontalLength, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel18)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(34, 34, 34)
+                                        .addComponent(nbAdditionalMoveCard, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel19)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(nbNextRollsOneCard, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(44, 44, 44)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(jLabel20)
+                                        .addGap(16, 16, 16)
+                                        .addComponent(jLabel21)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(nbShowActionTilesCard, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(74, 74, 74)
+                                        .addComponent(nbMoveWinTileCard, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(34, 34, 34)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel22))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(nbMovePlayerCard, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(22, 22, 22)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(36, 36, 36)
+                                        .addComponent(nbInactivityPeriodCard, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(10, 10, 10)
+                                        .addComponent(jLabel24))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(nbRollDieCard, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel12))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(24, 24, 24)
+                                        .addComponent(jLabel13))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(65, 65, 65)
+                                        .addComponent(nbRemoveConnectionCard, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel14)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(nbTeleportCard, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(24, 24, 24)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel15)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(nbLoseTurnCard, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(30, 30, 30)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(26, 26, 26)
+                                        .addComponent(nbConnectTilesCard, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(85, 85, 85)
+                                        .addComponent(nbSendBackCard, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel16)
+                                        .addGap(26, 26, 26)
+                                        .addComponent(jLabel17))))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(31, 31, 31)
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tileType, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(addTileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(34, 34, 34)
+                        .addComponent(removeTileButton, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(saveButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(6, 6, 6)
+                            .addComponent(generateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)))
+                    .addComponent(applyChangesButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(tilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(backButton))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel7)
+                            .addComponent(verticalLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(horizontalLength, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8))
+                        .addGap(35, 35, 35)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel9)
+                            .addComponent(nbOfPlayers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(chosenPlayer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10)
+                            .addComponent(selectPositionButton))
+                        .addGap(19, 19, 19)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel11)
+                            .addComponent(tileType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addTileButton)
+                            .addComponent(removeTileButton))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(addConnectionButton)
+                            .addComponent(removeConnectionButton))
+                        .addGap(19, 19, 19)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel23)
+                                    .addComponent(cardsLeft)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(nbRollDieCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel14)
+                                    .addComponent(jLabel13))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(nbTeleportCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nbRemoveConnectionCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel16)
+                                    .addComponent(jLabel17)
+                                    .addComponent(jLabel15))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(nbSendBackCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nbConnectTilesCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nbLoseTurnCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel18)
+                                    .addComponent(jLabel19))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(nbNextRollsOneCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nbAdditionalMoveCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel22)
+                                    .addComponent(jLabel21)
+                                    .addComponent(jLabel20)
+                                    .addComponent(jLabel24))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(nbMoveWinTileCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nbShowActionTilesCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(22, 22, 22)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(nbInactivityPeriodCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nbMovePlayerCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(generateButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(saveButton)
+                        .addGap(41, 41, 41)
+                        .addComponent(applyChangesButton)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(tilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(5, Short.MAX_VALUE))
+        );
+	
         setUndecorated(true);
-        
-        
         pack();
         
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -1112,6 +1411,8 @@ public class TileODesignUI extends JFrame {
         
         setLocationRelativeTo(null);
         setLocation(new Double(width/2).intValue()-getWidth()/2, new Double(height/2).intValue()-getHeight()/2);
+        
+        
 	}
 
 	public void update() {
@@ -1642,41 +1943,55 @@ public class TileODesignUI extends JFrame {
 
 	// Variables declaration - do not modify
 	private javax.swing.JToggleButton addConnectionButton;
-	private javax.swing.JToggleButton addTileButton;
-	private javax.swing.JToggleButton applyChangesButton;
-	private javax.swing.JButton backButton;
-	private javax.swing.JLabel cardsLeft;
-	private javax.swing.JComboBox<String> chosenPlayer;
-	private javax.swing.JComboBox<String> horizontalLength;
-	private javax.swing.JLabel jLabel1;
-	private javax.swing.JLabel jLabel10;
-	private javax.swing.JLabel jLabel11;
-	private javax.swing.JLabel jLabel12;
-	private javax.swing.JLabel jLabel13;
-	private javax.swing.JLabel jLabel14;
-	private javax.swing.JLabel jLabel15;
-	private javax.swing.JLabel jLabel16;
-	private javax.swing.JLabel jLabel17;
-	private javax.swing.JLabel jLabel2;
-	private javax.swing.JLabel jLabel3;
-	private javax.swing.JLabel jLabel4;
-	private javax.swing.JLabel jLabel5;
-	private javax.swing.JLabel jLabel6;
-	private javax.swing.JLabel jLabel7;
-	private javax.swing.JLabel jLabel8;
-	private javax.swing.JLabel jLabel9;
-	private javax.swing.JButton generateButton;
-	private javax.swing.JTextField nbConnectTilesCard;
-	private javax.swing.JTextField nbLoseTurnCard;
-	private javax.swing.JComboBox<String> nbOfPlayers;
-	private javax.swing.JTextField nbRemoveConnectionCard;
-	private javax.swing.JTextField nbRollDieCard;
-	private javax.swing.JTextField nbTeleportCard;
-	private javax.swing.JToggleButton removeConnectionButton;
-	private javax.swing.JToggleButton removeTileButton;
-	private javax.swing.JButton saveButton;
-	private javax.swing.JToggleButton selectPositionButton;
-	private javax.swing.JComboBox<String> tileType;
-	private javax.swing.JComboBox<String> verticalLength;
+    private javax.swing.JToggleButton addTileButton;
+    private javax.swing.JToggleButton applyChangesButton;
+    private javax.swing.JButton backButton;
+    private javax.swing.JLabel cardsLeft;
+    private javax.swing.JComboBox<String> chosenPlayer;
+    private javax.swing.JButton generateButton;
+    private javax.swing.JComboBox<String> horizontalLength;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JTextField nbAdditionalMoveCard;
+    private javax.swing.JTextField nbConnectTilesCard;
+    private javax.swing.JTextField nbLoseTurnCard;
+    private javax.swing.JTextField nbMovePlayerCard;
+    private javax.swing.JTextField nbMoveWinTileCard;
+    private javax.swing.JTextField nbNextRollsOneCard;
+    private javax.swing.JTextField nbInactivityPeriodCard;
+    private javax.swing.JComboBox<String> nbOfPlayers;
+    private javax.swing.JTextField nbRemoveConnectionCard;
+    private javax.swing.JTextField nbRollDieCard;
+    private javax.swing.JTextField nbSendBackCard;
+    private javax.swing.JTextField nbShowActionTilesCard;
+    private javax.swing.JTextField nbTeleportCard;
+    private javax.swing.JToggleButton removeConnectionButton;
+    private javax.swing.JToggleButton removeTileButton;
+    private javax.swing.JButton saveButton;
+    private javax.swing.JToggleButton selectPositionButton;
+    private javax.swing.JComboBox<String> tileType;
+    private javax.swing.JComboBox<String> verticalLength;
 	// End of variables declaration
 }

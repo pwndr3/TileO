@@ -1,5 +1,5 @@
 /*PLEASE DO NOT EDIT THIS CODE*/
-/*This code was generated using the UMPLE 1.25.0-09e69a5 modeling language!*/
+/*This code was generated using the UMPLE 1.25.0-9e8af9e modeling language!*/
 
 package ca.mcgill.ecse223.tileo.model;
 
@@ -8,7 +8,8 @@ import ca.mcgill.ecse223.tileo.application.TileOApplication;
 
 import java.io.Serializable;
 
-public class SendBackToStartActionCard extends ActionCard implements Serializable {
+public class MoveWinTileActionCard extends ActionCard implements Serializable {
+
 	// ------------------------
 	// MEMBER VARIABLES
 	// ------------------------
@@ -18,11 +19,11 @@ public class SendBackToStartActionCard extends ActionCard implements Serializabl
 	// ------------------------
 
 	/**
-		 * 
-		 */
-	private static final long serialVersionUID = -2340601400060949267L;
+	 * 
+	 */
+	private static final long serialVersionUID = -6821101642421801142L;
 
-	public SendBackToStartActionCard(String aInstructions, Deck aDeck) {
+	public MoveWinTileActionCard(String aInstructions, Deck aDeck) {
 		super(aInstructions, aDeck);
 	}
 
@@ -31,7 +32,7 @@ public class SendBackToStartActionCard extends ActionCard implements Serializabl
 	// ------------------------
 
 	public Mode getActionCardGameMode() {
-		return Mode.GAME_SENDBACKTOSTARTACTIONCARD;
+		return Mode.GAME_MOVEWINTILECARD;
 	}
 
 	public void delete() {
