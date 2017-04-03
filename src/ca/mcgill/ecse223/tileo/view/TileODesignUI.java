@@ -364,18 +364,18 @@ public class TileODesignUI extends JFrame {
 				cardsCounts[11]++;
 		});
 		
-		cardsCounts[0] = Integer.valueOf(nbRollDieCard.getText());
-		cardsCounts[1] = Integer.valueOf(nbRemoveConnectionCard.getText());
-		cardsCounts[2] = Integer.valueOf(nbTeleportCard.getText());
-		cardsCounts[3] = Integer.valueOf(nbLoseTurnCard.getText());
-		cardsCounts[4] = Integer.valueOf(nbConnectTilesCard.getText());
-		cardsCounts[5] = Integer.valueOf(nbSendBackCard.getText());
-		cardsCounts[6] = Integer.valueOf(nbAdditionalMoveCard.getText());
-		cardsCounts[7] = Integer.valueOf(nbNextRollsOneCard.getText());
-		cardsCounts[8] = Integer.valueOf(nbShowActionTilesCard.getText());
-		cardsCounts[9] = Integer.valueOf(nbMoveWinTileCard.getText());
-		cardsCounts[10] = Integer.valueOf(nbMovePlayerCard.getText());
-		cardsCounts[11] = Integer.valueOf(nbInactivityPeriodCard.getText());
+		nbRollDieCard.setText(String.valueOf(cardsCounts[0]));
+		nbRemoveConnectionCard.setText(String.valueOf(cardsCounts[1])); 
+		nbTeleportCard.setText(String.valueOf(cardsCounts[2]));
+		nbLoseTurnCard.setText(String.valueOf(cardsCounts[3]));
+		nbConnectTilesCard.setText(String.valueOf(cardsCounts[4]));
+		nbSendBackCard.setText(String.valueOf(cardsCounts[5])); 
+		nbAdditionalMoveCard.setText(String.valueOf(cardsCounts[6]));
+		nbNextRollsOneCard.setText(String.valueOf(cardsCounts[7]));
+		nbShowActionTilesCard.setText(String.valueOf(cardsCounts[8]));
+		nbMoveWinTileCard.setText(String.valueOf(cardsCounts[9])); 
+		nbMovePlayerCard.setText(String.valueOf(cardsCounts[10]));
+		nbInactivityPeriodCard.setText(String.valueOf(cardsCounts[11])); 
 		
 		cardsLeft.setText(String.valueOf(32 - cardsCounts[0] - cardsCounts[1] - cardsCounts[2] - cardsCounts[3] - cardsCounts[4]
 				- cardsCounts[5] - cardsCounts[6] - cardsCounts[7] - cardsCounts[8] - cardsCounts[9] - cardsCounts[10] - cardsCounts[11]));
@@ -693,7 +693,7 @@ public class TileODesignUI extends JFrame {
         //jLabel1.setText("Design Mode");
         String p = getClass().getResource("/icons/test.png").toString();
         jLabel1.setText("<html><img src=\""+p+"\"></html>");
-        jLabel1.setVisible(false);
+        //jLabel1.setVisible(false);
         
         backButton.setBackground(new java.awt.Color(255, 0, 0));
         backButton.setFont(new java.awt.Font("Lucida Grande", 2, 13)); // NOI18N
@@ -1693,10 +1693,13 @@ public class TileODesignUI extends JFrame {
 		/*
 		 * IF CARDS HAVE CHANGED
 		 */
+			 
 		case CARDS:
 			try {
-				//rollDie, removeConnection, teleport, loseTurn, connectTiles
-				currentController.createDeck(cardsCounts[0], cardsCounts[1], cardsCounts[2], cardsCounts[3], cardsCounts[4]);
+				//rollDie, removeConnection, teleport, loseTurn, connectTiles, sendBack, additionalMove, next rolls one,
+				//show action tiles, move win tile, move player, inactivity period
+				currentController.createDeck(cardsCounts[0], cardsCounts[1], cardsCounts[2], cardsCounts[3], cardsCounts[4], cardsCounts[5],
+						cardsCounts[6], cardsCounts[7], cardsCounts[8], cardsCounts[9], cardsCounts[10], cardsCounts[11]);
 			} catch (InvalidInputException e) {
 				// More than 32
 			}

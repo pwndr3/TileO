@@ -220,11 +220,13 @@ public class DesignController {
 			}
 		}
 	}
-
-	public boolean createDeck(int rollDie, int removeConnection, int teleport, int loseTurn, int connectTiles)
+	
+	public boolean createDeck(int rollDie, int removeConnection, int teleport, int loseTurn, int connectTiles, int sendBack,
+			int additionalMove, int nextRollsOne, int showActionTiles, int moveWinTile, int movePlayer, int inactivityPeriod)
 			throws InvalidInputException {
 		// Exception if there are too many cards added
-		if (connectTiles + loseTurn + removeConnection + rollDie + teleport > 32) {
+		if (connectTiles + loseTurn + removeConnection + rollDie + teleport + sendBack + additionalMove
+				+ nextRollsOne + showActionTiles + moveWinTile + movePlayer + inactivityPeriod > 32) {
 			throw new InvalidInputException("Cannot have more than 32 cards in a deck.");
 		}
 
@@ -236,20 +238,48 @@ public class DesignController {
 			ConnectTilesActionCard card = new ConnectTilesActionCard("Connect two tiles", deck);
 			deck.addCard(card);
 		}
-		for (int j = 0; j < loseTurn; j++) {
+		for (int i = 0; i < loseTurn; i++) {
 			LoseTurnActionCard card = new LoseTurnActionCard("You lose a turn", deck);
 			deck.addCard(card);
 		}
-		for (int k = 0; k < removeConnection; k++) {
-			RemoveConnectionActionCard card = new RemoveConnectionActionCard("Remove Connection", deck);
+		for (int i = 0; i < removeConnection; i++) {
+			RemoveConnectionActionCard card = new RemoveConnectionActionCard("Remove a connection", deck);
 			deck.addCard(card);
 		}
-		for (int x = 0; x < rollDie; x++) {
+		for (int i = 0; i < rollDie; i++) {
 			RollDieActionCard card = new RollDieActionCard("Roll die again", deck);
 			deck.addCard(card);
 		}
-		for (int y = 0; y < teleport; y++) {
+		for (int i = 0; i < teleport; i++) {
 			TeleportActionCard card = new TeleportActionCard("Teleport anywhere on the board", deck);
+			deck.addCard(card);
+		}
+		for (int i = 0; i < nextRollsOne; i++) {
+			NextRollsOneActionCard card = new NextRollsOneActionCard("Next player rolls one", deck);
+			deck.addCard(card);
+		}
+		for (int i = 0; i < showActionTiles; i++) {
+			ShowActionTilesActionCard card = new ShowActionTilesActionCard("Display all the action tiles", deck);
+			deck.addCard(card);
+		}
+		for (int i = 0; i < moveWinTile; i++) {
+			MoveWinTileActionCard card = new MoveWinTileActionCard("Move win tile", deck);
+			deck.addCard(card);
+		}
+		for (int i = 0; i < movePlayer; i++) {
+			MovePlayerActionCard card = new MovePlayerActionCard("Select player to move", deck);
+			deck.addCard(card);
+		}
+		for (int i = 0; i < sendBack; i++) {
+			SendBackToStartActionCard card = new SendBackToStartActionCard("Select player to send back to start", deck);
+			deck.addCard(card);
+		}
+		for (int i = 0; i < additionalMove; i++) {
+			AdditionalMoveActionCard card = new AdditionalMoveActionCard("Choose die's destiny", deck);
+			deck.addCard(card);
+		}
+		for (int i = 0; i < inactivityPeriod; i++) {
+			InactivityPeriodActionCard card = new InactivityPeriodActionCard("Action tiles change their inactivity period", deck);
 			deck.addCard(card);
 		}
 		return deck.hasCards();
@@ -405,16 +435,18 @@ public class DesignController {
 		//nbTeleportCard
 		//nbLoseTurnCard
 		//nbConnectTilesCard
-		int[] cardsCounts = { 0, 0, 0, 0, 0 };
+		int[] cardsCounts = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		
 		for(int i = 0; i < numberOfActionCards; i++) {
-			int index = randomInt(0,4);
+			int index = randomInt(0,11);
 			cardsCounts[index]++;
 		}
 		
 		try {
-			//rollDie, removeConnection, teleport, loseTurn, connectTiles
-			createDeck(cardsCounts[0], cardsCounts[1], cardsCounts[2], cardsCounts[3], cardsCounts[4]);
+			//rollDie, removeConnection, teleport, loseTurn, connectTiles, sendBack, additionalMove, next rolls one,
+			//show action tiles, move win tile, move player, inactivity period
+			createDeck(cardsCounts[0], cardsCounts[1], cardsCounts[2], cardsCounts[3], cardsCounts[4], cardsCounts[5],
+					cardsCounts[6], cardsCounts[7], cardsCounts[8], cardsCounts[9], cardsCounts[10], cardsCounts[11]);
 		} catch (InvalidInputException e) {
 			
 		}	

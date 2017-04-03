@@ -299,7 +299,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		rollDieButton.setBackground(new java.awt.Color(51, 102, 255));
 		rollDieButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
 		rollDieButton.setForeground(new java.awt.Color(255, 255, 255));
-		rollDieButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/dice.png"))); // NOI18N
+		rollDieButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cards/dice.png"))); // NOI18N
 		rollDieButton.setText("Roll Die");
 		rollDieButton.setMaximumSize(new java.awt.Dimension(100, 100));
 		rollDieButton.setMinimumSize(new java.awt.Dimension(100, 100));
@@ -311,10 +311,11 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			}
 		});
 
+		//USELESS
+		
 		addConnectionButton.setBackground(new java.awt.Color(51, 102, 255));
 		addConnectionButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
 		addConnectionButton.setForeground(new java.awt.Color(255, 255, 255));
-		addConnectionButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/plus.png"))); // NOI18N
 		addConnectionButton.setText("   Add  Connection  ");
 		addConnectionButton.setToolTipText("");
 		addConnectionButton.setMaximumSize(new java.awt.Dimension(100, 100));
@@ -326,7 +327,6 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		removeConnectionButton.setBackground(new java.awt.Color(51, 102, 255));
 		removeConnectionButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
 		removeConnectionButton.setForeground(new java.awt.Color(255, 255, 255));
-		removeConnectionButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/minus.png"))); // NOI18N
 		removeConnectionButton.setText("Remove Connection");
 		removeConnectionButton.setMaximumSize(new java.awt.Dimension(100, 100));
 		removeConnectionButton.setMinimumSize(new java.awt.Dimension(100, 100));
@@ -337,13 +337,14 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		teleportButton.setBackground(new java.awt.Color(51, 102, 255));
 		teleportButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
 		teleportButton.setForeground(new java.awt.Color(255, 255, 255));
-		teleportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/teleport.png"))); // NOI18N
 		teleportButton.setText("     Teleport        ");
 		teleportButton.setMaximumSize(new java.awt.Dimension(100, 100));
 		teleportButton.setMinimumSize(new java.awt.Dimension(100, 100));
 		teleportButton.setPreferredSize(new java.awt.Dimension(50, 50));
 		teleportButton.setSize(new java.awt.Dimension(50, 25));
 		teleportButton.setVisible(false);
+		
+		//END USELESS
 
 		jLabel1.setFont(new java.awt.Font("Malayalam MN", 1, 20)); // NOI18N
 		jLabel1.setText("Connection Pieces Left");

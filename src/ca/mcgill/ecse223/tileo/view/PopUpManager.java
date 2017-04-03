@@ -106,27 +106,62 @@ public class PopUpManager {
 		try {
 			//Roll die again
 			if(card instanceof RollDieActionCard) {
-				img = ImageIO.read(getClass().getResource("/icons/dice.png"));
+				img = ImageIO.read(getClass().getResource("/icons/cards/dice.png"));
 			}
 			
 			//Add connection
 			if(card instanceof ConnectTilesActionCard) {
-				img = ImageIO.read(getClass().getResource("/icons/plus.png"));
+				img = ImageIO.read(getClass().getResource("/icons/cards/plus.png"));
 			}
 			
 			//Remove connection
 			if(card instanceof RemoveConnectionActionCard) {
-				img = ImageIO.read(getClass().getResource("/icons/minus.png"));
+				img = ImageIO.read(getClass().getResource("/icons/cards/minus.png"));
 			}
 			
 			//Teleport
 			if(card instanceof TeleportActionCard) {
-				img = ImageIO.read(getClass().getResource("/icons/teleport.png"));
+				img = ImageIO.read(getClass().getResource("/icons/cards/teleport.png"));
 			}
 			
 			//Lose turn
 			if(card instanceof LoseTurnActionCard) {
-				img = ImageIO.read(getClass().getResource("/icons/loseTurn.png"));
+				img = ImageIO.read(getClass().getResource("/icons/cards/loseTurn.png"));
+			}
+			
+			//Send back to start
+			if(card instanceof SendBackToStartActionCard) {
+				img = ImageIO.read(getClass().getResource("/icons/cards/sendBack.png"));
+			}
+			
+			//Additional move
+			if(card instanceof AdditionalMoveActionCard) {
+				img = ImageIO.read(getClass().getResource("/icons/cards/additionalMove.png"));
+			}
+			
+			//Inactivity period
+			if(card instanceof InactivityPeriodActionCard) {
+				img = ImageIO.read(getClass().getResource("/icons/cards/inactivityPeriod.png"));
+			}
+			
+			//Move player
+			if(card instanceof MovePlayerActionCard) {
+				img = ImageIO.read(getClass().getResource("/icons/cards/movePlayer.png"));
+			}
+			
+			//Move win tile
+			if(card instanceof MoveWinTileActionCard) {
+				img = ImageIO.read(getClass().getResource("/icons/cards/moveWinTile.png"));
+			}
+			
+			//Next rolls one
+			if(card instanceof NextRollsOneActionCard) {
+				img = ImageIO.read(getClass().getResource("/icons/cards/nextRollsOne.png"));
+			}
+			
+			//Show action tiles
+			if(card instanceof ShowActionTilesActionCard) {
+				img = ImageIO.read(getClass().getResource("/icons/showActionTiles.png"));
 			}
 			
 			if(img != null) {
