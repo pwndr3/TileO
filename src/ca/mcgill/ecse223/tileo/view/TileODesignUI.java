@@ -1,5 +1,6 @@
 package ca.mcgill.ecse223.tileo.view;
 
+import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.*;
 import ca.mcgill.ecse223.tileo.model.*;
 
@@ -1853,12 +1854,30 @@ public class TileODesignUI extends JFrame {
 	}
 
 	private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		String newName = null;
-		while((newName = new PopUpManager(this).askSaveName(game.getGameName())) == "");
-			
-		if(newName != null) {
-			currentController.saveGame(newName);
-			new PopUpManager(this).acknowledgeMessage("Game saved.");
+		boolean wasProcessed = false;
+		
+		while(!wasProcessed) {
+			String newName = null;
+			while((newName = new PopUpManager(this).askSaveName(game.getGameName())) == "");
+				
+			if(newName != null) {
+				boolean nameExists = false;
+				
+				for(Game game : TileOApplication.getTileO().getGames()) {
+					if(game != null && newName.equals(game.getGameName()) && !newName.equals(game.getGameName()))
+						nameExists = true;
+				}
+				
+				if(!nameExists) {
+					currentController.saveGame(newName);
+					new PopUpManager(this).acknowledgeMessage("Game saved");
+					wasProcessed = true;
+				} else {
+					new PopUpManager(this).errorMessage("Game name already exists");
+				}
+			}
+			else
+				wasProcessed = true;
 		}
 	}
 

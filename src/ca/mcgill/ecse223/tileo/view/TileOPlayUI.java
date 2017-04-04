@@ -24,6 +24,7 @@ import ca.mcgill.ecse223.tileo.model.*;
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.InvalidInputException;
 import ca.mcgill.ecse223.tileo.controller.PlayController;
+import ca.mcgill.ecse223.tileo.controller.PlayController.State;
 
 public class TileOPlayUI extends javax.swing.JFrame {
 	public TileOPlayUI(Game aGame) {
@@ -59,6 +60,8 @@ public class TileOPlayUI extends javax.swing.JFrame {
 	private JPanel tilesPanel;
 	LinkedList<TileUI> tilesButtons;
 	LinkedList<ConnectionUI> connectionButtons;
+	
+	Player playerForMovePlayerActionCard;
 
 	private void setupBoardFromGame() {
 		// Setup variables
@@ -234,18 +237,8 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		update();
 		maskButtons(ROLLDIE);
 		
-		if(currentController.getState() == PlayController.State.GameWon) {
+		if(currentController.getState() == PlayController.State.GameWon)
 			maskButtons(0);
-			saveButton.setEnabled(false);
-			
-			Timer timer = new Timer(1000, new ActionListener() {
-	            public void actionPerformed(ActionEvent e) {
-	            	winGame();
-	            }
-	        });
-	        timer.setRepeats(false);
-	        timer.start();
-		}
 	}
 
 	public int PICKCARD = 1;
@@ -299,7 +292,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		rollDieButton.setBackground(new java.awt.Color(51, 102, 255));
 		rollDieButton.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
 		rollDieButton.setForeground(new java.awt.Color(255, 255, 255));
-		rollDieButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cards/dice.png"))); // NOI18N
+		rollDieButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/dice.png"))); // NOI18N
 		rollDieButton.setText("Roll Die");
 		rollDieButton.setMaximumSize(new java.awt.Dimension(100, 100));
 		rollDieButton.setMinimumSize(new java.awt.Dimension(100, 100));
@@ -396,6 +389,8 @@ public class TileOPlayUI extends javax.swing.JFrame {
 				dispose();
 			}
 		});
+		
+		playerForMovePlayerActionCard = null;
 
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
@@ -564,7 +559,7 @@ public class TileOPlayUI extends javax.swing.JFrame {
 			maskButtons(0);
 			saveButton.setEnabled(false);
 			
-			Timer timer = new Timer(1000, new ActionListener() {
+			Timer timer = new Timer(500, new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
 	            	winGame();
 	            }
@@ -762,6 +757,70 @@ public class TileOPlayUI extends javax.swing.JFrame {
 					break;
 				}
 			}
+			else if(game.getMode() == Game.Mode.GAME_SENDBACKTOSTARTACTIONCARD) {
+				tile = game.getTileFromXY(tileUI.getUIX(), tileUI.getUIY());
+				Player player = null;
+				
+				for(Player p : game.getPlayers()) {
+					if(p.getCurrentTile() == tile && game.getCurrentPlayer() != p)
+						player = p;
+				}
+				
+				if(player != null)
+					currentController.playSendBackActionCard(player);
+				else {
+					tileUI.setSelected(false);
+					tileUI.setBorderPainted(false);
+					tileUI.setFocusPainted(false);
+				}
+			}
+			else if(game.getMode() == Game.Mode.GAME_MOVEPLAYERCARD) {
+				tile = game.getTileFromXY(tileUI.getUIX(), tileUI.getUIY());
+				
+				//Choose player
+				if(playerForMovePlayerActionCard == null) {
+					Player player = null;
+					
+					for(Player p : game.getPlayers()) {
+						if(p.getCurrentTile() == tile && game.getCurrentPlayer() != p)
+							player = p;
+					}
+					
+					if(player != null) {
+						playerForMovePlayerActionCard = player;
+						tileUI.setBackground(new java.awt.Color(255,255,0));
+					}
+					else {
+						tileUI.setSelected(false);
+						tileUI.setBorderPainted(false);
+						tileUI.setFocusPainted(false);
+					}
+				}
+				//Choose where to teleport
+				else {
+					currentController.playMovePlayerActionCard(playerForMovePlayerActionCard, tile);
+					playerForMovePlayerActionCard = null;
+				}
+			}
+			
+			else if (game.getMode() == Game.Mode.GAME_MOVEWINTILECARD) {
+				tile = game.getTileFromXY(tileUI.getUIX(), tileUI.getUIY());
+				Player player = null;
+				
+				for(Player p : game.getPlayers()) {
+					if(p.getCurrentTile() == tile)
+						player = p;
+				}
+				
+				if(player == null)
+					currentController.playMoveWinTileActionCard(tile);
+	
+				else {
+					tileUI.setSelected(false);
+					tileUI.setBorderPainted(false);
+					tileUI.setFocusPainted(false);
+				}
+			}
 			break;
 
 		default:
@@ -791,7 +850,14 @@ public class TileOPlayUI extends javax.swing.JFrame {
 	
 	private void winGame() {
 		currentController.saveGame();
-		new PopUpManager(this).acknowledgeMessage("Player "+(game.getCurrentPlayer().getColor())+" won the game!");
+		Player player = null;
+		
+		for(Player p : game.getPlayers()) {
+			if(p.getCurrentTile() == game.getWinTile())
+				player = p;
+		}	
+		
+		new PopUpManager(this).acknowledgeMessage("Player "+(player.getColor())+" won the game!");
 		Timer timer = new Timer(1000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	new MainPage().setVisible(true);
@@ -915,6 +981,59 @@ public class TileOPlayUI extends javax.swing.JFrame {
 	    				game.setMode(Game.Mode.GAME_TELEPORTACTIONCARD);
 	    				currentController.setState(PlayController.State.ActionCard);
 	    				maskButtons(0);
+	    			}
+	                
+	    			else if (actionCard instanceof SendBackToStartActionCard) {
+	    				game.setMode(Game.Mode.GAME_SENDBACKTOSTARTACTIONCARD);
+	    				currentController.setState(PlayController.State.ActionCard);
+	    				maskButtons(0);
+	    			}
+	                
+	    			else if (actionCard instanceof MovePlayerActionCard) {
+	    				game.setMode(Game.Mode.GAME_MOVEPLAYERCARD);
+	    				currentController.setState(PlayController.State.ActionCard);
+	    				maskButtons(0);
+	    			}
+	                
+	    			else if(actionCard instanceof MoveWinTileActionCard) {
+	    				game.setMode(Game.Mode.GAME_MOVEWINTILECARD);
+	    				currentController.setState(PlayController.State.ActionCard);
+	    				maskButtons(0);
+	    			}
+	                
+	    			else if(actionCard instanceof InactivityPeriodActionCard) {
+	    				game.setMode(Game.Mode.GAME_INACTIVITYPERIODCARD);
+	    				currentController.setState(PlayController.State.ActionCard);
+	    				maskButtons(0);
+	    				currentController.playInactivityPeriodActionCard();
+	    			}
+	                
+	    			else if(actionCard instanceof ShowActionTilesActionCard) {
+	    				game.setMode(Game.Mode.GAME_SHOWACTIONTILESCARD);
+	    				currentController.setState(PlayController.State.ActionCard);
+	    				maskButtons(0);
+	    				
+	    				for(Tile tile : game.getTiles()) {
+	    					if(tile instanceof ActionTile) {
+		    					TileUI tileUI = getTileUIByXY(tile.getX(), tile.getY());
+		    					tileUI.setBackground(Color.decode("#ef8615"));
+	    					}
+	    				}
+	    				
+	    				Timer timer1 = new Timer(5000, new ActionListener() {
+	    		            public void actionPerformed(ActionEvent e) {
+	    		            	currentController.playShowActionTilesActionCard();
+	    		            }
+	    		        });
+	    		        timer1.setRepeats(false);
+	    		        timer1.start();
+	    			}
+	                
+	    			else if(actionCard instanceof NextRollsOneActionCard) {
+	    				game.setMode(Game.Mode.GAME_NEXTROLLSONECARD);
+	    				currentController.setState(PlayController.State.ActionCard);
+	    				maskButtons(0);
+	    				currentController.playNextRollsOneActionCard();
 	    			}
 	            }
 	        });

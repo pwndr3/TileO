@@ -123,11 +123,19 @@ public class ActionTile extends Tile implements Serializable {
 		boolean wasSet = false;
 		turnsUntilActive = aTurnsUntilActive;
 		wasSet = true;
+		
+		if(aTurnsUntilActive == 0)
+			setActionTileStatus(ActionTileStatus.Active);
+		
 		return wasSet;
 	}
 
 	public int getInactivityPeriod() {
 		return inactivityPeriod;
+	}
+	
+	public void setInactivityPeriod(int inacPeriod) {
+		inactivityPeriod = inacPeriod;
 	}
 
 	public int getTurnsUntilActive() {

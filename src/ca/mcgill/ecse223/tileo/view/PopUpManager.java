@@ -161,7 +161,7 @@ public class PopUpManager {
 			
 			//Show action tiles
 			if(card instanceof ShowActionTilesActionCard) {
-				img = ImageIO.read(getClass().getResource("/icons/showActionTiles.png"));
+				img = ImageIO.read(getClass().getResource("/icons/cards/showActionTiles.png"));
 			}
 			
 			if(img != null) {

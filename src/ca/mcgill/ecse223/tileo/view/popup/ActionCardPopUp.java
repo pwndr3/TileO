@@ -24,10 +24,10 @@ public class ActionCardPopUp extends JFrame {
 
         ImageIcon imgIcon = new ImageIcon(icon);
         Picture.setIcon(imgIcon);
-        getContentPane().add(Picture);//
+        getContentPane().add(Picture);
         Point newLocation = new Point(middle.x - (getWidth() / 2), 
                 middle.y - (getHeight() / 2));
-        setLocation(newLocation);
+        setLocation(newLocation);	
 
         Picture.setBounds(getWidth()/2 - imgIcon.getIconWidth()/2, getHeight()/2 - 50, imgIcon.getIconWidth(), imgIcon.getIconHeight());
 

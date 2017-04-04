@@ -2,12 +2,15 @@ package ca.mcgill.ecse223.tileo.controller;
 
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.model.*;
+import ca.mcgill.ecse223.tileo.model.Game.Mode;
 import ca.mcgill.ecse223.tileo.view.PopUpManager;
 import ca.mcgill.ecse223.tileo.view.TileOPlayUI;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class PlayController {
@@ -24,11 +27,18 @@ public class PlayController {
 
 	private Game game;
 	private TileOPlayUI ui;
+	
+	private boolean rollOne;
+	
+	private Random rn;
 
 	public PlayController(TileOPlayUI aUi, Game aGame) {
 		game = aGame;
 		ui = aUi;
 		setState(State.Ready);
+		
+		rn = new Random();
+		rollOne = false;
 	}
 
 	public String getStateFullName() {
@@ -97,7 +107,11 @@ public class PlayController {
 	}
 
 	public List<Tile> rollDie() {
-		int rolledNumber = game.rollDie();
+		int rolledNumber = 1;
+		
+		if(!rollOne)
+			rolledNumber = game.rollDie();
+		rollOne = false;
 
 		new PopUpManager(ui).rollDie(rolledNumber);
 
@@ -265,6 +279,148 @@ public class PlayController {
 		}
 
 		return wasEventProcessed;
+	}
+	
+	public void playSendBackActionCard(Player player) {
+		player.setCurrentTile(player.getStartingTile());
+		nextTurn();
+	}
+	
+	public void playMovePlayerActionCard(Player player, Tile tileToSendTo) {
+		player.setCurrentTile(tileToSendTo);
+		tileToSendTo.setHasBeenVisited(true);
+		
+		if (tileToSendTo instanceof WinTile) {
+		    game.setMode(Mode.GAME_WON);
+			setState(State.GameWon);
+		}
+		
+		else
+			nextTurn();
+	}
+	
+	public void playMoveWinTileActionCard(Tile winTile) {
+		WinTile prevWin = game.getWinTile();
+		
+		if(prevWin == winTile) {
+			nextTurn();
+			return;
+		}
+			
+		
+		int prevX = prevWin.getX();
+		int prevY = prevWin.getY();
+
+		List<Tile> tilesToConnectTo = new ArrayList<Tile>();
+
+		for (Connection conn : prevWin.getConnections()) {
+			if (conn.getTile(0) != prevWin)
+				tilesToConnectTo.add(conn.getTile(0));
+			if (conn.getTile(1) != prevWin)
+				tilesToConnectTo.add(conn.getTile(1));
+		}
+
+		game.setWinTile(null);
+		int x = prevWin.getX();
+		int y = prevWin.getY();
+		game.getTileFromXY(x, y).delete();
+
+		// Replace the deleted with a win Tile
+		NormalTile normalTile = new NormalTile(prevX, prevY, game);
+
+		for (Tile tileToConnectTo : tilesToConnectTo) {
+			
+			int x1 = normalTile.getX();
+			int y1 = normalTile.getY();
+
+			int x2 = tileToConnectTo.getX();
+			int y2 = tileToConnectTo.getY();
+
+			// If not already connected
+			if (!normalTile.getConnections().parallelStream().filter(s -> s != null)
+					.anyMatch(s -> s.getTile(0) == tileToConnectTo || s.getTile(1) == tileToConnectTo)) {
+				// Check if tiles are adjacent to one another
+				if (x1 == x2 && Math.abs((y1 - y2)) == 1) {
+					game.placeConnection(normalTile, tileToConnectTo);
+				}
+
+				if (y1 == y2 && Math.abs((x1 - x2)) == 1) {
+					game.placeConnection(normalTile, tileToConnectTo);
+				}
+			}
+ 
+		}
+		// Get the X and Y coordinates
+		int winX = winTile.getX();
+		int winY = winTile.getY();
+
+		Tile tileToBeDeleted = game.getTileFromXY(winX, winY);
+
+		tilesToConnectTo = new ArrayList<Tile>();
+
+		for (Connection conn : tileToBeDeleted.getConnections()) {
+			if (conn.getTile(0) != tileToBeDeleted)
+				tilesToConnectTo.add(conn.getTile(0));
+			if (conn.getTile(1) != tileToBeDeleted)
+				tilesToConnectTo.add(conn.getTile(1));
+		}
+
+		// delete the tile
+		tileToBeDeleted.delete();
+
+		// Replace the tile with a win tile
+		WinTile newWinTile = new WinTile(winX, winY, game);
+
+		for (Tile tileToConnectTo : tilesToConnectTo) {
+			int x1 = normalTile.getX();
+			int y1 = normalTile.getY();
+
+			int x2 = tileToConnectTo.getX();
+			int y2 = tileToConnectTo.getY();
+
+			// If not already connected
+			if (!normalTile.getConnections().parallelStream().filter(s -> s != null)
+					.anyMatch(s -> s.getTile(0) == tileToConnectTo || s.getTile(1) == tileToConnectTo)) {
+				// Check if tiles are adjacent to one another
+				if (x1 == x2 && Math.abs((y1 - y2)) == 1) {
+					game.placeConnection(normalTile, tileToConnectTo);
+				}
+
+				if (y1 == y2 && Math.abs((x1 - x2)) == 1) {
+					game.placeConnection(normalTile, tileToConnectTo);
+				}
+			}
+		}
+
+		// Set win tile to the game
+		game.setWinTile(newWinTile);
+		nextTurn();
+	}
+	
+	private int randomInt(int minimum, int maximum) {
+		if(maximum - minimum < 1)
+			return 0;
+		
+		return minimum + rn.nextInt(maximum - minimum + 1);
+	}
+	
+	public void playInactivityPeriodActionCard() {
+		for(Tile tile : game.getTiles()) {
+			if(tile instanceof ActionTile) {
+				((ActionTile)tile).setInactivityPeriod(randomInt(0,3));
+				((ActionTile)tile).setTurnsUntilActive(0);
+			}
+		}
+		nextTurn();
+	}
+	
+	public void playShowActionTilesActionCard() {
+		nextTurn();
+	}
+	
+	public void playNextRollsOneActionCard() {
+		rollOne = true;
+		nextTurn();
 	}
 
 	public void nextTurn() {
