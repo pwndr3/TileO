@@ -1035,6 +1035,13 @@ public class TileOPlayUI extends javax.swing.JFrame {
 	    				maskButtons(0);
 	    				currentController.playNextRollsOneActionCard();
 	    			}
+	                
+	    			else if(actionCard instanceof AdditionalMoveActionCard) {
+	    				game.setMode(Game.Mode.GAME_ADDITIONALMOVECARD);
+	    				currentController.setState(PlayController.State.Roll);
+	    				maskButtons(ROLLDIE);
+	    				currentController.playAdditionalMoveActionCard();
+	    			}
 	            }
 	        });
 	        timer.setRepeats(false);

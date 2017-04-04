@@ -28,7 +28,7 @@ public class PlayController {
 	private Game game;
 	private TileOPlayUI ui;
 	
-	private boolean rollOne;
+	private int forcedRoll;
 	
 	private Random rn;
 
@@ -38,7 +38,7 @@ public class PlayController {
 		setState(State.Ready);
 		
 		rn = new Random();
-		rollOne = false;
+		forcedRoll = 0;
 	}
 
 	public String getStateFullName() {
@@ -107,11 +107,11 @@ public class PlayController {
 	}
 
 	public List<Tile> rollDie() {
-		int rolledNumber = 1;
+		int rolledNumber = forcedRoll;
 		
-		if(!rollOne)
+		if(forcedRoll == 0)
 			rolledNumber = game.rollDie();
-		rollOne = false;
+		forcedRoll = 0;
 
 		new PopUpManager(ui).rollDie(rolledNumber);
 
@@ -419,8 +419,12 @@ public class PlayController {
 	}
 	
 	public void playNextRollsOneActionCard() {
-		rollOne = true;
+		forcedRoll = 1;
 		nextTurn();
+	}
+	
+	public void playAdditionalMoveActionCard() {
+		forcedRoll = new PopUpManager(ui).chooseDieRoll();
 	}
 
 	public void nextTurn() {

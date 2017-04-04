@@ -35,6 +35,11 @@ public class PopUpManager {
 		return window.ask();
 	}
 	
+	public int chooseDieRoll() {
+		ChooseDieRoll window = new ChooseDieRoll(parentWindow);
+		return window.ask();
+	}
+	
 	public int askYesOrNo(String message) {
 		Object[] options = {"Yes",
                 "No"};

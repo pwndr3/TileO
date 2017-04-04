@@ -279,7 +279,7 @@ public class DesignController {
 			deck.addCard(card);
 		}
 		for (int i = 0; i < inactivityPeriod; i++) {
-			InactivityPeriodActionCard card = new InactivityPeriodActionCard("Action tiles change their inactivity period", deck);
+			InactivityPeriodActionCard card = new InactivityPeriodActionCard("Inactivity period randomly selected", deck);
 			deck.addCard(card);
 		}
 		return deck.hasCards();
