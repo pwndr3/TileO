@@ -321,9 +321,7 @@ public class PlayController {
 		}
 
 		game.setWinTile(null);
-		int x = prevWin.getX();
-		int y = prevWin.getY();
-		game.getTileFromXY(x, y).delete();
+		game.getTileFromXY(prevX, prevY).delete();
 
 		// Replace the deleted with a win Tile
 		NormalTile normalTile = new NormalTile(prevX, prevY, game);
@@ -354,40 +352,38 @@ public class PlayController {
 		int winX = winTile.getX();
 		int winY = winTile.getY();
 
-		Tile tileToBeDeleted = game.getTileFromXY(winX, winY);
-
 		tilesToConnectTo = new ArrayList<Tile>();
 
-		for (Connection conn : tileToBeDeleted.getConnections()) {
-			if (conn.getTile(0) != tileToBeDeleted)
+		for (Connection conn : winTile.getConnections()) {
+			if (conn.getTile(0) != winTile)
 				tilesToConnectTo.add(conn.getTile(0));
-			if (conn.getTile(1) != tileToBeDeleted)
+			if (conn.getTile(1) != winTile)
 				tilesToConnectTo.add(conn.getTile(1));
 		}
 
 		// delete the tile
-		tileToBeDeleted.delete();
+		winTile.delete();
 
 		// Replace the tile with a win tile
 		WinTile newWinTile = new WinTile(winX, winY, game);
 
 		for (Tile tileToConnectTo : tilesToConnectTo) {
-			int x1 = normalTile.getX();
-			int y1 = normalTile.getY();
+			int x1 = newWinTile.getX();
+			int y1 = newWinTile.getY();
 
 			int x2 = tileToConnectTo.getX();
 			int y2 = tileToConnectTo.getY();
 
 			// If not already connected
-			if (!normalTile.getConnections().parallelStream().filter(s -> s != null)
+			if (!newWinTile.getConnections().parallelStream().filter(s -> s != null)
 					.anyMatch(s -> s.getTile(0) == tileToConnectTo || s.getTile(1) == tileToConnectTo)) {
 				// Check if tiles are adjacent to one another
 				if (x1 == x2 && Math.abs((y1 - y2)) == 1) {
-					game.placeConnection(normalTile, tileToConnectTo);
+					game.placeConnection(newWinTile, tileToConnectTo);
 				}
 
 				if (y1 == y2 && Math.abs((x1 - x2)) == 1) {
-					game.placeConnection(normalTile, tileToConnectTo);
+					game.placeConnection(newWinTile, tileToConnectTo);
 				}
 			}
 		}

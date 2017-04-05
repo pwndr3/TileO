@@ -50,14 +50,23 @@ public class TurnsUnactive extends JDialog {
 
         try {
 			Button9.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/9.png"))));
+			Button9.setRolloverIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/9_h.png"))));
 			Button8.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/8.png"))));
+			Button8.setRolloverIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/8_h.png"))));
 			Button7.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/7.png"))));
+			Button7.setRolloverIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/7_h.png"))));
 			Button6.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/6.png"))));
+			Button6.setRolloverIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/6_h.png"))));
 			Button5.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/5.png"))));
+			Button5.setRolloverIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/5_h.png"))));
 			Button4.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/4.png"))));
+			Button4.setRolloverIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/4_h.png"))));
 			Button3.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/3.png"))));
+			Button3.setRolloverIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/3_h.png"))));
 			Button2.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/2.png"))));
+			Button2.setRolloverIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/2_h.png"))));
 			Button1.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/1.png"))));
+			Button1.setRolloverIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/buttons/1_h.png"))));
 		} catch (IOException e) {
 			
 		}
