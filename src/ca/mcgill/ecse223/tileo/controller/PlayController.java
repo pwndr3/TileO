@@ -50,7 +50,9 @@ public class PlayController {
 		return state;
 	}
 
-	public void startGame() throws Exception {
+	public Game startGame() throws Exception {
+		cloneGame();
+		
 		Deck deck = game.getDeck();
 		List<Player> allPlayers = game.getPlayers();
 
@@ -82,6 +84,8 @@ public class PlayController {
 		deck.shuffle();
 
 		setState(State.Roll);
+		
+		return game;
 	}
 
 	public ActionCard getTopCard() throws Exception {
@@ -436,26 +440,20 @@ public class PlayController {
 		TileOApplication.save();
 	}
 
-	public boolean loadGame() {
-		boolean wasEventProcessed = false;
-
-		State aState = state;
-		switch (aState) {
+	public Game loadGame() {
+		switch (state) {
 		case Ready:
 			if (game.getMode() == Game.Mode.GAME) {
 				setState(State.Roll);
-				wasEventProcessed = true;
 				break;
 			}
 			if (game.getMode() == Game.Mode.GAME_WON) {
 				setState(State.GameWon);
-				wasEventProcessed = true;
 				break;
 			}
 			if (game.getMode() != Game.Mode.GAME && game.getMode() != Game.Mode.GAME_WON
 					&& game.getMode() != Game.Mode.DESIGN) {
 				setState(State.ActionCard);
-				wasEventProcessed = true;
 				break;
 			}
 			break;
@@ -463,7 +461,7 @@ public class PlayController {
 			// Other states do respond to this event
 		}
 
-		return wasEventProcessed;
+		return game;
 	}
 	
 	public void setState(State gameState) {
@@ -550,6 +548,36 @@ public class PlayController {
 			wasAdded = addPossibleMoveAt(aPossibleMove, index);
 		}
 		return wasAdded;
+	}
+	
+	public void cloneGame() {
+	    game = game.clone();
+	    TileOApplication.getTileO().addGame(game);
+	    TileOApplication.getTileO().setCurrentGame(game);
+	    game.hasStarted = true;
+	    
+	    boolean wasProcessed = false;
+		
+		while(!wasProcessed) {
+			String newName = null;
+			while((newName = new PopUpManager(ui).askSaveName(null, false)) == "");
+				
+			if(newName != null) {
+				boolean nameExists = false;
+				
+				for(Game game : TileOApplication.getTileO().getGames()) {
+					if(game != null && newName.equals(game.getGameName()))
+						nameExists = true;
+				}
+				
+				if(!nameExists) {
+					game.setGameName(newName);
+					wasProcessed = true;
+				} else {
+					new PopUpManager(ui).errorMessage("Game name already exists");
+				}
+			}
+		}
 	}
 
 	public void delete() {

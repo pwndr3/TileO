@@ -1857,7 +1857,7 @@ public class TileODesignUI extends JFrame {
 		
 		while(!wasProcessed) {
 			String newName = null;
-			while((newName = new PopUpManager(this).askSaveName(game.getGameName())) == "");
+			while((newName = new PopUpManager(this).askSaveName(game.getGameName(), true)) == "");
 				
 			if(newName != null) {
 				boolean nameExists = false;

@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.controller.*;
+import ca.mcgill.ecse223.tileo.util.Cloner;
 import ca.mcgill.ecse223.tileo.view.PopUpManager;
 import ca.mcgill.ecse223.tileo.view.TileOPlayUI;
 
@@ -50,13 +51,12 @@ public class Game implements Serializable {
 	private Die die;
 	private Player currentPlayer;
 	private WinTile winTile;
-	private TileO tileO;
 
 	// ------------------------
 	// CONSTRUCTOR
 	// ------------------------
 
-	public Game(int aCurrentConnectionPieces, Deck aDeck, Die aDie, TileO aTileO) {
+	public Game(int aCurrentConnectionPieces, Deck aDeck, Die aDie) {
 		currentConnectionPieces = aCurrentConnectionPieces;
 		players = new ArrayList<Player>();
 		tiles = new ArrayList<Tile>();
@@ -69,24 +69,16 @@ public class Game implements Serializable {
 			throw new RuntimeException("Unable to create Game due to aDie");
 		}
 		die = aDie;
-		boolean didAddTileO = setTileO(aTileO);
-		if (!didAddTileO) {
-			throw new RuntimeException("Unable to create game due to tileO");
-		}
 		setMode(Mode.DESIGN);
 	}
 
-	public Game(int aCurrentConnectionPieces, TileO aTileO) {
+	public Game(int aCurrentConnectionPieces) {
 		currentConnectionPieces = aCurrentConnectionPieces;
 		players = new ArrayList<Player>();
 		tiles = new ArrayList<Tile>();
 		connections = new ArrayList<Connection>();
 		deck = new Deck(this);
 		die = new Die(this);
-		boolean didAddTileO = setTileO(aTileO);
-		if (!didAddTileO) {
-			throw new RuntimeException("Unable to create game due to tileO");
-		}
 	}
 
 	// ------------------------
@@ -225,10 +217,6 @@ public class Game implements Serializable {
 	public boolean hasWinTile() {
 		boolean has = winTile != null;
 		return has;
-	}
-
-	public TileO getTileO() {
-		return tileO;
 	}
 
 	public boolean isNumberOfPlayersValid() {
@@ -483,22 +471,6 @@ public class Game implements Serializable {
 		return wasSet;
 	}
 
-	public boolean setTileO(TileO aTileO) {
-		boolean wasSet = false;
-		if (aTileO == null) {
-			return wasSet;
-		}
-
-		TileO existingTileO = tileO;
-		tileO = aTileO;
-		if (existingTileO != null && !existingTileO.equals(aTileO)) {
-			existingTileO.removeGame(this);
-		}
-		tileO.addGame(this);
-		wasSet = true;
-		return wasSet;
-	}
-
 	public void delete() {
 		while (players.size() > 0) {
 			Player aPlayer = players.get(players.size() - 1);
@@ -530,9 +502,6 @@ public class Game implements Serializable {
 		}
 		currentPlayer = null;
 		winTile = null;
-		TileO placeholderTileO = tileO;
-		this.tileO = null;
-		placeholderTileO.removeGame(this);
 	}
 
 	public String toString() {
@@ -548,7 +517,6 @@ public class Game implements Serializable {
 				+ System.getProperties().getProperty("line.separator") + "  " + "winTile = "
 				+ (getWinTile() != null ? Integer.toHexString(System.identityHashCode(getWinTile())) : "null")
 				+ System.getProperties().getProperty("line.separator") + "  " + "tileO = "
-				+ (getTileO() != null ? Integer.toHexString(System.identityHashCode(getTileO())) : "null")
 				+ outputString;
 	}
 
@@ -556,7 +524,6 @@ public class Game implements Serializable {
 		if (!hasStarted)
 			hasStarted = true;
 
-		Die die = getDie();
 		return getDie().roll();
 	}
 
@@ -602,4 +569,8 @@ public class Game implements Serializable {
 			}
 		}
 	}
+	
+	public Game clone(){
+	   return (Game) Cloner.clone(this);
+	 }
 }

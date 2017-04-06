@@ -37,7 +37,7 @@ public class ChooseDieRoll extends JDialog {
 
         setPreferredSize(new Dimension(470, 320)); 
         setSize(new Dimension(470, 320)); 
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         getContentPane().setLayout(null);
         jPanel1.setLayout(null);
         
@@ -135,7 +135,7 @@ public class ChooseDieRoll extends JDialog {
         
         setLocationRelativeTo(parentWindow);
         setResizable(false);
-        setUndecorated(true);
+        //setUndecorated(true);
         
         setVisible(true);
         pack();

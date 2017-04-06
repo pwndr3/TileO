@@ -30,24 +30,23 @@ public class TileOPlayUI extends javax.swing.JFrame {
 	public TileOPlayUI(Game aGame) {
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+			setUndecorated(true);
 		} catch (Exception e) {
 			// Too bad
 		}
 
-		game = aGame;
-		currentController = new PlayController(this, game);
-
-		initComponents();
-
-		if (!game.hasStarted) {
+		currentController = new PlayController(this, aGame);
+		if (!aGame.hasStarted) {
 			try {
-				currentController.startGame();
+				game = currentController.startGame();
 			} catch (Exception e) {
 				new PopUpManager(this).acknowledgeMessage(e.getMessage());
 			}
 		} else {
-			currentController.loadGame();
+			game = currentController.loadGame();
 		}
+
+		initComponents();
 
 		setupBoardFromGame();
 	}
@@ -486,8 +485,6 @@ public class TileOPlayUI extends javax.swing.JFrame {
 								.addComponent(tilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
 						.addContainerGap(78, Short.MAX_VALUE)));
-
-		setUndecorated(true);
 
 		pack();
 

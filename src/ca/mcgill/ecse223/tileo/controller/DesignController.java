@@ -290,7 +290,7 @@ public class DesignController {
 		if (game != null)
 			TileOApplication.getTileO().removeGame(game);
 
-		game = new Game(32, TileOApplication.getTileO());
+		game = new Game(32);
 		game.setMode(Game.Mode.DESIGN);
 		TileOApplication.getTileO().addGame(game);
 		TileOApplication.getTileO().setCurrentGame(game);

@@ -36,10 +36,10 @@ public class Deck implements Serializable
     game = aGame;
   }
 
-  public Deck(int aCurrentConnectionPiecesForGame, Die aDieForGame, TileO aTileOForGame)
+  public Deck(int aCurrentConnectionPiecesForGame, Die aDieForGame)
   {
     cards = new ArrayList<ActionCard>();
-    game = new Game(aCurrentConnectionPiecesForGame, this, aDieForGame, aTileOForGame);
+    game = new Game(aCurrentConnectionPiecesForGame, this, aDieForGame);
   }
 
   //------------------------

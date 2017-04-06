@@ -40,8 +40,12 @@ public class MainPage extends javax.swing.JFrame {
         for(Game game : designableGames)
         	designModel.addElement(game.getGameName());
         	
-        for(Game game : playableGames)
-        	playModel.addElement(game.getGameName());
+        for(Game game : playableGames) {
+        	if(!game.hasStarted)
+        		playModel.addElement(game.getGameName()+" (DESIGN)");
+        	else
+        		playModel.addElement(game.getGameName());
+        }
         
         if(designModel.getSize() == 0)
         	designModel.addElement("No designable game");
@@ -59,8 +63,12 @@ public class MainPage extends javax.swing.JFrame {
         for(Game game : designableGames)
         	designModel.addElement(game.getGameName());
         	
-        for(Game game : playableGames)
-        	playModel.addElement(game.getGameName());
+        for(Game game : playableGames) {
+        	if(!game.hasStarted)
+        		playModel.addElement(game.getGameName()+" (DESIGN)");
+        	else
+        		playModel.addElement(game.getGameName());
+        }	
         
         if(designModel.getSize() == 0)
         	designModel.addElement("No designable game");
@@ -213,7 +221,11 @@ public class MainPage extends javax.swing.JFrame {
 
     private void loadPlayButtonActionPerformed(java.awt.event.ActionEvent evt) {
     	if(!playableGames.isEmpty()) {
-    		controller.play(String.valueOf(loadGameToPlayComboBox.getSelectedItem()));
+    		String name = String.valueOf(loadGameToPlayComboBox.getSelectedItem());
+    		if(name.contains(" (DESIGN)"))
+    			controller.play(name.substring(0, name.length()-9));
+    		else
+    			controller.play(name);
     	} else {
     		new PopUpManager(this).acknowledgeMessage("No game selected, cannot play");
     	}
@@ -237,10 +249,14 @@ public class MainPage extends javax.swing.JFrame {
     }
 
     private void deletePlayButtonActionPerformed(java.awt.event.ActionEvent evt) {
-    	TileO tileo = TileOApplication.getTileO();
     	if(!playableGames.isEmpty()) {
         	if(new PopUpManager(this).askYesOrNo("Are you sure you want to delete the game?") == 0) {
-        		if(TileOApplication.getTileO().removeGame(TileOApplication.getTileO().getGameByName(String.valueOf(loadGameToPlayComboBox.getSelectedItem())))) {
+        		String name = String.valueOf(loadGameToPlayComboBox.getSelectedItem());
+        		
+        		if(name.contains(" (DESIGN)"))
+        			name = name.substring(0, name.length()-9);
+        		
+        		if(TileOApplication.getTileO().removeGame(TileOApplication.getTileO().getGameByName(name))) {
 	        		new PopUpManager(this).acknowledgeMessage("Game deleted");
 	        		updateLists(); 
 	        		TileOApplication.save();

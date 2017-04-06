@@ -50,10 +50,9 @@ public class Player implements Serializable {
 	// ------------------------
 
 	public Player(int aNumber, Game aGame) {
+		number = aNumber;
 		turnsUntilActive = 0;
-		if (!setNumber(aNumber)) {
-			throw new RuntimeException("Cannot create due to duplicate number");
-		}
+		
 		boolean didAddGame = setGame(aGame);
 		if (!didAddGame) {
 			throw new RuntimeException("Unable to create player due to game");
@@ -135,16 +134,8 @@ public class Player implements Serializable {
 
 	public boolean setNumber(int aNumber) {
 		boolean wasSet = false;
-		Integer anOldNumber = getNumber();
-		if (hasWithNumber(aNumber)) {
-			return wasSet;
-		}
 		number = aNumber;
 		wasSet = true;
-		if (anOldNumber != null) {
-			playersByNumber.remove(anOldNumber);
-		}
-		playersByNumber.put(aNumber, this);
 		return wasSet;
 	}
 
@@ -157,14 +148,6 @@ public class Player implements Serializable {
 
 	public int getNumber() {
 		return number;
-	}
-
-	public static Player getWithNumber(int aNumber) {
-		return playersByNumber.get(aNumber);
-	}
-
-	public static boolean hasWithNumber(int aNumber) {
-		return getWithNumber(aNumber) != null;
 	}
 
 	public int getTurnsUntilActive() {
@@ -248,7 +231,6 @@ public class Player implements Serializable {
 	}
 
 	public void delete() {
-		playersByNumber.remove(getNumber());
 		startingTile = null;
 		currentTile = null;
 		Game placeholderGame = game;

@@ -77,4 +77,11 @@ class PlayController {
     } 
     
     1 -> * Tile possibleMoves;
+    
+    private void cloneGame() {
+    TileO tileO = TileOApplication.getTileO();
+    Game cloned = tileO.getCurrentGame().clone();
+    tileO.addGame(cloned);
+    tileO.setCurrentGame(cloned);
+  }
 }

@@ -33,9 +33,9 @@ public class Die implements Serializable
     game = aGame;
   }
 
-  public Die(int aCurrentConnectionPiecesForGame, Deck aDeckForGame, TileO aTileOForGame)
+  public Die(int aCurrentConnectionPiecesForGame, Deck aDeckForGame)
   {
-    game = new Game(aCurrentConnectionPiecesForGame, aDeckForGame, this, aTileOForGame);
+    game = new Game(aCurrentConnectionPiecesForGame, aDeckForGame, this);
   }
 
   //------------------------
