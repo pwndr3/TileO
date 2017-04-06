@@ -1863,7 +1863,7 @@ public class TileODesignUI extends JFrame {
 				boolean nameExists = false;
 				
 				for(Game game : TileOApplication.getTileO().getGames()) {
-					if(game != null && newName.equals(game.getGameName()) && !newName.equals(game.getGameName()))
+					if(game != null && newName.equals(game.getGameName()) && !newName.equals(TileOApplication.getTileO().getCurrentGame().getGameName()))
 						nameExists = true;
 				}
 				
