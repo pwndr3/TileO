@@ -1,4 +1,4 @@
-# Group12
+# TileO
 
 - [x] **Part 1 : Domain Model - 4% - Jan 30**  
   - [x] GitHub account names submission (5)  
