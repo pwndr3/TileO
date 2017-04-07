@@ -35,10 +35,10 @@
   - [x] Update to Umple code and implementation of Controller methods (60)
   - [x] On-time submission to shared TileO repository in our GitHub organization (20)
 
-- [ ] **Part 7 : Final Application - 8% - Apr 6**  
-  - [ ] Implementation of additional action card - Individual (25)
-  - [ ] Implementation of all other features - Team (70)
-  - [ ] Uniform look and feel of the application - Team (5)
+- [x] **Part 7 : Final Application - 8% - Apr 6**  
+  - [x] Implementation of additional action card - Individual (25)
+  - [x] Implementation of all other features - Team (70)
+  - [x] Uniform look and feel of the application - Team (5)
 
 - [ ] **Part 8 : Demo - 4% - Apr 7/10/11**  
   - [ ] Presentation style (15)
