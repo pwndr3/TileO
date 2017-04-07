@@ -72,6 +72,8 @@ public class DesignController {
 
 			try {
 				deleteTile(prevWin);
+				ui.getTileUIByXY(prevWin.getX(), prevWin.getY()).setState(TileUI.State.NORMAL);
+				ui.getTileUIByXY(prevWin.getX(), prevWin.getY()).resetUI();
 			} catch (InvalidInputException e) {
 				e.printStackTrace();
 			}
@@ -602,7 +604,6 @@ public class DesignController {
 		//Show
 		ui.setGame(game);
 		ui.setupBoard(false);
-		ui.update();
 	}
 
 	//

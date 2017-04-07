@@ -34,22 +34,26 @@ public class TileOPlayUI extends javax.swing.JFrame {
 		} catch (Exception e) {
 			// Too bad
 		}
+		
+		game = aGame;
+		currentController = new PlayController(this, game);
 
-		currentController = new PlayController(this, aGame);
 		if (!aGame.hasStarted) {
 			try {
-				game = currentController.startGame();
+				currentController.startGame();
 			} catch (Exception e) {
 				new PopUpManager(this).acknowledgeMessage(e.getMessage());
 			}
 		} else {
-			game = currentController.loadGame();
+			currentController.loadGame();
 		}
 
 		initComponents();
 
 		setupBoardFromGame();
 	}
+	
+	
 
 	private Game game;
 

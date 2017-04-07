@@ -35,8 +35,8 @@ public class ChooseDieRoll extends JDialog {
         But1 = new javax.swing.JButton();
         But4 = new javax.swing.JButton();
 
-        setPreferredSize(new Dimension(470, 320)); 
-        setSize(new Dimension(470, 320)); 
+        setPreferredSize(new Dimension(470, 340)); 
+        setSize(new Dimension(470, 340)); 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         getContentPane().setLayout(null);
         jPanel1.setLayout(null);
@@ -125,7 +125,7 @@ public class ChooseDieRoll extends JDialog {
         But6.setContentAreaFilled(false);
 
         getContentPane().add(jPanel1);
-        jPanel1.setBounds(0, 0, 470, 320);
+        jPanel1.setBounds(0, 0, 470, 340);
         
         Point newLocation = new Point(middle.x - (getWidth() / 2), 
                 middle.y - (getHeight() / 2));

@@ -588,7 +588,23 @@ public class TileODesignUI extends JFrame {
 				}
 			});
 		});
-			
+		
+		//Action & win tiles
+		for(Tile tile : game.getTiles()) {
+			TileUI tileGUI = tilesButtons.parallelStream().filter(s -> s.getUIX()==tile.getX() && s.getUIY()==tile.getY()).findAny().orElse(null);
+			if(tile instanceof ActionTile) {
+				setActionTileIcon(tileGUI, ((ActionTile)tile).getInactivityPeriod());
+			} else if(tile instanceof WinTile) {
+				try {
+					tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/win.png"))));
+				} catch (IOException e) {
+					
+				}
+			} else {
+				tileGUI.resetUI();
+			}
+ 		}
+		
 		//Starting positions
 		for(int i = 0; i < game.numberOfPlayers(); i++) {
 			if(!game.getPlayer(i).hasStartingTile())
@@ -598,7 +614,6 @@ public class TileODesignUI extends JFrame {
 			
 			TileUI tileGUI = tilesButtons.parallelStream().filter(s -> s.getUIX()==tile.getX() && s.getUIY()==tile.getY()).findAny().orElse(null);
 			if(tileGUI != null) {
-				tileGUI.resetUI();
 				try {
 					tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/players/"+(i+1)+".png"))));
 				} catch (IOException e) {
@@ -606,23 +621,6 @@ public class TileODesignUI extends JFrame {
 				}
 			}
 		}
-		
-		//Action & win tiles
-		for(Tile tile : game.getTiles()) {
-			if(tile instanceof ActionTile) {
-				TileUI tileGUI = tilesButtons.parallelStream().filter(s -> s.getUIX()==tile.getX() && s.getUIY()==tile.getY()).findAny().orElse(null);
-				tileGUI.resetUI();
-				setActionTileIcon(tileGUI, ((ActionTile)tile).getInactivityPeriod());
-			} else if(tile instanceof WinTile) {
-				TileUI tileGUI = tilesButtons.parallelStream().filter(s -> s.getUIX()==tile.getX() && s.getUIY()==tile.getY()).findAny().orElse(null);
-				tileGUI.resetUI();
-				try {
-					tileGUI.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/icons/win.png"))));
-				} catch (IOException e) {
-					
-				}
-			}
- 		}
 		
 		update();
 	}
@@ -1123,7 +1121,7 @@ public class TileODesignUI extends JFrame {
         applyChangesButton.setText("Apply Changes");
         disableChanges();
         applyChangesButton.addActionListener(e -> {
-			update();
+ 			update();
 			designState = DesignState.NONE;
 		});
         
@@ -1857,13 +1855,13 @@ public class TileODesignUI extends JFrame {
 		
 		while(!wasProcessed) {
 			String newName = null;
-			while((newName = new PopUpManager(this).askSaveName(game.getGameName(), true)) == "");
+			while((newName = new PopUpManager(this).askSaveName(game.getGameName())) == "");
 				
 			if(newName != null) {
 				boolean nameExists = false;
 				
-				for(Game game : TileOApplication.getTileO().getGames()) {
-					if(game != null && newName.equals(game.getGameName()) && !newName.equals(TileOApplication.getTileO().getCurrentGame().getGameName()))
+				for(Game gameFromTileO : TileOApplication.getTileO().getGames()) {
+					if(gameFromTileO != null && newName.equals(gameFromTileO.getGameName()) && !newName.equals(game.getGameName()))
 						nameExists = true;
 				}
 				

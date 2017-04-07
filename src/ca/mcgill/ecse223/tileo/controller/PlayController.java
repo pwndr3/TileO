@@ -3,6 +3,7 @@ package ca.mcgill.ecse223.tileo.controller;
 import ca.mcgill.ecse223.tileo.application.TileOApplication;
 import ca.mcgill.ecse223.tileo.model.*;
 import ca.mcgill.ecse223.tileo.model.Game.Mode;
+import ca.mcgill.ecse223.tileo.view.MainPage;
 import ca.mcgill.ecse223.tileo.view.PopUpManager;
 import ca.mcgill.ecse223.tileo.view.TileOPlayUI;
 
@@ -50,9 +51,7 @@ public class PlayController {
 		return state;
 	}
 
-	public Game startGame() throws Exception {
-		cloneGame();
-		
+	public void startGame() throws Exception {
 		Deck deck = game.getDeck();
 		List<Player> allPlayers = game.getPlayers();
 
@@ -84,8 +83,6 @@ public class PlayController {
 		deck.shuffle();
 
 		setState(State.Roll);
-		
-		return game;
 	}
 
 	public ActionCard getTopCard() throws Exception {
@@ -440,7 +437,7 @@ public class PlayController {
 		TileOApplication.save();
 	}
 
-	public Game loadGame() {
+	public void loadGame() {
 		switch (state) {
 		case Ready:
 			if (game.getMode() == Game.Mode.GAME) {
@@ -460,8 +457,6 @@ public class PlayController {
 		default:
 			// Other states do respond to this event
 		}
-
-		return game;
 	}
 	
 	public void setState(State gameState) {
@@ -548,36 +543,6 @@ public class PlayController {
 			wasAdded = addPossibleMoveAt(aPossibleMove, index);
 		}
 		return wasAdded;
-	}
-	
-	public void cloneGame() {
-	    game = game.clone();
-	    TileOApplication.getTileO().addGame(game);
-	    TileOApplication.getTileO().setCurrentGame(game);
-	    game.hasStarted = true;
-	    
-	    boolean wasProcessed = false;
-		
-		while(!wasProcessed) {
-			String newName = null;
-			while((newName = new PopUpManager(ui).askSaveName(null, false)) == "");
-				
-			if(newName != null) {
-				boolean nameExists = false;
-				
-				for(Game game : TileOApplication.getTileO().getGames()) {
-					if(game != null && newName.equals(game.getGameName()))
-						nameExists = true;
-				}
-				
-				if(!nameExists) {
-					game.setGameName(newName);
-					wasProcessed = true;
-				} else {
-					new PopUpManager(ui).errorMessage("Game name already exists");
-				}
-			}
-		}
 	}
 
 	public void delete() {

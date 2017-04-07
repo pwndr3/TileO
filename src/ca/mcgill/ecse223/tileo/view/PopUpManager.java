@@ -68,7 +68,7 @@ public class PopUpManager {
 		  }
 		}
 	
-	public String askSaveName(String existingName, boolean generateRandomName) {
+	public String askSaveName(String existingName) {
 		JPanel panel = new JPanel();
 		JTextField text = new JTextField(25);
 		text.setSize(new java.awt.Dimension(200,25));
@@ -81,12 +81,12 @@ public class PopUpManager {
 			for(int i = 0; i < 5; i++) {
 				existingName += rn.nextInt(10);
 			}
+			text.setText(existingName);
 		}
 		
-		if(!generateRandomName)
-			text.setText("");
 		else
 			text.setText(existingName);
+			
 		
 		panel.setLayout(new FlowLayout());
 		panel.add(text);
