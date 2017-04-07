@@ -40,10 +40,10 @@
   - [x] Implementation of all other features - Team (70)
   - [x] Uniform look and feel of the application - Team (5)
 
-- [ ] **Part 8 : Demo - 4% - Apr 7/10/11**  
-  - [ ] Presentation style (15)
-  - [ ] Communication (15)
-  - [ ] Quality of presentation slides (15)
-  - [ ] Quality of your live demo (Design Mode) (20)
-  - [ ] Quality of your live demo (Play Mode) (20)
-  - [ ] Questions for demos of other teams (15)
+- [x] **Part 8 : Demo - 4% - Apr 7/10/11**  
+  - [x] Presentation style (15)
+  - [x] Communication (15)
+  - [x] Quality of presentation slides (15)
+  - [x] Quality of your live demo (Design Mode) (20)
+  - [x] Quality of your live demo (Play Mode) (20)
+  - [x] Questions for demos of other teams (15)
